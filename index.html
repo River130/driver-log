@@ -1,0 +1,2976 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>軽貨物 業務の記録簿（国交省法令準拠）</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            law: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            brand: {
+              50: '#f8fafc',
+              500: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    input, button, select, textarea { touch-action: manipulation; }
+    /* A4縦1ページ・公的帳票密度＆文字サイズ最適化CSS */
+    @page {
+      size: A4 portrait;
+      margin: 8mm;
+    }
+    @media print {
+      html, body {
+        background: white !important;
+        color: black !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        font-size: 12px !important;
+        line-height: 1.55 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      header, nav, #app-tabs, #action-buttons, .no-print, details, #lineReportSection, #toastNotification, #btnScrollTop {
+        display: none !important;
+      }
+      main {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #content-printout {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #printable-area {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        height: 278mm !important;
+        max-height: 278mm !important;
+        margin: 0 !important;
+        padding: 16px 18px !important;
+        border: 2px solid #0f172a !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
+        box-sizing: border-box !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      #printable-area h1 {
+        font-size: 18px !important;
+        line-height: 1.3 !important;
+      }
+      .print-meta-grid {
+        padding: 10px 12px !important;
+        font-size: 11.5px !important;
+      }
+      #printable-area table th,
+      #printable-area table td {
+        padding: 8px 10px !important;
+        font-size: 11.5px !important;
+      }
+      .print-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 14px !important;
+        flex: 1 !important;
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
+      }
+      .print-grid > div {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+        padding: 12px !important;
+      }
+      .print-section-title {
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+      }
+      /* カラム内の各情報ブロック：余白を減らし文字サイズと行間で堂々と埋める */
+      .print-grid > div > div:not(:first-child):not(table) {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        gap: 4px !important;
+        padding: 10px 12px !important;
+        font-size: 11.5px !important;
+        line-height: 1.5 !important;
+      }
+      .print-box-label {
+        font-size: 10.5px !important;
+        border-bottom: 1px dashed #cbd5e1 !important;
+        padding-bottom: 3px !important;
+        margin-bottom: 4px !important;
+      }
+      .print-notes-box {
+        min-height: 54px !important;
+        padding: 10px 14px !important;
+        font-size: 11.5px !important;
+        line-height: 1.5 !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans pb-28 antialiased min-h-screen">
+
+  <!-- 通知トースト -->
+  <div id="toastNotification" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 opacity-0 pointer-events-none max-w-sm w-11/12">
+    <div id="toastContent" class="p-3 rounded-xl shadow-lg border text-xs font-bold flex items-center gap-2.5 bg-slate-800 text-white border-slate-700">
+      <span id="toastIcon" class="text-base">ℹ️</span>
+      <span id="toastMsg" class="flex-1 leading-snug">メッセージ</span>
+    </div>
+  </div>
+
+  <!-- ヘッダー -->
+  <header class="bg-brand-900 text-white sticky top-0 z-30 shadow-md">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs px-2 py-0.5 bg-emerald-600 font-bold rounded">2024年4月法改正 準拠</span>
+          <h1 class="text-sm sm:text-base font-bold tracking-tight">軽貨物 業務の記録簿</h1>
+        </div>
+        <p id="headerDriverInfo" class="text-xs text-slate-300 mt-0.5">乗務員: 未設定 | 車両: 未設定</p>
+      </div>
+      <div class="flex items-center gap-1.5 bg-slate-800 p-1 rounded-lg border border-slate-700">
+        <button onclick="changeDate(-1)" class="p-1 hover:bg-slate-700 rounded text-xs">◀</button>
+        <input type="date" id="currentDateInput" onchange="onDateChanged(this.value)" class="bg-slate-900 text-white border-0 rounded px-1.5 py-0.5 text-xs font-semibold focus:outline-none">
+        <button onclick="changeDate(1)" class="p-1 hover:bg-slate-700 rounded text-xs">▶</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main class="max-w-3xl mx-auto px-3.5 pt-3.5 space-y-3.5">
+
+    <!-- 法令案内バナー -->
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-[11px] text-amber-900 flex items-start gap-2 shadow-sm no-print">
+      <span class="text-base leading-none">⚖️</span>
+      <div class="leading-relaxed">
+        <strong>貨物軽自動車運送事業輸送安全規則準拠：</strong> 
+        業務記録の作成および<strong>1年間の保存</strong>が義務付けられています。荷主都合による30分以上の荷待ち、荷役作業、事故・遅延時も記入が必要です。
+      </div>
+    </div>
+
+    <!-- ナビゲーションタブ -->
+    <div id="app-tabs" class="grid grid-cols-5 gap-1 bg-white rounded-xl p-1 shadow-sm border border-slate-200 text-[11px] sm:text-xs font-bold text-slate-600">
+      <button onclick="switchTab('basic')" id="tab-basic" class="py-2 rounded-lg text-center bg-brand-800 text-white transition-colors">
+        ① 運行
+      </button>
+      <button onclick="switchTab('waiting')" id="tab-waiting" class="py-2 rounded-lg text-center hover:text-slate-900 transition-colors">
+        ② 待機
+      </button>
+      <button onclick="switchTab('safety')" id="tab-safety" class="py-2 rounded-lg text-center hover:text-slate-900 transition-colors">
+        ③ 点呼
+      </button>
+      <button onclick="switchTab('finance')" id="tab-finance" class="py-2 rounded-lg text-center hover:text-slate-900 transition-colors text-emerald-800 bg-emerald-50/50">
+        ④ 収支
+      </button>
+      <button onclick="switchTab('printout')" id="tab-printout" class="py-2 rounded-lg text-center hover:text-slate-900 transition-colors">
+        ⑤ 帳票
+      </button>
+    </div>
+
+    <!-- ワンタップ・クイックジャンプバー -->
+    <div class="grid grid-cols-2 gap-2 no-print">
+      <button type="button" onclick="quickJumpTo('sec-via-points')" class="py-2 px-3 bg-white hover:bg-sky-50 active:bg-sky-100 text-sky-800 font-bold rounded-xl border border-sky-200 shadow-sm flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all active:scale-[0.98]">
+        <span class="text-base leading-none">📍</span>
+        <span>経過地点へ移動</span>
+      </button>
+      <button type="button" onclick="quickJumpTo('sec-breaks')" class="py-2 px-3 bg-white hover:bg-emerald-50 active:bg-emerald-100 text-emerald-800 font-bold rounded-xl border border-emerald-200 shadow-sm flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-all active:scale-[0.98]">
+        <span class="text-base leading-none">☕</span>
+        <span>休憩記録へ移動</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: 運行基本記録 -->
+    <div id="content-basic" class="space-y-3.5">
+
+      <!-- ドライバー情報 & 車両プロファイル設定アコーディオン -->
+      <details id="driverProfileAccordion" class="bg-white rounded-xl shadow-sm border border-slate-200 text-xs overflow-hidden group">
+        <summary class="px-3.5 py-2.5 bg-slate-50 font-bold text-slate-700 flex items-center justify-between cursor-pointer select-none">
+          <span class="flex items-center gap-1.5">
+            <span>👤</span>
+            <span>ドライバー情報・車両設定 (名前・営業所・所属・コース・車両番号)</span>
+          </span>
+          <span class="text-[10px] text-brand-700 font-semibold group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="p-3.5 space-y-3 bg-white border-t border-slate-100">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">名前（運転者氏名）</label>
+              <input type="text" id="cfgDriverName" placeholder="例: 山田 太郎" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white font-semibold">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">車両番号（事業用黒ナンバー）</label>
+              <input type="text" id="cfgVehicleNo" placeholder="例: 相模 480 あ 12-34" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white font-mono">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">所属（会社名・屋号等）</label>
+              <input type="text" id="cfgAffiliation" placeholder="例: River130 Logistics" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">営業所</label>
+              <input type="text" id="cfgBranchOffice" placeholder="例: 相模原営業所" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">担当コース (標準)</label>
+              <input type="text" id="cfgDefaultRoute" placeholder="例: 相模原中央01便" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">点呼執行者 (標準)</label>
+              <input type="text" id="cfgDefaultManager" placeholder="例: 安全運行管理者 / 自主確認" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white">
+            </div>
+          </div>
+
+          <!-- スプレッドシート連携設定 -->
+          <div class="pt-2 border-t border-slate-100 space-y-1">
+            <label class="block text-[11px] font-bold text-emerald-800 flex items-center gap-1.5">
+              <span>📊</span> Googleスプレッドシート連携URL (GAS ウェブアプリURL)
+            </label>
+            <input type="url" id="cfgGasUrl" placeholder="https://script.google.com/macros/s/.../exec" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white font-mono">
+            <div class="flex items-center justify-between pt-1">
+              <p class="text-[10px] text-slate-400">※確定申告用の月次自動集計シート対応GAS URLを登録します。</p>
+              <button type="button" onclick="copyGasScriptTemplate()" class="text-[10px] text-emerald-700 font-bold hover:underline bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                📋 月次自動集計GASコードをコピー
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-[10px]">
+            <span class="text-emerald-700 font-semibold flex items-center gap-1">
+              <span>✓</span> 入力内容は端末内に即時自動保存され、日報や帳票に自動反映されます
+            </span>
+            <button type="button" onclick="applyDefaultRouteToToday()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded text-[11px] border border-slate-200 shadow-sm active:bg-slate-300">
+              当日のコース欄にセット
+            </button>
+          </div>
+        </div>
+      </details>
+
+      <!-- クイック候補カスタム設定アコーディオン -->
+      <details id="presetAccordion" class="bg-white rounded-xl shadow-sm border border-slate-200 text-xs overflow-hidden group">
+        <summary class="px-3.5 py-2.5 bg-slate-50 font-bold text-slate-700 flex items-center justify-between cursor-pointer select-none">
+          <span class="flex items-center gap-1.5">
+            <span>⚙️</span>
+            <span>よく使う地点・休憩先のカスタム登録（ワンタップ候補の追加・削除）</span>
+          </span>
+          <span class="text-[10px] text-brand-700 font-semibold group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="p-3.5 space-y-3 bg-white border-t border-slate-100">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-[11px] font-bold text-slate-700">📍 登録中の経過地点（拠点・配送エリア）</label>
+              <span class="text-[10px] text-slate-400">※不要な候補は［🗑️ 削除］をタップ</span>
+            </div>
+            <div id="presetViaTagList" class="flex flex-wrap gap-1.5 mb-2"></div>
+            <div class="flex gap-1.5">
+              <input type="text" id="newViaPresetInput" placeholder="例: Amazon小田原FC / 相模原第1便" class="flex-1 p-1.5 border border-slate-200 rounded text-xs bg-slate-50 focus:bg-white">
+              <button type="button" onclick="addCustomPreset('via')" class="px-3 py-1.5 bg-brand-800 text-white font-bold rounded text-xs hover:bg-brand-900 shadow-sm whitespace-nowrap">
+                ＋ 追加
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-[11px] font-bold text-slate-700">☕ 登録中の休憩場所（道の駅・コンビニ等）</label>
+              <span class="text-[10px] text-slate-400">※不要な候補は［🗑️ 削除］をタップ</span>
+            </div>
+            <div id="presetBreakTagList" class="flex flex-wrap gap-1.5 mb-2"></div>
+            <div class="flex gap-1.5">
+              <input type="text" id="newBreakPresetInput" placeholder="例: 道の駅 清川 / ローソン〇〇店" class="flex-1 p-1.5 border border-slate-200 rounded text-xs bg-slate-50 focus:bg-white">
+              <button type="button" onclick="addCustomPreset('break')" class="px-3 py-1.5 bg-emerald-700 text-white font-bold rounded text-xs hover:bg-emerald-800 shadow-sm whitespace-nowrap">
+                ＋ 追加
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-[10px]">
+            <span class="text-slate-400">※登録・削除した内容は端末内に即時自動保存されます。</span>
+            <button type="button" onclick="resetCustomPresets()" class="text-slate-500 hover:text-slate-700 underline">
+              初期候補に戻す
+            </button>
+          </div>
+        </div>
+      </details>
+
+      <!-- 業務基本情報 -->
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h2 class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+            業務開始・終了の日時及び地点 (法定必須)
+          </h2>
+          <span class="text-[10px] text-slate-400">※即時自動保存</span>
+        </div>
+
+        <!-- 業務開始と終了の左右横並びグリッド -->
+        <div class="grid grid-cols-2 gap-2 sm:gap-2.5">
+          <!-- 業務開始カード -->
+          <div class="bg-slate-50 p-2.5 sm:p-3 rounded-lg border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                始業 (開始)
+              </span>
+              <span class="text-[9px] sm:text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">始業打刻</span>
+            </div>
+            
+            <button type="button" onclick="setNowToField('startTime')" class="w-full py-2.5 px-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-md flex items-center justify-center gap-1 text-xs sm:text-sm active:scale-[0.98] transition-all border border-emerald-500">
+              <span class="text-base leading-none">⏱️</span>
+              <span class="whitespace-nowrap">開始打刻</span>
+            </button>
+
+            <div class="space-y-1.5 text-xs pt-0.5">
+              <div>
+                <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">開始時刻</label>
+                <input type="time" id="startTime" oninput="calculateAll(); saveDailyData();" class="w-full p-1.5 border border-slate-300 rounded-lg bg-white font-bold text-center text-xs sm:text-sm">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">開始地点</label>
+                <input type="text" id="startLocation" placeholder="例: 車庫 / 自宅" oninput="saveDailyData()" class="w-full p-1.5 border border-slate-300 rounded-lg bg-white text-xs">
+              </div>
+            </div>
+          </div>
+
+          <!-- 業務終了カード -->
+          <div class="bg-slate-50 p-2.5 sm:p-3 rounded-lg border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                終業 (終了)
+              </span>
+              <span class="text-[9px] sm:text-[10px] text-rose-700 font-bold bg-rose-50 px-1.5 py-0.5 rounded">終業打刻</span>
+            </div>
+
+            <button type="button" onclick="setNowToField('endTime')" class="w-full py-2.5 px-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold rounded-xl shadow-md flex items-center justify-center gap-1 text-xs sm:text-sm active:scale-[0.98] transition-all border border-rose-500">
+              <span class="text-base leading-none">⏱️</span>
+              <span class="whitespace-nowrap">終了打刻</span>
+            </button>
+
+            <div class="space-y-1.5 text-xs pt-0.5">
+              <div>
+                <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">終了時刻</label>
+                <input type="time" id="endTime" oninput="calculateAll(); saveDailyData();" class="w-full p-1.5 border border-slate-300 rounded-lg bg-white font-bold text-center text-xs sm:text-sm">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">終了地点</label>
+                <input type="text" id="endLocation" placeholder="例: 車庫 / 自宅" oninput="saveDailyData()" class="w-full p-1.5 border border-slate-300 rounded-lg bg-white text-xs">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-1">
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <label class="text-[11px] text-slate-600 font-medium block mb-0.5">業務開始時メーター (km)</label>
+              <input type="number" id="startOdo" placeholder="例: 145020" oninput="calculateAll(); saveDailyData();" class="w-full p-2 border border-slate-200 rounded-lg bg-white">
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-600 font-medium block mb-0.5">業務終了時メーター (km)</label>
+              <input type="number" id="endOdo" placeholder="例: 145135" oninput="calculateAll(); saveDailyData();" class="w-full p-2 border border-slate-200 rounded-lg bg-white">
+            </div>
+          </div>
+          <div class="mt-2.5 p-2.5 bg-sky-50 rounded-lg flex items-center justify-between text-xs border border-sky-100">
+            <span class="text-sky-900 font-semibold">業務に従事した総走行距離:</span>
+            <span id="distanceDisplay" class="text-base font-extrabold text-brand-800">0 km</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 主な経過地点 & 休憩・睡眠の記録 -->
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3.5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h2 class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+            主な経過地点 & 休憩・睡眠の記録 (法定必須)
+          </h2>
+          <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold">大型打刻ボタン</span>
+        </div>
+
+        <!-- 経過地点セクション -->
+        <div id="sec-via-points" class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2.5 transition-all duration-300">
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <span>📍 主な経過地点 (集荷拠点・中継地・配送エリア)</span>
+            </div>
+            <button type="button" onclick="addViaPoint()" class="text-[11px] font-bold text-brand-700 hover:text-brand-900 bg-white border border-brand-500/40 px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 active:bg-slate-100">
+              <span>＋ 経過地点を追加</span>
+            </button>
+          </div>
+          <div id="viaPointsContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- 休憩・睡眠セクション -->
+        <div id="sec-breaks" class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2.5 transition-all duration-300">
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <span>☕ 休憩・睡眠の地点および日時 (複数回対応)</span>
+            </div>
+            <button type="button" onclick="addBreak()" class="text-[11px] font-bold text-brand-700 hover:text-brand-900 bg-white border border-brand-500/40 px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 active:bg-slate-100">
+              <span>＋ 休憩を追加</span>
+            </button>
+          </div>
+          <div id="breaksContainer" class="space-y-3"></div>
+          <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+            <span class="text-slate-600">合計休憩時間: <span id="totalBreakDisplay" class="font-bold text-slate-800">0分</span></span>
+            <span class="text-slate-600 font-medium">実働（拘束 - 休憩）: <span id="actualWorkHours" class="font-bold text-brand-800 text-sm">0時間0分</span></span>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-100 pt-2">
+          <label class="text-[11px] text-slate-500 block mb-1">業務交替の記録 (運転者を交替した場合のみ)</label>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <input type="text" id="reliefDriver" placeholder="交替運転者名 (交替時のみ)" oninput="saveDailyData()" class="p-1.5 border border-slate-200 rounded bg-slate-50 text-xs">
+            <input type="text" id="reliefPlaceTime" placeholder="交替地点および時刻" oninput="saveDailyData()" class="p-1.5 border border-slate-200 rounded bg-slate-50 text-xs">
+          </div>
+        </div>
+      </section>
+
+      <!-- 配達実績カウンター -->
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <span>荷物個数カウンター (現場入力用)</span>
+          </h2>
+          <span id="completionBadge" class="text-[11px] font-bold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full">完了率 0%</span>
+        </div>
+
+        <div class="mb-2.5 grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="text-[10px] text-slate-500 block mb-0.5">担当コース・便名 (任意)</label>
+            <input type="text" id="routeCode" placeholder="例: 相模原中央01 / 1便" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded text-xs bg-slate-50">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-500 block mb-0.5">元請け・荷主区分 (任意)</label>
+            <input type="text" id="clientName" placeholder="例: ヤマト / Amazon / 佐川" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded text-xs bg-slate-50">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-2 text-center text-xs">
+          <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+            <span class="text-[10px] text-slate-500 block">持出個数</span>
+            <input type="number" id="pkgLoaded" value="0" oninput="calcPkgStats(); saveDailyData(); refreshLineReportPreview();" class="w-full text-center font-bold text-sm bg-transparent my-1">
+            <div class="flex gap-1 justify-center">
+              <button onclick="adjPkg('pkgLoaded', -5)" class="px-1.5 py-0.5 bg-slate-200 rounded text-[10px]">-5</button>
+              <button onclick="adjPkg('pkgLoaded', 5)" class="px-1.5 py-0.5 bg-slate-200 rounded text-[10px]">+5</button>
+            </div>
+          </div>
+          <div class="bg-emerald-50 p-2 rounded-lg border border-emerald-200">
+            <span class="text-[10px] text-emerald-800 block font-semibold">完了個数</span>
+            <input type="number" id="pkgDelivered" value="0" oninput="calcPkgStats(); saveDailyData(); refreshLineReportPreview();" class="w-full text-center font-bold text-sm bg-transparent my-1 text-emerald-900">
+            <button onclick="adjPkg('pkgDelivered', 1)" class="w-full py-0.5 bg-emerald-600 text-white font-bold rounded text-[10px] active:bg-emerald-700">+1</button>
+          </div>
+          <div class="bg-rose-50 p-2 rounded-lg border border-rose-200">
+            <span class="text-[10px] text-rose-800 block font-semibold">持戻個数</span>
+            <input type="number" id="pkgReturned" value="0" oninput="calcPkgStats(); saveDailyData(); refreshLineReportPreview();" class="w-full text-center font-bold text-sm bg-transparent my-1 text-rose-900">
+            <button onclick="adjPkg('pkgReturned', 1)" class="w-full py-0.5 bg-rose-600 text-white font-bold rounded text-[10px] active:bg-rose-700">+1</button>
+          </div>
+          <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+            <span class="text-[10px] text-slate-500 block">集荷個数</span>
+            <input type="number" id="pkgPicked" value="0" oninput="calcPkgStats(); saveDailyData(); refreshLineReportPreview();" class="w-full text-center font-bold text-sm bg-transparent my-1">
+            <button onclick="adjPkg('pkgPicked', 1)" class="w-full py-0.5 bg-slate-700 text-white font-bold rounded text-[10px] active:bg-slate-800">+1</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TAB 2: 待機時間・荷役作業・事故遅延 -->
+    <div id="content-waiting" class="hidden space-y-3.5">
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3">
+        <div class="border-b border-slate-100 pb-2">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+              荷待ち時間・待機記録 (30分以上は記録義務)
+            </h2>
+            <span class="text-[10px] text-rose-600 bg-rose-50 px-2 py-0.5 rounded font-bold">法令遵守項目</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1">荷主の都合により集貨・配達先で30分以上待機した場合は、必ず記録してください。</p>
+        </div>
+
+        <div class="space-y-2.5 text-xs">
+          <div>
+            <label class="text-[11px] text-slate-600 block mb-0.5 font-medium">集貨・配達等の地点 (荷待ち場所)</label>
+            <input type="text" id="waitingPlace" placeholder="例: ○○ロジスティクス厚木物流センター第2バース" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1.5">
+              <label class="text-[11px] text-slate-600 block font-semibold text-rose-700">実到着時刻</label>
+              <button type="button" onclick="setNowToField('waitingArrivalTime')" class="w-full py-2 px-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-1 text-xs active:scale-[0.98] transition-all">
+                <span>⏱️</span>
+                <span>到着時刻を打刻</span>
+              </button>
+              <input type="time" id="waitingArrivalTime" oninput="checkWaitDuration(); saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-300 rounded bg-white font-bold text-center">
+            </div>
+
+            <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1.5">
+              <label class="text-[11px] text-slate-600 block font-semibold text-indigo-700">荷役開始時刻</label>
+              <button type="button" onclick="setNowToField('cargoStartTime')" class="w-full py-2 px-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-1 text-xs active:scale-[0.98] transition-all">
+                <span>⏱️</span>
+                <span>荷役開始を打刻</span>
+              </button>
+              <input type="time" id="cargoStartTime" oninput="checkWaitDuration(); saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-300 rounded bg-white font-bold text-center">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <div>
+              <label class="text-[11px] text-slate-600 block mb-0.5">荷主指定の到着日時</label>
+              <input type="time" id="waitingDesignatedTime" oninput="checkWaitDuration(); saveDailyData(); refreshLineReportPreview();" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-600 block mb-0.5">出発日時</label>
+              <input type="time" id="waitingDepartureTime" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            </div>
+          </div>
+
+          <div id="waitWarningBox" class="p-2.5 rounded-lg text-xs bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <span>推定荷待ち時間:</span>
+            <span id="waitDurationDisplay" class="font-bold text-slate-700">0分 (記録対象外)</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          荷役作業・附帯業務の記録 (1時間以上または契約外)
+        </h2>
+        
+        <div class="space-y-2 text-xs">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[11px] text-slate-600 block mb-0.5">荷役等の開始時刻</label>
+              <input type="time" id="cargoWorkStart" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-600 block mb-0.5">荷役等の終了時刻</label>
+              <input type="time" id="cargoWorkEnd" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[11px] text-slate-600 block mb-0.5">実施した作業内容</label>
+            <select id="cargoWorkType" onchange="saveDailyData(); refreshLineReportPreview();" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 text-xs">
+              <option value="なし">作業なし (単純受け渡しのみ)</option>
+              <option value="荷造り・梱包作業">荷造り・梱包・開梱作業</option>
+              <option value="手積み・手降ろし積込">手積み・手降ろし（バラ積み）作業</option>
+              <option value="仕分け・ラベル貼り作業">仕分け・検品・ラベル貼り作業</option>
+              <option value="階段搬送・家具家電設置">階段上げ搬送・室内据付設置作業</option>
+              <option value="その他附帯作業">その他 附帯作業</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[11px] text-slate-600 block mb-0.5">荷主の確認状況</label>
+            <div class="flex items-center gap-4 py-1 text-xs">
+              <label class="flex items-center gap-1.5">
+                <input type="radio" name="cargoConfirmation" value="口頭確認あり" checked onchange="saveDailyData()">
+                <span>荷主確認あり（口頭）</span>
+              </label>
+              <label class="flex items-center gap-1.5">
+                <input type="radio" name="cargoConfirmation" value="サイン・受領印あり" onchange="saveDailyData()">
+                <span>サイン受領</span>
+              </label>
+              <label class="flex items-center gap-1.5">
+                <input type="radio" name="cargoConfirmation" value="確認なし" onchange="saveDailyData()">
+                <span>確認なし</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2">
+        <h2 class="text-xs font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-2">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-rose-600"></span>
+            事故・著しい遅延・異常状態の記録 (法定必須)
+          </span>
+          <span class="text-[10px] text-slate-400">※発生時のみ詳細記載</span>
+        </h2>
+        
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-1.5 font-bold text-emerald-800">
+              <input type="radio" name="incidentFlag" value="なし" checked onchange="toggleIncidentBox(); saveDailyData(); refreshLineReportPreview();">
+              <span>異常・事故・遅延 なし</span>
+            </label>
+            <label class="flex items-center gap-1.5 font-bold text-rose-700">
+              <input type="radio" name="incidentFlag" value="あり" onchange="toggleIncidentBox(); saveDailyData(); refreshLineReportPreview();">
+              <span>異常等の発生あり</span>
+            </label>
+          </div>
+
+          <div id="incidentDetailSection" class="hidden space-y-2 pt-2 border-t border-rose-100 bg-rose-50/50 p-2.5 rounded-lg">
+            <label class="text-[11px] text-rose-900 font-bold block">事故の概要、著しい遅延の要因及び講じた措置</label>
+            <textarea id="incidentDetail" rows="3" placeholder="例: 14:20頃 国道16号交差点にて追突被害（物損）。警察届出済。荷主へ連絡し35分の遅延発生。" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full text-xs p-2 rounded-lg border border-rose-200 bg-white focus:outline-none"></textarea>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 3: 点呼・日常点検 -->
+    <div id="content-safety" class="hidden space-y-3.5">
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2.5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+            運行前 日常点検記録 (道路運送車両法・規則準拠)
+          </h2>
+          <button onclick="allInspectionPass()" class="text-[11px] text-emerald-700 font-bold hover:underline">
+            全項目「良好」
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <label class="p-2 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between cursor-pointer">
+            <span>① ブレーキペダルの踏みしろ</span>
+            <input type="checkbox" id="chkInspBrake" checked onchange="saveDailyData()" class="w-4 h-4 text-emerald-600">
+          </label>
+          <label class="p-2 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between cursor-pointer">
+            <span>② タイヤ空気圧・亀裂・摩耗</span>
+            <input type="checkbox" id="chkInspTire" checked onchange="saveDailyData()" class="w-4 h-4 text-emerald-600">
+          </label>
+          <label class="p-2 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between cursor-pointer">
+            <span>③ 灯火類・点滅・方向指示器</span>
+            <input type="checkbox" id="chkInspLight" checked onchange="saveDailyData()" class="w-4 h-4 text-emerald-600">
+          </label>
+          <label class="p-2 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between cursor-pointer">
+            <span>④ エンジンオイル・冷却水量</span>
+            <input type="checkbox" id="chkInspOil" checked onchange="saveDailyData()" class="w-4 h-4 text-emerald-600">
+          </label>
+        </div>
+      </section>
+
+      <!-- 乗務前・乗務後 点呼記録 (指定10項目) -->
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+            乗務前・乗務後 点呼記録（指定10項目完全準拠）
+          </h2>
+          <span class="text-[10px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-bold">法令必須</span>
+        </div>
+
+        <!-- 乗務前点呼（6項目） -->
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2.5 text-xs">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
+            <span class="font-bold text-blue-900 text-xs flex items-center gap-1">
+              <span>🔵</span> 【乗務前点呼】
+            </span>
+            <span class="text-[10px] text-slate-500">始業時必須（6項目）</span>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務前_点呼執行者</label>
+              <input type="text" id="preRollCallExecutor" placeholder="例: 佐藤 管理者 / 自主確認" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務前_点呼方法</label>
+              <select id="preRollCallMethod" onchange="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs">
+                <option value="対面">対面点呼</option>
+                <option value="電話・IT点呼">電話 / IT点呼</option>
+                <option value="自己確認">自己確認(個人事業主)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務前_アルコール数値</label>
+              <div class="flex items-center gap-1">
+                <input type="number" step="0.01" id="preAlcohol" value="0.00" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-center font-bold font-mono">
+                <span class="text-[10px] text-slate-500 whitespace-nowrap">mg/L</span>
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務前_日常点検</label>
+              <select id="preDailyInspection" onchange="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs">
+                <option value="良好">良好</option>
+                <option value="一部要点検">一部要点検</option>
+                <option value="異常なし(点検済)">異常なし(点検済)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務前_健康・睡眠</label>
+              <select id="preHealth" onchange="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs">
+                <option value="良好">良好(睡眠十分)</option>
+                <option value="睡眠不足">睡眠不足気味</option>
+                <option value="体調不良あり">体調不良あり</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-0.5">
+              <label class="text-[10px] text-slate-600 font-semibold block">乗務前_指示事項</label>
+              <span class="text-[9px] text-slate-400">タップでワンタッチ追加</span>
+            </div>
+            <input type="text" id="preInstruction" placeholder="例: 法令遵守、安全第一、車間距離確保" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs mb-1.5">
+            <div class="flex flex-wrap items-center gap-1">
+              <span class="text-[9px] text-slate-500 font-medium">クイック選択:</span>
+              <button type="button" onclick="setInstructionPreset('法令遵守')" class="px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded text-[10px] border border-blue-200 font-bold active:bg-blue-200">法令遵守</button>
+              <button type="button" onclick="setInstructionPreset('安全第一')" class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] border border-slate-200 active:bg-slate-300">安全第一</button>
+              <button type="button" onclick="setInstructionPreset('雨天スリップ注意')" class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] border border-slate-200 active:bg-slate-300">雨天スリップ注意</button>
+              <button type="button" onclick="setInstructionPreset('車間距離確保')" class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] border border-slate-200 active:bg-slate-300">車間距離確保</button>
+              <button type="button" onclick="setInstructionPreset('一時停止・交差点確認')" class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] border border-slate-200 active:bg-slate-300">一時停止・交差点確認</button>
+              <button type="button" onclick="setInstructionPreset('熱中症対策・水分補給')" class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] border border-slate-200 active:bg-slate-300">熱中症対策</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 乗務後点呼（4項目） -->
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2.5 text-xs">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
+            <span class="font-bold text-indigo-900 text-xs flex items-center gap-1">
+              <span>🟣</span> 【乗務後点呼】
+            </span>
+            <span class="text-[10px] text-slate-500">終業時必須（4項目）</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務後_点呼執行者</label>
+              <input type="text" id="postRollCallExecutor" placeholder="例: 佐藤 管理者 / 自主確認" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務後_点呼方法</label>
+              <select id="postRollCallMethod" onchange="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs">
+                <option value="対面">対面点呼</option>
+                <option value="電話・IT点呼">電話 / IT点呼</option>
+                <option value="自己確認">自己確認(個人事業主)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務後_アルコール数値</label>
+              <div class="flex items-center gap-1">
+                <input type="number" step="0.01" id="postAlcohol" value="0.00" oninput="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-center font-bold font-mono">
+                <span class="text-[10px] text-slate-500 whitespace-nowrap">mg/L</span>
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">乗務後_車両状況</label>
+              <select id="postVehicleStatus" onchange="saveDailyData(); refreshLineReportPreview();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs">
+                <option value="異常なし">異常なし</option>
+                <option value="灯火類要交換">灯火類要交換</option>
+                <option value="異音・要点検あり">異音・要点検あり</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 4: 収支・売上・経費 -->
+    <div id="content-finance" class="hidden space-y-3.5">
+      <section class="bg-gradient-to-br from-emerald-800 to-slate-900 text-white rounded-xl p-4 shadow-md space-y-3">
+        <div class="flex items-center justify-between border-b border-emerald-700/60 pb-2">
+          <span class="text-xs font-bold tracking-wide flex items-center gap-1.5">
+            <span>💰</span> 本日の収支サマリー（概算利益）
+          </span>
+          <span class="text-[10px] bg-emerald-600/80 px-2 py-0.5 rounded font-mono font-bold" id="finProfitMargin">利益率 0%</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center pt-1">
+          <div>
+            <span class="text-[10px] text-emerald-200 block">総売上</span>
+            <span id="finDispRevenue" class="text-base sm:text-lg font-black font-mono">¥0</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-rose-200 block">総経費</span>
+            <span id="finDispExpense" class="text-base sm:text-lg font-black font-mono text-rose-300">¥0</span>
+          </div>
+          <div class="bg-white/10 rounded-lg p-1">
+            <span class="text-[10px] text-amber-200 block font-bold">本日粗利</span>
+            <span id="finDispProfit" class="text-base sm:text-lg font-black font-mono text-amber-300">¥0</span>
+          </div>
+        </div>
+        <div class="pt-1.5 border-t border-emerald-700/50 flex items-center justify-between text-[11px] text-emerald-100">
+          <span>走行1kmあたりの売上効率:</span>
+          <span id="finKmRevenueRate" class="font-bold font-mono text-white">¥0 / km</span>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2.5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+          <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <span class="text-sm">📅</span>
+            <span id="monthlySummaryTitle">今月の累計収支 (月次サマリー)</span>
+          </h2>
+          <span class="text-[10px] text-slate-500 font-semibold" id="monthlySummaryDays">稼働日数: 0日</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+          <div class="p-2 rounded-lg bg-emerald-50/70 border border-emerald-100">
+            <span class="text-[10px] text-emerald-800 block font-bold">今月 売上累計</span>
+            <span id="monthDispRevenue" class="text-sm font-extrabold font-mono text-emerald-950">¥0</span>
+          </div>
+          <div class="p-2 rounded-lg bg-rose-50/70 border border-rose-100">
+            <span class="text-[10px] text-rose-800 block font-bold">今月 経費累計</span>
+            <span id="monthDispExpense" class="text-sm font-extrabold font-mono text-rose-950">¥0</span>
+          </div>
+          <div class="p-2 rounded-lg bg-amber-50/70 border border-amber-100">
+            <span class="text-[10px] text-amber-900 block font-bold">今月 粗利累計</span>
+            <span id="monthDispProfit" class="text-sm font-extrabold font-mono text-amber-950">¥0</span>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-[10px] text-slate-500 pt-0.5">
+          <span>総配達個数: <strong id="monthDispDelivered" class="text-slate-800">0個</strong></span>
+          <span>総走行距離: <strong id="monthDispDistance" class="text-slate-800">0 km</strong></span>
+          <span>給油量: <strong id="monthDispGas" class="text-slate-800">0 L</strong></span>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+            本日の売上計算 (確定申告連動)
+          </h2>
+          <span class="text-[10px] text-slate-400">※即時自動計算</span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div>
+            <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">売上計上方式</label>
+            <div class="grid grid-cols-3 gap-1.5">
+              <label class="p-1.5 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center gap-1 cursor-pointer text-center">
+                <input type="radio" name="revenueType" value="fixed" checked onchange="onRevenueTypeChange(); saveDailyData();">
+                <span class="font-bold text-[11px]">日当固定</span>
+              </label>
+              <label class="p-1.5 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center gap-1 cursor-pointer text-center">
+                <input type="radio" name="revenueType" value="piece" onchange="onRevenueTypeChange(); saveDailyData();">
+                <span class="font-bold text-[11px]">個建て歩合</span>
+              </label>
+              <label class="p-1.5 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center gap-1 cursor-pointer text-center">
+                <input type="radio" name="revenueType" value="spot" onchange="onRevenueTypeChange(); saveDailyData();">
+                <span class="font-bold text-[11px]">スポット便</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="boxFixedRevenue" class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">日当・運行基本料金 (円)</label>
+              <input type="number" id="baseDailyRate" placeholder="例: 18000" oninput="calculateFinance(); saveDailyData();" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 text-xs font-bold font-mono">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-600 font-semibold block mb-0.5">追加手当・割増 (円)</label>
+              <input type="number" id="extraRevenue" placeholder="例: 2000" oninput="calculateFinance(); saveDailyData();" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 text-xs font-bold font-mono">
+            </div>
+          </div>
+
+          <div id="boxPieceRevenue" class="hidden grid grid-cols-3 gap-2 bg-emerald-50/60 p-2.5 rounded-lg border border-emerald-100">
+            <div>
+              <label class="text-[10px] text-emerald-800 font-semibold block mb-0.5">配完個数 (自動)</label>
+              <input type="number" id="dispDeliveredCount" readonly class="w-full p-1.5 border border-emerald-200 rounded bg-white text-center text-xs font-bold text-emerald-900">
+            </div>
+            <div>
+              <label class="text-[10px] text-emerald-800 font-semibold block mb-0.5">1個あたり単価 (円)</label>
+              <input type="number" id="pieceUnitPrice" placeholder="例: 170" oninput="calculateFinance(); saveDailyData();" class="w-full p-1.5 border border-emerald-200 rounded bg-white text-center text-xs font-bold font-mono">
+            </div>
+            <div>
+              <label class="text-[10px] text-emerald-800 font-semibold block mb-0.5">集荷・追加手当 (円)</label>
+              <input type="number" id="pieceExtraRevenue" placeholder="例: 1000" oninput="calculateFinance(); saveDailyData();" class="w-full p-1.5 border border-emerald-200 rounded bg-white text-center text-xs font-bold font-mono">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-rose-600"></span>
+            日常運行経費の記録 (領収書・確定申告)
+          </h2>
+          <span class="text-[10px] text-slate-400">損金計上項目</span>
+        </div>
+
+        <div class="space-y-2.5 text-xs">
+          <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
+            <span class="font-bold text-slate-700 text-[11px] flex items-center gap-1">
+              <span>⛽</span> ガソリン・軽油給油
+            </span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-slate-500 block mb-0.5">給油金額 (円)</label>
+                <input type="number" id="expenseGas" placeholder="例: 4500" oninput="calculateFinance(); saveDailyData();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs font-mono font-semibold">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500 block mb-0.5">給油量 (L・任意)</label>
+                <input type="number" step="0.01" id="gasLiter" placeholder="例: 26.5" oninput="calculateFinance(); saveDailyData();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs font-mono">
+              </div>
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
+            <span class="font-bold text-slate-700 text-[11px] flex items-center gap-1">
+              <span>🛣️</span> 高速道路・有料道路代 (ETC)
+            </span>
+            <div class="grid grid-cols-1 gap-2">
+              <input type="number" id="expenseToll" placeholder="例: 1320" oninput="calculateFinance(); saveDailyData();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs font-mono font-semibold">
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
+            <span class="font-bold text-slate-700 text-[11px] flex items-center gap-1">
+              <span>🧾</span> 駐車場・消耗品・洗車代等
+            </span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-slate-500 block mb-0.5">その他経費 (円)</label>
+                <input type="number" id="expenseOther" placeholder="例: 600" oninput="calculateFinance(); saveDailyData();" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs font-mono font-semibold">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-500 block mb-0.5">品目・メモ</label>
+                <input type="text" id="expenseNote" placeholder="例: コインパーキング代" oninput="saveDailyData()" class="w-full p-1.5 border border-slate-200 rounded bg-white text-xs">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 5: 帳票・日報プレビュー -->
+    <div id="content-printout" class="hidden space-y-3.5">
+      
+      <!-- LINE日報セクション -->
+      <section id="lineReportSection" class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3 no-print">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <div>
+            <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <span>💬</span>
+              <span>元請け別 LINE日報生成・ワンタップ送信</span>
+            </h2>
+            <p class="text-[10px] text-slate-500">元請けや荷主の指定様式に合わせて瞬時に文章を切り替えます。</p>
+          </div>
+          <span class="text-[10px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded font-bold">フォーマット連動</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-xs font-semibold">
+          <button type="button" onclick="selectTemplate('standard')" id="btn-tpl-standard" class="py-1.5 px-2 rounded-lg border border-brand-700 bg-brand-800 text-white text-center shadow-sm">
+            ① 法定標準
+          </button>
+          <button type="button" onclick="selectTemplate('amazon')" id="btn-tpl-amazon" class="py-1.5 px-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-center">
+            ② Amazon
+          </button>
+          <button type="button" onclick="selectTemplate('yamato')" id="btn-tpl-yamato" class="py-1.5 px-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-center">
+            ③ ヤマト運輸
+          </button>
+          <button type="button" onclick="selectTemplate('sagawa')" id="btn-tpl-sagawa" class="py-1.5 px-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-center">
+            ④ 佐川急便
+          </button>
+          <button type="button" onclick="selectTemplate('spot')" id="btn-tpl-spot" class="py-1.5 px-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-center col-span-2 sm:col-span-1">
+            ⑤ チャーター/便
+          </button>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-slate-600">日報テキスト（直接編集可能）：</span>
+            <button onclick="refreshLineReportPreview()" class="text-[10px] text-brand-700 hover:underline">🔄 最新データで再生成</button>
+          </div>
+          <textarea id="lineReportTextArea" rows="6" class="w-full p-2.5 border border-slate-200 rounded-lg text-xs font-mono bg-slate-50 focus:bg-white focus:outline-none leading-relaxed"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button onclick="copyLineReportText()" class="py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-lg shadow flex items-center justify-center gap-1.5 active:bg-slate-700">
+            <span>📋</span> 文面をコピー
+          </button>
+          <button onclick="shareViaLineDirect()" class="py-2.5 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-lg shadow flex items-center justify-center gap-1.5 active:scale-[0.99]">
+            <span>💬</span> LINEアプリで送信
+          </button>
+        </div>
+      </section>
+
+      <!-- 操作バー -->
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 flex flex-wrap gap-2 items-center justify-between no-print">
+        <div>
+          <h2 class="text-xs font-bold text-slate-800">国交省基準 業務の記録書（A4縦 1ページ高密度バランス）</h2>
+          <p class="text-[10px] text-slate-500">左：運行・動態・荷物実績 ／ 右：点呼10項目・安全管理・待機記録</p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="sendToGoogleSpreadsheet()" id="btnSendGas" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold shadow flex items-center gap-1.5 active:scale-95 transition-all">
+            <span>📊</span> スプレッドシート送信
+          </button>
+          <button onclick="window.print()" class="px-3 py-1.5 bg-brand-800 text-white rounded-lg text-xs font-bold shadow hover:bg-brand-900 flex items-center gap-1.5">
+            <span>🖨️</span> A4印刷 / PDF
+          </button>
+          <button onclick="exportLawCompliantCSV()" class="px-3 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-bold shadow hover:bg-slate-900 flex items-center gap-1.5">
+            <span>📥</span> CSV保存
+          </button>
+        </div>
+      </section>
+
+      <!-- 左右2カラム高密度 A4法定業務記録書プレビュー -->
+      <section id="printable-area" class="bg-white p-3.5 sm:p-5 rounded-xl border border-slate-300 shadow-sm text-slate-800 text-[11px] leading-snug space-y-2.5">
+        
+        <!-- ヘッダー -->
+        <div class="border-b-2 border-slate-900 pb-1.5 flex flex-wrap justify-between items-end gap-2">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] px-1.5 py-0.5 bg-slate-900 text-white font-bold rounded">国交省様式準拠</span>
+              <h1 class="text-sm sm:text-base font-black text-slate-900 tracking-tight">貨物軽自動車運送事業 業務の記録書</h1>
+            </div>
+            <p class="text-[9px] text-slate-500 mt-0.5">（貨物軽自動車運送事業輸送安全規則 準拠様式／1年間保存書類）</p>
+          </div>
+          <div class="text-right text-[10px] flex items-center gap-3">
+            <div><strong>記録日:</strong> <span id="prDate" class="font-bold">2026-11-10</span></div>
+            <div><strong>事業者:</strong> <span id="prCompany" class="font-bold">River130 Logistics</span></div>
+            <div class="border border-slate-500 px-2.5 py-1 text-center rounded bg-slate-50">
+              <span class="text-[8px] block text-slate-500 leading-none">管理者確認印</span>
+              <span class="text-[11px] font-bold text-slate-300">印</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 基本情報グリッド -->
+        <div class="bg-slate-50 border border-slate-300 rounded p-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] print-meta-grid">
+          <div><span class="text-slate-500">運転者氏名:</span><br><strong id="prDriver" class="text-slate-900 text-xs">山田 太郎</strong></div>
+          <div><span class="text-slate-500">車両番号:</span><br><strong id="prVehicle" class="font-mono text-slate-900 text-xs">相模 480 あ 12-34</strong></div>
+          <div><span class="text-slate-500">営業所・所属:</span><br><span id="prAffiliation" class="font-semibold text-slate-800">相模原 (River130)</span></div>
+          <div><span class="text-slate-500">コース・荷主:</span><br><span id="prRouteCode" class="font-bold text-slate-900">01便</span> / <span id="prClientName" class="font-semibold">ヤマト</span></div>
+        </div>
+
+        <!-- 左右2分割メイングリッド -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 print-grid">
+          
+          <!-- 左カラム：運行実績・動態記録・荷物実績 -->
+          <div class="space-y-2 border border-slate-300 rounded p-2.5 bg-slate-50/40">
+            <div class="bg-slate-800 text-white px-2.5 py-1.5 rounded text-[10px] font-bold flex justify-between items-center print-section-title">
+              <span>🚚 運行実績・動態記録</span>
+              <span id="prSummaryStats" class="text-emerald-300 font-mono text-[10px]">実働: 0h0m | 実走: 0 km</span>
+            </div>
+
+            <!-- 発着・メーター表 -->
+            <table class="w-full border-collapse border border-slate-300 text-[10px] bg-white">
+              <tr class="bg-slate-100 text-slate-700">
+                <th class="border border-slate-300 p-1.5 w-11 text-center">区分</th>
+                <th class="border border-slate-300 p-1.5 w-14 text-center">時刻</th>
+                <th class="border border-slate-300 p-1.5">発着地点</th>
+                <th class="border border-slate-300 p-1.5 w-24 text-right">メーター</th>
+              </tr>
+              <tr>
+                <td class="border border-slate-300 p-1.5 font-bold text-center bg-slate-50">開始</td>
+                <td class="border border-slate-300 p-1.5 text-center font-mono font-bold" id="prStartTime">--:--</td>
+                <td class="border border-slate-300 p-1.5 font-medium" id="prStartLoc">車庫</td>
+                <td class="border border-slate-300 p-1.5 text-right font-mono" id="prStartOdo">--- km</td>
+              </tr>
+              <tr>
+                <td class="border border-slate-300 p-1.5 font-bold text-center bg-slate-50">終了</td>
+                <td class="border border-slate-300 p-1.5 text-center font-mono font-bold" id="prEndTime">--:--</td>
+                <td class="border border-slate-300 p-1.5 font-medium" id="prEndLoc">車庫</td>
+                <td class="border border-slate-300 p-1.5 text-right font-mono" id="prEndOdo">--- km</td>
+              </tr>
+            </table>
+
+            <!-- 荷物取扱実績（新規追加：左カラムの密度向上） -->
+            <div class="border border-slate-300 rounded bg-white p-2 space-y-1">
+              <div class="text-[9px] font-bold text-slate-600 uppercase flex items-center justify-between print-box-label">
+                <span class="flex items-center gap-1"><span>📦</span> 取扱荷物個数・配送実績</span>
+                <span id="prPkgRate" class="font-mono font-bold text-emerald-700">完了率: 0%</span>
+              </div>
+              <div class="grid grid-cols-4 gap-1 text-center text-[10px] pt-0.5">
+                <div class="bg-slate-50 rounded p-1 border border-slate-200">
+                  <span class="text-[9px] text-slate-500 block">持出</span>
+                  <strong id="prPkgLoaded" class="font-mono text-slate-900">0個</strong>
+                </div>
+                <div class="bg-emerald-50/70 rounded p-1 border border-emerald-200">
+                  <span class="text-[9px] text-emerald-800 block">完了</span>
+                  <strong id="prPkgDelivered" class="font-mono text-emerald-900">0個</strong>
+                </div>
+                <div class="bg-rose-50/70 rounded p-1 border border-rose-200">
+                  <span class="text-[9px] text-rose-800 block">持戻</span>
+                  <strong id="prPkgReturned" class="font-mono text-rose-900">0個</strong>
+                </div>
+                <div class="bg-slate-50 rounded p-1 border border-slate-200">
+                  <span class="text-[9px] text-slate-500 block">集荷</span>
+                  <strong id="prPkgPicked" class="font-mono text-slate-900">0個</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- 主な経過地点 -->
+            <div class="border border-slate-300 rounded bg-white p-2 space-y-1">
+              <div class="text-[9px] font-bold text-slate-600 uppercase flex items-center gap-1 print-box-label">
+                <span>📍</span> 主な経過地点 (通過・集配記録)
+              </div>
+              <div id="prViaPoints" class="text-[10px] leading-relaxed text-slate-800">特記なし</div>
+            </div>
+
+            <!-- 休憩・睡眠記録 -->
+            <div class="border border-slate-300 rounded bg-white p-2 space-y-1">
+              <div class="text-[9px] font-bold text-slate-600 uppercase flex items-center justify-between print-box-label">
+                <span class="flex items-center gap-1"><span>☕</span> 休憩・睡眠の地点および日時</span>
+              </div>
+              <div id="prRestContainer" class="text-[10px] space-y-1"></div>
+            </div>
+
+            <!-- 荷役作業・附帯業務 -->
+            <div class="border border-slate-300 rounded bg-white p-2 text-[10px]">
+              <div class="text-[9px] font-bold text-slate-600 uppercase flex items-center gap-1 print-box-label">
+                <span>🛠️</span> 荷役作業・附帯業務の記録
+              </div>
+              <div id="prCargoRecord" class="text-slate-800 font-medium">作業なし (単純受け渡しのみ)</div>
+            </div>
+          </div>
+
+          <!-- 右カラム：安全管理・点呼10項目・待機記録 -->
+          <div class="space-y-2 border border-slate-300 rounded p-2.5 bg-slate-50/40">
+            <div class="bg-blue-900 text-white px-2.5 py-1.5 rounded text-[10px] font-bold flex justify-between items-center print-section-title">
+              <span>🛡️ 点呼・安全管理・法令遵守</span>
+              <span class="text-[9px] text-blue-200">2024年4月法改正基準</span>
+            </div>
+
+            <!-- 乗務前点呼（6項目） -->
+            <div class="border border-blue-200 bg-white rounded p-2 text-[10px] space-y-1">
+              <div class="font-bold text-blue-900 text-[10px] flex items-center justify-between print-box-label">
+                <span>【乗務前点呼（始業時6項目）】</span>
+                <span class="font-mono text-emerald-700 font-bold" id="prPreAlc">Alc: 0.00 mg/L</span>
+              </div>
+              <div class="grid grid-cols-2 gap-1 text-[10px] text-slate-700">
+                <div>執行者: <strong id="prPreExecutor">運行管理者</strong> (<span id="prPreMethod">対面</span>)</div>
+                <div>日常点検: <strong id="prPreInsp" class="text-emerald-700 font-semibold">良好</strong></div>
+              </div>
+              <div id="prPreHealthAndInstruction" class="text-[10px] text-slate-700 pt-1 border-t border-slate-100 space-y-1">
+                <div><strong>健康・睡眠状態:</strong> 良好</div>
+                <div><strong>安全指示事項:</strong> 法令遵守・安全第一</div>
+              </div>
+            </div>
+
+            <!-- 乗務後点呼（4項目） -->
+            <div class="border border-indigo-200 bg-white rounded p-2 text-[10px] space-y-1">
+              <div class="font-bold text-indigo-900 text-[10px] flex items-center justify-between print-box-label">
+                <span>【乗務後点呼（終業時4項目）】</span>
+                <span class="font-mono text-emerald-700 font-bold" id="prPostAlc">Alc: 0.00 mg/L</span>
+              </div>
+              <div class="grid grid-cols-2 gap-1 text-[10px] text-slate-700">
+                <div>執行者: <strong id="prPostExecutor">運行管理者</strong> (<span id="prPostMethod">対面</span>)</div>
+                <div>車両状況: <strong id="prPostStatus" class="text-emerald-700 font-semibold">異常なし</strong></div>
+              </div>
+              <div id="prPostNotes" class="text-[10px] text-slate-600 pt-1 border-t border-slate-100">道路及び運行状況・交代運転者等への通告: 異常なし</div>
+            </div>
+
+            <!-- 荷主都合の待機記録 (30分以上義務) -->
+            <div class="border border-slate-300 rounded bg-white p-2 text-[10px]">
+              <div class="text-[9px] font-bold text-rose-700 uppercase flex items-center gap-1 print-box-label">
+                <span>⏱️</span> 荷主都合による荷待ち時間 (30分以上記録義務)
+              </div>
+              <div id="prWaitingRecord" class="text-[10px] leading-relaxed text-slate-800">該当なし (荷主都合による30分以上の待機なし)</div>
+            </div>
+
+            <!-- 事故・運行遅延・異常 -->
+            <div class="border border-slate-300 rounded bg-white p-2 text-[10px]">
+              <div class="text-[9px] font-bold text-slate-700 uppercase flex items-center gap-1 print-box-label">
+                <span>⚠️</span> 事故・著しい遅延・異常事態の記録
+              </div>
+              <div id="prIncidentRecord" class="text-[10px] leading-relaxed text-slate-800">事故・著しい遅延その他の異常なし (全行程正常完了)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 備考欄 -->
+        <div class="border border-slate-300 rounded bg-slate-50 p-2 text-[10px] flex items-start gap-1.5 print-notes-box">
+          <strong class="whitespace-nowrap text-slate-700">備考・特記事項:</strong>
+          <span id="prNotes" class="text-slate-800 leading-relaxed">特記事項なし。貨物軽自動車運送事業輸送安全規則及び就業規則を遵守し、酒気帯び・過労運転なく全行程を安全に完了。</span>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ページ先頭へ戻るフローティングアクションボタン -->
+  <button id="btnScrollTop" type="button" onclick="scrollToTop()" aria-label="ページ先頭へ戻る" style="bottom: calc(1.25rem + env(safe-area-inset-bottom));" class="fixed right-4 z-50 py-2.5 px-3.5 bg-brand-900/95 hover:bg-brand-800 active:bg-slate-950 text-white rounded-full shadow-2xl border border-white/25 transition-all duration-200 opacity-0 pointer-events-none active:scale-95 flex items-center justify-center gap-1 text-xs font-bold no-print backdrop-blur-sm">
+    <span class="text-sm leading-none">⬆️</span>
+    <span>先頭</span>
+  </button>
+
+  <script>
+    const STORAGE_KEY = 'k_cargo_law_records_v2';
+    const SETTINGS_KEY = 'k_cargo_law_settings_v2';
+    const PRESET_KEY = 'k_cargo_user_presets_v1';
+    const TPL_SETTING_KEY = 'k_cargo_selected_template';
+
+    let selectedDate = getTodayStr();
+    let currentTemplate = localStorage.getItem(TPL_SETTING_KEY) || 'standard';
+
+    function getTodayStr() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function getAllRecords() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveAllRecords(records) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function getSettings() {
+      try {
+        const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+        if (s && typeof s === 'object') {
+          return {
+            driver: s.driver || '山田 太郎',
+            office: s.office || '相模原営業所',
+            affiliation: s.affiliation || 'River130 Logistics',
+            defaultRoute: s.defaultRoute || '相模原中央01便',
+            vehicle: s.vehicle || '相模 480 あ 12-34',
+            company: s.affiliation || s.company || 'River130 Logistics',
+            manager: s.manager || '安全運行管理者',
+            gasUrl: s.gasUrl || ''
+          };
+        }
+      } catch (e) {}
+      return {
+        driver: '山田 太郎',
+        office: '相模原営業所',
+        affiliation: 'River130 Logistics',
+        defaultRoute: '相模原中央01便',
+        vehicle: '相模 480 あ 12-34',
+        company: 'River130 Logistics',
+        manager: '安全運行管理者',
+        gasUrl: ''
+      };
+    }
+
+    function saveDriverProfileSettings() {
+      const settings = {
+        driver: (document.getElementById('cfgDriverName')?.value || '').trim(),
+        office: (document.getElementById('cfgBranchOffice')?.value || '').trim(),
+        affiliation: (document.getElementById('cfgAffiliation')?.value || '').trim(),
+        defaultRoute: (document.getElementById('cfgDefaultRoute')?.value || '').trim(),
+        vehicle: (document.getElementById('cfgVehicleNo')?.value || '').trim(),
+        manager: (document.getElementById('cfgDefaultManager')?.value || '').trim(),
+        company: (document.getElementById('cfgAffiliation')?.value || '').trim(),
+        gasUrl: (document.getElementById('cfgGasUrl')?.value || '').trim()
+      };
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      updateHeaderProfile();
+      renderPrintPreview();
+      refreshLineReportPreview();
+    }
+
+    function loadDriverProfileInputs() {
+      const s = getSettings();
+      if (document.getElementById('cfgDriverName')) document.getElementById('cfgDriverName').value = s.driver || '';
+      if (document.getElementById('cfgBranchOffice')) document.getElementById('cfgBranchOffice').value = s.office || '';
+      if (document.getElementById('cfgAffiliation')) document.getElementById('cfgAffiliation').value = s.affiliation || '';
+      if (document.getElementById('cfgDefaultRoute')) document.getElementById('cfgDefaultRoute').value = s.defaultRoute || '';
+      if (document.getElementById('cfgVehicleNo')) document.getElementById('cfgVehicleNo').value = s.vehicle || '';
+      if (document.getElementById('cfgDefaultManager')) document.getElementById('cfgDefaultManager').value = s.manager || '';
+      if (document.getElementById('cfgGasUrl')) document.getElementById('cfgGasUrl').value = s.gasUrl || '';
+    }
+
+    function applyDefaultRouteToToday() {
+      const s = getSettings();
+      if (s.defaultRoute) {
+        const routeInput = document.getElementById('routeCode');
+        if (routeInput) {
+          routeInput.value = s.defaultRoute;
+          saveDailyData();
+          refreshLineReportPreview();
+        }
+      }
+    }
+
+    function getUserPresets() {
+      try {
+        const data = JSON.parse(localStorage.getItem(PRESET_KEY));
+        if (data && Array.isArray(data.via) && Array.isArray(data.break)) {
+          return data;
+        }
+      } catch (e) {}
+      return {
+        via: ['ヤマト拠点', '佐川拠点', 'Amazon拠点', '郵便局', '配送エリア', '車庫'],
+        break: ['セブンイレブン', 'ファミリーマート', 'ローソン', '道の駅', '高速PA/SA', '車庫']
+      };
+    }
+
+    function saveUserPresets(presets) {
+      localStorage.setItem(PRESET_KEY, JSON.stringify(presets));
+      renderPresetManagerTags();
+      renderViaPoints();
+      renderBreaks();
+    }
+
+    function addCustomPreset(type) {
+      const inputId = type === 'via' ? 'newViaPresetInput' : 'newBreakPresetInput';
+      const input = document.getElementById(inputId);
+      const val = (input.value || '').trim();
+      if (!val) return;
+
+      const presets = getUserPresets();
+      if (!presets[type].includes(val)) {
+        presets[type].push(val);
+        saveUserPresets(presets);
+        showToast(`「${val}」を候補に追加しました`, 'success');
+      }
+      input.value = '';
+    }
+
+    function removeCustomPreset(type, index) {
+      const presets = getUserPresets();
+      if (presets[type] && presets[type].length > 0) {
+        const removedName = presets[type][index];
+        presets[type].splice(index, 1);
+        saveUserPresets(presets);
+        showToast(`「${removedName}」を候補から削除しました`, 'success');
+      }
+    }
+
+    function resetCustomPresets() {
+      const defaults = {
+        via: ['ヤマト拠点', '佐川拠点', 'Amazon拠点', '郵便局', '配送エリア', '車庫'],
+        break: ['セブンイレブン', 'ファミリーマート', 'ローソン', '道の駅', '高速PA/SA', '車庫']
+      };
+      saveUserPresets(defaults);
+      showToast('よく使う地点・休憩場所を初期候補に復元しました', 'info');
+    }
+
+    function openPresetManager() {
+      const acc = document.getElementById('presetAccordion');
+      if (acc) {
+        acc.open = true;
+        acc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function renderPresetManagerTags() {
+      const presets = getUserPresets();
+      
+      const viaContainer = document.getElementById('presetViaTagList');
+      if (viaContainer) {
+        if (!presets.via || presets.via.length === 0) {
+          viaContainer.innerHTML = '<span class="text-xs text-slate-400 py-1">登録されている地点はありません</span>';
+        } else {
+          viaContainer.innerHTML = presets.via.map((item, idx) => `
+            <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-800 pl-2.5 pr-1 py-1 rounded-lg text-xs border border-slate-200 shadow-sm">
+              <span class="font-medium">${item}</span>
+              <button type="button" onclick="removeCustomPreset('via', ${idx})" class="px-1.5 py-0.5 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 rounded text-[11px] font-bold border border-rose-200 flex items-center gap-0.5 active:bg-rose-100 transition-colors" title="削除">
+                <span>🗑️</span><span>削除</span>
+              </button>
+            </span>
+          `).join('');
+        }
+      }
+
+      const breakContainer = document.getElementById('presetBreakTagList');
+      if (breakContainer) {
+        if (!presets.break || presets.break.length === 0) {
+          breakContainer.innerHTML = '<span class="text-xs text-slate-400 py-1">登録されている休憩場所はありません</span>';
+        } else {
+          breakContainer.innerHTML = presets.break.map((item, idx) => `
+            <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-900 pl-2.5 pr-1 py-1 rounded-lg text-xs border border-emerald-200 shadow-sm">
+              <span class="font-medium">${item}</span>
+              <button type="button" onclick="removeCustomPreset('break', ${idx})" class="px-1.5 py-0.5 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 rounded text-[11px] font-bold border border-rose-200 flex items-center gap-0.5 active:bg-rose-100 transition-colors" title="削除">
+                <span>🗑️</span><span>削除</span>
+              </button>
+            </span>
+          `).join('');
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('currentDateInput').value = selectedDate;
+      loadDriverProfileInputs();
+      updateHeaderProfile();
+      renderPresetManagerTags();
+      loadDayData(selectedDate);
+      selectTemplate(currentTemplate, false);
+
+      window.addEventListener('scroll', handleScrollTopVisibility, { passive: true });
+      document.addEventListener('scroll', handleScrollTopVisibility, { passive: true });
+      window.addEventListener('touchmove', handleScrollTopVisibility, { passive: true });
+      handleScrollTopVisibility();
+    });
+
+    function handleScrollTopVisibility() {
+      const btn = document.getElementById('btnScrollTop');
+      if (!btn) return;
+      const scrollPos = Math.max(
+        window.scrollY || 0,
+        window.pageYOffset || 0,
+        document.documentElement.scrollTop || 0,
+        document.body.scrollTop || 0
+      );
+      if (scrollPos > 80) {
+        btn.classList.remove('opacity-0', 'pointer-events-none');
+        btn.classList.add('opacity-100', 'pointer-events-auto');
+      } else {
+        btn.classList.add('opacity-0', 'pointer-events-none');
+        btn.classList.remove('opacity-100', 'pointer-events-auto');
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+      document.body.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateHeaderProfile() {
+      const s = getSettings();
+      const driverName = s.driver || '氏名未設定';
+      const vehicleNum = s.vehicle || '車両未設定';
+      const officeStr = [s.affiliation, s.office].filter(Boolean).join(' ') || '所属未設定';
+      document.getElementById('headerDriverInfo').textContent = `${driverName} (${officeStr}) | 車両: ${vehicleNum}`;
+    }
+
+    function switchTab(tabId) {
+      const tabs = ['basic', 'waiting', 'safety', 'finance', 'printout'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        const content = document.getElementById(`content-${t}`);
+        if (t === tabId) {
+          btn.className = "py-2 rounded-lg text-center bg-brand-800 text-white transition-colors";
+          content.classList.remove('hidden');
+        } else {
+          btn.className = t === 'finance'
+            ? "py-2 rounded-lg text-center hover:text-slate-900 transition-colors text-emerald-800 bg-emerald-50/50"
+            : "py-2 rounded-lg text-center hover:text-slate-900 transition-colors";
+          content.classList.add('hidden');
+        }
+      });
+      if (tabId === 'finance') {
+        calculateFinance();
+      }
+      if (tabId === 'printout') {
+        renderPrintPreview();
+        refreshLineReportPreview();
+      }
+    }
+
+    function changeDate(delta) {
+      const d = new Date(selectedDate);
+      d.setDate(d.getDate() + delta);
+      selectedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      document.getElementById('currentDateInput').value = selectedDate;
+      loadDayData(selectedDate);
+      renderPrintPreview();
+      refreshLineReportPreview();
+    }
+
+    function onDateChanged(val) {
+      selectedDate = val;
+      loadDayData(selectedDate);
+      renderPrintPreview();
+      refreshLineReportPreview();
+    }
+
+    function quickJumpTo(elementId) {
+      switchTab('basic');
+      setTimeout(() => {
+        const el = document.getElementById(elementId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          el.classList.add('ring-2', 'ring-brand-500', 'bg-sky-50/60');
+          setTimeout(() => {
+            el.classList.remove('ring-2', 'ring-brand-500', 'bg-sky-50/60');
+          }, 1500);
+        }
+      }, 60);
+    }
+
+    function setNowToField(fieldId) {
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const elem = document.getElementById(fieldId);
+      if (elem) {
+        elem.value = timeStr;
+        if (fieldId === 'waitingArrivalTime' || fieldId === 'cargoStartTime') {
+          checkWaitDuration();
+        }
+        calculateAll();
+        saveDailyData();
+        refreshLineReportPreview();
+
+        let label = '時刻';
+        if (fieldId === 'startTime') label = '業務開始時刻';
+        else if (fieldId === 'endTime') label = '業務終了時刻';
+        else if (fieldId === 'waitingArrivalTime') label = '荷待ち到着時刻';
+        else if (fieldId === 'cargoStartTime') label = '荷役開始時刻';
+
+        showToast(`${label}を [${timeStr}] に打刻しました`, 'success');
+      }
+    }
+
+    let currentViaPoints = [];
+    let currentBreaks = [];
+
+    function getDefaultRecord() {
+      const s = getSettings();
+      return {
+        startTime: '',
+        endTime: '',
+        startLocation: '車庫',
+        endLocation: '',
+        startOdo: '',
+        endOdo: '',
+        routeCode: '',
+        clientName: '',
+        viaPoints: [
+          { time: '09:00', location: 'ヤマト厚木ベース（積込）' },
+          { time: '13:30', location: '相模原市緑区橋本エリア（配送）' }
+        ],
+        routeViaPoints: '',
+        breaks: [
+          { startTime: '12:00', endTime: '13:00', minutes: 60, location: '道の駅 清川' }
+        ],
+        reliefDriver: '',
+        reliefPlaceTime: '',
+        pkgLoaded: 0,
+        pkgDelivered: 0,
+        pkgReturned: 0,
+        pkgPicked: 0,
+        waitingPlace: '',
+        waitingDesignatedTime: '',
+        waitingArrivalTime: '',
+        cargoStartTime: '',
+        waitingDepartureTime: '',
+        cargoWorkStart: '',
+        cargoWorkEnd: '',
+        cargoWorkType: 'なし',
+        cargoConfirmation: '口頭確認あり',
+        incidentFlag: 'なし',
+        incidentDetail: '',
+        chkInspBrake: true,
+        chkInspTire: true,
+        chkInspLight: true,
+        chkInspOil: true,
+        preRollCallExecutor: s.manager || '安全運行管理者',
+        preRollCallMethod: '対面',
+        preAlcohol: '0.00',
+        preDailyInspection: '良好',
+        preHealth: '良好',
+        preInstruction: '法令遵守・車間距離確保',
+        postRollCallExecutor: s.manager || '安全運行管理者',
+        postRollCallMethod: '対面',
+        postAlcohol: '0.00',
+        postVehicleStatus: '異常なし',
+        revenueType: 'fixed',
+        baseDailyRate: 18000,
+        extraRevenue: 0,
+        pieceUnitPrice: 170,
+        pieceExtraRevenue: 0,
+        expenseGas: 0,
+        gasLiter: '',
+        expenseToll: 0,
+        expenseOther: 0,
+        expenseNote: '',
+        totalRevenue: 18000,
+        totalExpense: 0,
+        netProfit: 18000
+      };
+    }
+
+    function renderViaPoints() {
+      const container = document.getElementById('viaPointsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!currentViaPoints || currentViaPoints.length === 0) {
+        currentViaPoints = [{ time: '', location: '' }];
+      }
+
+      const presets = getUserPresets();
+
+      currentViaPoints.forEach((via, index) => {
+        const item = document.createElement('div');
+        item.className = 'bg-white p-3 rounded-xl border border-slate-200 shadow-sm space-y-2.5 text-xs';
+        
+        const chipsHtml = (presets.via || []).map(loc => `
+          <button type="button" onclick="setViaPreset(${index}, '${loc}')" class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[10px] transition-colors border border-slate-200">
+            ${loc}
+          </button>
+        `).join('');
+
+        item.innerHTML = `
+          <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+            <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+              地点 #${index + 1}
+            </span>
+            ${currentViaPoints.length > 1 ? `<button type="button" onclick="removeViaPoint(${index})" class="text-[10px] text-rose-600 hover:text-rose-800 font-bold px-2 py-0.5 rounded bg-rose-50 border border-rose-200 active:bg-rose-100">削除</button>` : ''}
+          </div>
+
+          <button type="button" onclick="setViaNow(${index})" class="w-full py-2.5 px-3 bg-brand-700 hover:bg-brand-800 active:bg-brand-900 text-white font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 text-xs sm:text-sm active:scale-[0.98] transition-all border border-brand-600">
+            <span class="text-base leading-none">⏱️</span>
+            <span>通過/到着時刻を打刻（現在時刻をセット）</span>
+          </button>
+
+          <div class="grid grid-cols-12 gap-2 items-center">
+            <div class="col-span-4 sm:col-span-3">
+              <label class="text-[10px] text-slate-500 font-semibold block mb-0.5">通過時刻</label>
+              <input type="time" value="${via.time || ''}" onchange="updateViaPoint(${index}, 'time', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-center text-xs bg-white focus:bg-slate-50 font-bold">
+            </div>
+            <div class="col-span-8 sm:col-span-9">
+              <label class="text-[10px] text-slate-500 font-semibold block mb-0.5">経過地点名・集配エリア</label>
+              <input type="text" value="${(via.location || '').replace(/"/g, '&quot;')}" placeholder="例: ヤマト厚木ベース / 相模原市緑区橋本" oninput="updateViaPoint(${index}, 'location', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-white focus:bg-slate-50 font-medium">
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-1 pt-0.5">
+            <div class="flex flex-wrap items-center gap-1">
+              <span class="text-[9px] text-slate-400 font-medium">クイック選択:</span>
+              ${chipsHtml}
+            </div>
+            <button type="button" onclick="openPresetManager()" class="text-[10px] text-brand-700 hover:underline font-bold flex items-center gap-0.5 ml-auto">
+              <span>⚙️</span><span>追加・削除</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function addViaPoint() {
+      currentViaPoints.push({ time: '', location: '' });
+      renderViaPoints();
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function removeViaPoint(index) {
+      if (currentViaPoints.length <= 1) return;
+      currentViaPoints.splice(index, 1);
+      renderViaPoints();
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function updateViaPoint(index, field, value) {
+      if (!currentViaPoints[index]) return;
+      currentViaPoints[index][field] = value;
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function setViaNow(index) {
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      if (currentViaPoints[index]) {
+        currentViaPoints[index].time = timeStr;
+        renderViaPoints();
+        saveDailyData();
+        refreshLineReportPreview();
+        showToast(`地点 #${index + 1} の通過時刻を [${timeStr}] に打刻しました`, 'success');
+      }
+    }
+
+    function setViaPreset(index, name) {
+      if (!currentViaPoints[index]) return;
+      currentViaPoints[index].location = name;
+      renderViaPoints();
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function renderBreaks() {
+      const container = document.getElementById('breaksContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!currentBreaks || currentBreaks.length === 0) {
+        currentBreaks = [{ startTime: '', endTime: '', minutes: 0, location: '' }];
+      }
+
+      const presets = getUserPresets();
+
+      currentBreaks.forEach((brk, index) => {
+        const item = document.createElement('div');
+        item.className = 'bg-white p-3 rounded-xl border border-slate-200 shadow-sm space-y-2.5 text-xs relative';
+        
+        const breakChipsHtml = (presets.break || []).map(loc => `
+          <button type="button" onclick="setBreakPreset(${index}, '${loc}')" class="px-2 py-0.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded text-[10px] transition-colors border border-emerald-200">
+            ${loc}
+          </button>
+        `).join('');
+
+        item.innerHTML = `
+          <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+            <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+              休憩 #${index + 1}
+            </span>
+            ${currentBreaks.length > 1 ? `<button type="button" onclick="removeBreak(${index})" class="text-[10px] text-rose-600 hover:text-rose-800 font-bold px-2 py-0.5 rounded bg-rose-50 border border-rose-200 active:bg-rose-100">削除</button>` : ''}
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="setCurrentTimeToBreak(${index}, 'start')" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-sm flex items-center justify-center gap-1.5 text-xs sm:text-sm active:scale-[0.98] transition-all border border-emerald-500">
+              <span class="text-base leading-none">⏱️</span>
+              <span>開始打刻（現在時刻）</span>
+            </button>
+            <button type="button" onclick="setCurrentTimeToBreak(${index}, 'end')" class="py-2.5 px-3 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold rounded-xl shadow-sm flex items-center justify-center gap-1.5 text-xs sm:text-sm active:scale-[0.98] transition-all border border-amber-500">
+              <span class="text-base leading-none">🏁</span>
+              <span>終了打刻（現在時刻）</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="text-[10px] text-slate-500 font-semibold block mb-0.5">開始時刻</label>
+              <input type="time" value="${brk.startTime || ''}" onchange="updateBreak(${index}, 'startTime', this.value)" class="w-full p-1.5 border border-slate-300 rounded-lg text-center text-xs bg-white font-bold">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-500 font-semibold block mb-0.5">終了時刻</label>
+              <input type="time" value="${brk.endTime || ''}" onchange="updateBreak(${index}, 'endTime', this.value)" class="w-full p-1.5 border border-slate-300 rounded-lg text-center text-xs bg-white font-bold">
+            </div>
+            <div>
+              <label class="text-[10px] text-slate-500 font-semibold block mb-0.5">時間 (分)</label>
+              <input type="number" min="0" value="${brk.minutes ?? 0}" oninput="updateBreak(${index}, 'minutes', Number(this.value))" class="w-full p-1.5 border border-slate-300 rounded-lg text-center font-bold text-xs bg-white">
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-500 font-semibold block mb-0.5">休憩・睡眠の地点・場所</label>
+            <input type="text" value="${(brk.location || '').replace(/"/g, '&quot;')}" placeholder="例: セブンイレブン相模原中央店 / 道の駅 清川" oninput="updateBreak(${index}, 'location', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-white focus:bg-slate-50">
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-1 pt-0.5">
+            <div class="flex flex-wrap items-center gap-1">
+              <span class="text-[9px] text-slate-400 font-medium">クイック選択:</span>
+              ${breakChipsHtml}
+            </div>
+            <button type="button" onclick="openPresetManager()" class="text-[10px] text-emerald-800 hover:underline font-bold flex items-center gap-0.5 ml-auto">
+              <span>⚙️</span><span>追加・削除</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+      calculateAll();
+    }
+
+    function addBreak() {
+      currentBreaks.push({ startTime: '', endTime: '', minutes: 15, location: '' });
+      renderBreaks();
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function removeBreak(index) {
+      if (currentBreaks.length <= 1) return;
+      currentBreaks.splice(index, 1);
+      renderBreaks();
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function setCurrentTimeToBreak(index, type) {
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      if (type === 'start') {
+        updateBreak(index, 'startTime', timeStr);
+        showToast(`休憩 #${index + 1} の開始時刻を [${timeStr}] に打刻しました`, 'success');
+      } else {
+        updateBreak(index, 'endTime', timeStr);
+        showToast(`休憩 #${index + 1} の終了時刻を [${timeStr}] に打刻しました`, 'success');
+      }
+      renderBreaks();
+    }
+
+    function setBreakPreset(index, name) {
+      if (!currentBreaks[index]) return;
+      currentBreaks[index].location = name;
+      renderBreaks();
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function updateBreak(index, field, value) {
+      if (!currentBreaks[index]) return;
+      currentBreaks[index][field] = value;
+
+      if (field === 'startTime' || field === 'endTime') {
+        const s = currentBreaks[index].startTime;
+        const e = currentBreaks[index].endTime;
+        if (s && e) {
+          const [sh, sm] = s.split(':').map(Number);
+          const [eh, em] = e.split(':').map(Number);
+          let diff = (eh * 60 + em) - (sh * 60 + sm);
+          if (diff < 0) diff += 24 * 60;
+          currentBreaks[index].minutes = diff;
+        }
+      }
+
+      calculateAll();
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function getTotalBreakMinutes() {
+      return (currentBreaks || []).reduce((acc, b) => acc + (Number(b.minutes) || 0), 0);
+    }
+
+    function loadDayData(dateStr) {
+      const all = getAllRecords();
+      const s = getSettings();
+      const d = all[dateStr] || getDefaultRecord();
+
+      document.getElementById('startTime').value = d.startTime || '';
+      document.getElementById('endTime').value = d.endTime || '';
+      document.getElementById('startLocation').value = d.startLocation || '';
+      document.getElementById('endLocation').value = d.endLocation || '';
+      document.getElementById('startOdo').value = d.startOdo || '';
+      document.getElementById('endOdo').value = d.endOdo || '';
+      document.getElementById('routeCode').value = d.routeCode || s.defaultRoute || '';
+      document.getElementById('clientName').value = d.clientName || '';
+
+      if (Array.isArray(d.viaPoints) && d.viaPoints.length > 0) {
+        currentViaPoints = JSON.parse(JSON.stringify(d.viaPoints));
+      } else if (typeof d.routeViaPoints === 'string' && d.routeViaPoints.trim() !== '') {
+        const parts = d.routeViaPoints.split(/➜|\n/).map(p => p.trim()).filter(Boolean);
+        currentViaPoints = parts.length > 0 ? parts.map(p => ({ time: '', location: p })) : [{ time: '', location: d.routeViaPoints }];
+      } else {
+        currentViaPoints = [
+          { time: '09:00', location: 'ヤマト厚木ベース（積込）' },
+          { time: '13:30', location: '相模原市緑区橋本エリア（配送）' }
+        ];
+      }
+      renderViaPoints();
+
+      if (Array.isArray(d.breaks) && d.breaks.length > 0) {
+        currentBreaks = JSON.parse(JSON.stringify(d.breaks));
+      } else if (d.restStartTime || d.breakMinutes) {
+        currentBreaks = [{
+          startTime: d.restStartTime || '',
+          endTime: d.restEndTime || '',
+          minutes: Number(d.breakMinutes) || 0,
+          location: d.restLocation || ''
+        }];
+      } else {
+        currentBreaks = [{ startTime: '12:00', endTime: '13:00', minutes: 60, location: '道の駅 清川' }];
+      }
+      renderBreaks();
+
+      document.getElementById('reliefDriver').value = d.reliefDriver || '';
+      document.getElementById('reliefPlaceTime').value = d.reliefPlaceTime || '';
+
+      document.getElementById('pkgLoaded').value = d.pkgLoaded || 0;
+      document.getElementById('pkgDelivered').value = d.pkgDelivered || 0;
+      document.getElementById('pkgReturned').value = d.pkgReturned || 0;
+      document.getElementById('pkgPicked').value = d.pkgPicked || 0;
+
+      document.getElementById('waitingPlace').value = d.waitingPlace || '';
+      document.getElementById('waitingDesignatedTime').value = d.waitingDesignatedTime || '';
+      document.getElementById('waitingArrivalTime').value = d.waitingArrivalTime || '';
+      document.getElementById('cargoStartTime').value = d.cargoStartTime || '';
+      document.getElementById('waitingDepartureTime').value = d.waitingDepartureTime || '';
+
+      document.getElementById('cargoWorkStart').value = d.cargoWorkStart || '';
+      document.getElementById('cargoWorkEnd').value = d.cargoWorkEnd || '';
+      document.getElementById('cargoWorkType').value = d.cargoWorkType || 'なし';
+      setRadioVal('cargoConfirmation', d.cargoConfirmation || '口頭確認あり');
+
+      setRadioVal('incidentFlag', d.incidentFlag || 'なし');
+      document.getElementById('incidentDetail').value = d.incidentDetail || '';
+
+      document.getElementById('chkInspBrake').checked = !!d.chkInspBrake;
+      document.getElementById('chkInspTire').checked = !!d.chkInspTire;
+      document.getElementById('chkInspLight').checked = !!d.chkInspLight;
+      document.getElementById('chkInspOil').checked = !!d.chkInspOil;
+
+      document.getElementById('preRollCallExecutor').value = d.preRollCallExecutor || s.manager || '安全運行管理者';
+      document.getElementById('preRollCallMethod').value = d.preRollCallMethod || '対面';
+      document.getElementById('preAlcohol').value = d.preAlcohol ?? '0.00';
+      document.getElementById('preDailyInspection').value = d.preDailyInspection || '良好';
+      document.getElementById('preHealth').value = d.preHealth || '良好';
+      document.getElementById('preInstruction').value = d.preInstruction || '安全運転徹底';
+
+      document.getElementById('postRollCallExecutor').value = d.postRollCallExecutor || s.manager || '安全運行管理者';
+      document.getElementById('postRollCallMethod').value = d.postRollCallMethod || '対面';
+      document.getElementById('postAlcohol').value = d.postAlcohol ?? '0.00';
+      document.getElementById('postVehicleStatus').value = d.postVehicleStatus || '異常なし';
+
+      setRadioVal('revenueType', d.revenueType || 'fixed');
+      document.getElementById('baseDailyRate').value = d.baseDailyRate ?? 18000;
+      document.getElementById('extraRevenue').value = d.extraRevenue ?? 0;
+      document.getElementById('pieceUnitPrice').value = d.pieceUnitPrice ?? 170;
+      document.getElementById('pieceExtraRevenue').value = d.pieceExtraRevenue ?? 0;
+      document.getElementById('expenseGas').value = d.expenseGas ?? 0;
+      document.getElementById('gasLiter').value = d.gasLiter ?? '';
+      document.getElementById('expenseToll').value = d.expenseToll ?? 0;
+      document.getElementById('expenseOther').value = d.expenseOther ?? 0;
+      document.getElementById('expenseNote').value = d.expenseNote || '';
+
+      onRevenueTypeChange();
+      calculateFinance();
+
+      toggleIncidentBox();
+      calculateAll();
+      checkWaitDuration();
+      calcPkgStats();
+    }
+
+    function saveDailyData() {
+      const all = getAllRecords();
+      
+      const viaSummary = (currentViaPoints || [])
+        .filter(v => v.time || v.location)
+        .map(v => (v.time ? `[${v.time}] ` : '') + (v.location || ''))
+        .join(' ➜ ');
+
+      const fin = getComputedFinance();
+
+      all[selectedDate] = {
+        startTime: document.getElementById('startTime').value,
+        endTime: document.getElementById('endTime').value,
+        startLocation: document.getElementById('startLocation').value,
+        endLocation: document.getElementById('endLocation').value,
+        startOdo: document.getElementById('startOdo').value,
+        endOdo: document.getElementById('endOdo').value,
+        routeCode: document.getElementById('routeCode').value,
+        clientName: document.getElementById('clientName').value,
+        viaPoints: currentViaPoints,
+        routeViaPoints: viaSummary,
+        breaks: currentBreaks,
+        restStartTime: currentBreaks[0]?.startTime || '',
+        restEndTime: currentBreaks[0]?.endTime || '',
+        breakMinutes: getTotalBreakMinutes(),
+        restLocation: currentBreaks.map(b => b.location).filter(Boolean).join('、'),
+        reliefDriver: document.getElementById('reliefDriver').value,
+        reliefPlaceTime: document.getElementById('reliefPlaceTime').value,
+        pkgLoaded: Number(document.getElementById('pkgLoaded').value) || 0,
+        pkgDelivered: Number(document.getElementById('pkgDelivered').value) || 0,
+        pkgReturned: Number(document.getElementById('pkgReturned').value) || 0,
+        pkgPicked: Number(document.getElementById('pkgPicked').value) || 0,
+        waitingPlace: document.getElementById('waitingPlace').value,
+        waitingDesignatedTime: document.getElementById('waitingDesignatedTime').value,
+        waitingArrivalTime: document.getElementById('waitingArrivalTime').value,
+        cargoStartTime: document.getElementById('cargoStartTime').value,
+        waitingDepartureTime: document.getElementById('waitingDepartureTime').value,
+        cargoWorkStart: document.getElementById('cargoWorkStart').value,
+        cargoWorkEnd: document.getElementById('cargoWorkEnd').value,
+        cargoWorkType: document.getElementById('cargoWorkType').value,
+        cargoConfirmation: getRadioVal('cargoConfirmation'),
+        incidentFlag: getRadioVal('incidentFlag'),
+        incidentDetail: document.getElementById('incidentDetail').value,
+        chkInspBrake: document.getElementById('chkInspBrake').checked,
+        chkInspTire: document.getElementById('chkInspTire').checked,
+        chkInspLight: document.getElementById('chkInspLight').checked,
+        chkInspOil: document.getElementById('chkInspOil').checked,
+        preRollCallExecutor: document.getElementById('preRollCallExecutor').value,
+        preRollCallMethod: document.getElementById('preRollCallMethod').value,
+        preAlcohol: document.getElementById('preAlcohol').value,
+        preDailyInspection: document.getElementById('preDailyInspection').value,
+        preHealth: document.getElementById('preHealth').value,
+        preInstruction: document.getElementById('preInstruction').value,
+        postRollCallExecutor: document.getElementById('postRollCallExecutor').value,
+        postRollCallMethod: document.getElementById('postRollCallMethod').value,
+        postAlcohol: document.getElementById('postAlcohol').value,
+        postVehicleStatus: document.getElementById('postVehicleStatus').value,
+        revenueType: getRadioVal('revenueType'),
+        baseDailyRate: Number(document.getElementById('baseDailyRate').value) || 0,
+        extraRevenue: Number(document.getElementById('extraRevenue').value) || 0,
+        pieceUnitPrice: Number(document.getElementById('pieceUnitPrice').value) || 0,
+        pieceExtraRevenue: Number(document.getElementById('pieceExtraRevenue').value) || 0,
+        expenseGas: Number(document.getElementById('expenseGas').value) || 0,
+        gasLiter: document.getElementById('gasLiter').value,
+        expenseToll: Number(document.getElementById('expenseToll').value) || 0,
+        expenseOther: Number(document.getElementById('expenseOther').value) || 0,
+        expenseNote: document.getElementById('expenseNote').value,
+        totalRevenue: fin.revenue,
+        totalExpense: fin.expense,
+        netProfit: fin.profit
+      };
+      saveAllRecords(all);
+    }
+
+    function onRevenueTypeChange() {
+      const type = getRadioVal('revenueType');
+      const boxFixed = document.getElementById('boxFixedRevenue');
+      const boxPiece = document.getElementById('boxPieceRevenue');
+
+      if (type === 'piece') {
+        boxFixed.classList.add('hidden');
+        boxPiece.classList.remove('hidden');
+      } else {
+        boxFixed.classList.remove('hidden');
+        boxPiece.classList.add('hidden');
+      }
+      calculateFinance();
+    }
+
+    function getComputedFinance() {
+      const type = getRadioVal('revenueType');
+      let revenue = 0;
+
+      const del = Number(document.getElementById('pkgDelivered')?.value) || 0;
+      const dispCount = document.getElementById('dispDeliveredCount');
+      if (dispCount) dispCount.value = del;
+
+      if (type === 'piece') {
+        const unit = Number(document.getElementById('pieceUnitPrice')?.value) || 0;
+        const extra = Number(document.getElementById('pieceExtraRevenue')?.value) || 0;
+        revenue = (del * unit) + extra;
+      } else {
+        const base = Number(document.getElementById('baseDailyRate')?.value) || 0;
+        const extra = Number(document.getElementById('extraRevenue')?.value) || 0;
+        revenue = base + extra;
+      }
+
+      const gas = Number(document.getElementById('expenseGas')?.value) || 0;
+      const toll = Number(document.getElementById('expenseToll')?.value) || 0;
+      const other = Number(document.getElementById('expenseOther')?.value) || 0;
+      const expense = gas + toll + other;
+      const profit = revenue - expense;
+
+      return { revenue, expense, profit };
+    }
+
+    function calculateFinance() {
+      const { revenue, expense, profit } = getComputedFinance();
+
+      const elRev = document.getElementById('finDispRevenue');
+      const elExp = document.getElementById('finDispExpense');
+      const elProf = document.getElementById('finDispProfit');
+      const elMargin = document.getElementById('finProfitMargin');
+      const elKmRate = document.getElementById('finKmRevenueRate');
+
+      if (elRev) elRev.textContent = `¥${revenue.toLocaleString()}`;
+      if (elExp) elExp.textContent = `¥${expense.toLocaleString()}`;
+      if (elProf) {
+        elProf.textContent = `¥${profit.toLocaleString()}`;
+        elProf.className = profit >= 0 
+          ? "text-base sm:text-lg font-black font-mono text-amber-300" 
+          : "text-base sm:text-lg font-black font-mono text-rose-400";
+      }
+
+      if (elMargin) {
+        const margin = revenue > 0 ? Math.round((profit / revenue) * 100) : 0;
+        elMargin.textContent = `利益率 ${margin}%`;
+      }
+
+      if (elKmRate) {
+        const sOdo = Number(document.getElementById('startOdo')?.value) || 0;
+        const eOdo = Number(document.getElementById('endOdo')?.value) || 0;
+        const dist = (eOdo >= sOdo && sOdo > 0) ? (eOdo - sOdo) : 0;
+        if (dist > 0 && revenue > 0) {
+          const rate = Math.round(revenue / dist);
+          elKmRate.textContent = `¥${rate.toLocaleString()} / km`;
+        } else {
+          elKmRate.textContent = `¥0 / km`;
+        }
+      }
+
+      updateMonthlyFinanceSummary();
+    }
+
+    function updateMonthlyFinanceSummary() {
+      const all = getAllRecords();
+      const currentYearMonth = selectedDate.substring(0, 7);
+      const [yr, mo] = currentYearMonth.split('-');
+
+      const titleEl = document.getElementById('monthlySummaryTitle');
+      if (titleEl) titleEl.textContent = `${yr}年${Number(mo)}月 累計収支 (月次サマリー)`;
+
+      let totalMonthRev = 0;
+      let totalMonthExp = 0;
+      let totalMonthDel = 0;
+      let totalMonthDist = 0;
+      let totalMonthGasLiter = 0;
+      let workingDays = 0;
+
+      const todayFin = getComputedFinance();
+
+      Object.keys(all).forEach(dateKey => {
+        if (dateKey.startsWith(currentYearMonth)) {
+          const item = all[dateKey];
+          workingDays++;
+          
+          if (dateKey === selectedDate) {
+            totalMonthRev += todayFin.revenue;
+            totalMonthExp += todayFin.expense;
+            totalMonthDel += Number(document.getElementById('pkgDelivered')?.value) || 0;
+            const sO = Number(document.getElementById('startOdo')?.value) || 0;
+            const eO = Number(document.getElementById('endOdo')?.value) || 0;
+            if (eO >= sO && sO > 0) totalMonthDist += (eO - sO);
+            totalMonthGasLiter += Number(document.getElementById('gasLiter')?.value) || 0;
+          } else {
+            totalMonthRev += Number(item.totalRevenue) || 0;
+            totalMonthExp += Number(item.totalExpense) || 0;
+            totalMonthDel += Number(item.pkgDelivered) || 0;
+            const sO = Number(item.startOdo) || 0;
+            const eO = Number(item.endOdo) || 0;
+            if (eO >= sO && sO > 0) totalMonthDist += (eO - sO);
+            totalMonthGasLiter += Number(item.gasLiter) || 0;
+          }
+        }
+      });
+
+      if (!all[selectedDate] && selectedDate.startsWith(currentYearMonth) && (todayFin.revenue > 0 || todayFin.expense > 0)) {
+        workingDays++;
+        totalMonthRev += todayFin.revenue;
+        totalMonthExp += todayFin.expense;
+        totalMonthDel += Number(document.getElementById('pkgDelivered')?.value) || 0;
+        const sO = Number(document.getElementById('startOdo')?.value) || 0;
+        const eO = Number(document.getElementById('endOdo')?.value) || 0;
+        if (eO >= sO && sO > 0) totalMonthDist += (eO - sO);
+        totalMonthGasLiter += Number(document.getElementById('gasLiter')?.value) || 0;
+      }
+
+      const totalMonthProfit = totalMonthRev - totalMonthExp;
+
+      const daysEl = document.getElementById('monthlySummaryDays');
+      const revEl = document.getElementById('monthDispRevenue');
+      const expEl = document.getElementById('monthDispExpense');
+      const profEl = document.getElementById('monthDispProfit');
+      const delEl = document.getElementById('monthDispDelivered');
+      const distEl = document.getElementById('monthDispDistance');
+      const gasEl = document.getElementById('monthDispGas');
+
+      if (daysEl) daysEl.textContent = `稼働日数: ${workingDays}日`;
+      if (revEl) revEl.textContent = `¥${totalMonthRev.toLocaleString()}`;
+      if (expEl) expEl.textContent = `¥${totalMonthExp.toLocaleString()}`;
+      if (profEl) {
+        profEl.textContent = `¥${totalMonthProfit.toLocaleString()}`;
+        profEl.className = totalMonthProfit >= 0 ? "text-sm font-extrabold font-mono text-emerald-900" : "text-sm font-extrabold font-mono text-rose-900";
+      }
+      if (delEl) delEl.textContent = `${totalMonthDel.toLocaleString()}個`;
+      if (distEl) distEl.textContent = `${totalMonthDist.toLocaleString()} km`;
+      if (gasEl) gasEl.textContent = `${totalMonthGasLiter.toFixed(1)} L`;
+    }
+
+    function copyGasScriptTemplate() {
+      const code = `// ==========================================
+// 軽貨物 業務記録 & 確定申告月次自動集計 GAS
+// ==========================================
+function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var logSheet = ss.getSheetByName("運行記録簿") || ss.getActiveSheet();
+    logSheet.setName("運行記録簿");
+    var data = JSON.parse(e.postData.contents);
+    
+    // ヘッダー作成
+    if (logSheet.getLastRow() === 0) {
+      logSheet.appendRow([
+        "記録日", "所属(会社/屋号)", "営業所", "乗務員名", "車両番号", "担当コース", "荷主/元請",
+        "業務開始日時", "開始地点", "業務終了日時", "終了地点", "開始メーター", "終了メーター", "走行距離(km)",
+        "持出個数", "完了個数", "持戻個数", "集荷個数", "休憩回数", "合計休憩(分)", "休憩内訳", "経過地点",
+        "荷待ち場所", "到着指定時刻", "実到着時刻", "荷役開始時刻", "出発時刻", "荷役作業区分",
+        "事故遅延有無", "事故遅延詳細",
+        "乗務前_執行者", "乗務前_点呼方法", "乗務前_Alc(mg/L)", "乗務前_日常点検", "乗務前_健康睡眠", "乗務前_指示事項",
+        "乗務後_執行者", "乗務後_点呼方法", "乗務後_Alc(mg/L)", "乗務後_車両状況",
+        "売上区分", "総売上(円)", "ガソリン代(円)", "給油量(L)", "高速代(円)", "その他経費(円)", "総経費(円)", "本日粗利(円)"
+      ]);
+      logSheet.getRange(1, 1, 1, 48).setBackground("#0f172a").setFontColor("#ffffff").setFontWeight("bold");
+    }
+    
+    // 行追加
+    logSheet.appendRow([
+      data.date, data.company, data.office, data.driver, data.vehicle, data.routeCode, data.clientName,
+      data.startTime, data.startLocation, data.endTime, data.endLocation, data.startOdo, data.endOdo, data.distanceKm,
+      data.pkgLoaded, data.pkgDelivered, data.pkgReturned, data.pkgPicked, data.breakCount, data.totalBreakMin, data.breakDetails, data.viaPoints,
+      data.waitingPlace, data.waitingDesignatedTime, data.waitingArrivalTime, data.cargoStartTime, data.waitingDepartureTime, data.cargoWorkType,
+      data.incidentFlag, data.incidentDetail,
+      data.preRollCallExecutor, data.preRollCallMethod, data.preAlcohol, data.preDailyInspection, data.preHealth, data.preInstruction,
+      data.postRollCallExecutor, data.postRollCallMethod, data.postAlcohol, data.postVehicleStatus,
+      data.revenueType, data.totalRevenue, data.expenseGas, data.gasLiter, data.expenseToll, data.expenseOther, data.totalExpense, data.netProfit
+    ]);
+    
+    setupMonthlySummarySheet(ss);
+    
+    return ContentService.createTextOutput(JSON.stringify({status: "success"})).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({status: "error", message: error.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function setupMonthlySummarySheet(ss) {
+  var summarySheet = ss.getSheetByName("確定申告_月次サマリー");
+  if (!summarySheet) {
+    summarySheet = ss.insertSheet("確定申告_月次サマリー");
+    
+    summarySheet.appendRow(["【確定申告・青色申告決算書 参照用】 月次収支集計表"]);
+    summarySheet.getRange("A1").setFontSize(14).setFontWeight("bold");
+    
+    summarySheet.appendRow([
+      "対象年月", "稼働日数", "走行距離(km)", "配達個数", "売上(収入金額)",
+      "車両費(ガソリン)", "給油量(L)", "旅費交通費(高速代)", "雑費(消耗品・駐車場等)", "必要経費 計", "所得金額(粗利益)"
+    ]);
+    summarySheet.getRange(2, 1, 1, 11).setBackground("#15803d").setFontColor("#ffffff").setFontWeight("bold");
+    
+    var currentYear = new Date().getFullYear();
+    for (var m = 1; m <= 12; m++) {
+      var ym = currentYear + "-" + (m < 10 ? "0" + m : m);
+      var row = m + 2;
+      summarySheet.appendRow([
+        ym,
+        '=COUNTIFS(運行記録簿!A:A, "' + ym + '*")',
+        '=SUMIFS(運行記録簿!N:N, 運行記録簿!A:A, "' + ym + '*")',
+        '=SUMIFS(運行記録簿!P:P, 運行記録簿!A:A, "' + ym + '*")',
+        '=SUMIFS(運行記録簿!AP:AP, 運行記録簿!A:A, "' + ym + '*")',
+        '=SUMIFS(運行記録簿!AQ:AQ, 運行記録簿!A:A, "' + ym + '*")',
+        '=SUMIFS(運行記録簿!AR:AR, 運行記録簿!A:A, "' + ym + '*")',
+        '=SUMIFS(運行記録簿!AS:AS, 運行記録簿!A:A, "' + ym + '*")',
+        '=SUMIFS(運行記録簿!AT:AT, 運行記録簿!A:A, "' + ym + '*")',
+        '=F' + row + '+H' + row + '+I' + row,
+        '=E' + row + '-J' + row
+      ]);
+    }
+    
+    summarySheet.appendRow([
+      "年間合計",
+      "=SUM(B3:B14)", "=SUM(C3:C14)", "=SUM(D3:D14)", "=SUM(E3:E14)",
+      "=SUM(F3:F14)", "=SUM(G3:G14)", "=SUM(H3:H14)", "=SUM(I3:I14)", "=SUM(J3:J14)", "=SUM(K3:K14)"
+    ]);
+    summarySheet.getRange(15, 1, 1, 11).setBackground("#f1f5f9").setFontWeight("bold");
+    summarySheet.getRange("E3:K15").setNumberFormat("#,##0円");
+  }
+}`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          showToast('月次自動集計対応の最新GASスクリプトをコピーしました！', 'success');
+        }).catch(() => {
+          showToast('GASスクリプトのコピーに失敗しました。', 'error');
+        });
+      } else {
+        showToast('月次自動集計対応の最新GASスクリプトをコピーしました！', 'success');
+      }
+    }
+
+    function getRadioVal(name) {
+      const elem = document.querySelector(`input[name="${name}"]:checked`);
+      return elem ? elem.value : '';
+    }
+
+    function setRadioVal(name, val) {
+      const elem = document.querySelector(`input[name="${name}"][value="${val}"]`);
+      if (elem) elem.checked = true;
+    }
+
+    function toggleIncidentBox() {
+      const isIncident = getRadioVal('incidentFlag') === 'あり';
+      const sec = document.getElementById('incidentDetailSection');
+      if (isIncident) {
+        sec.classList.remove('hidden');
+      } else {
+        sec.classList.add('hidden');
+      }
+    }
+
+    function allInspectionPass() {
+      document.getElementById('chkInspBrake').checked = true;
+      document.getElementById('chkInspTire').checked = true;
+      document.getElementById('chkInspLight').checked = true;
+      document.getElementById('chkInspOil').checked = true;
+      const el = document.getElementById('preDailyInspection');
+      if (el) el.value = '良好';
+      saveDailyData();
+      refreshLineReportPreview();
+      showToast('日常点検の全項目を「良好」にセットしました', 'success');
+    }
+
+    function setInstructionPreset(text) {
+      const el = document.getElementById('preInstruction');
+      if (!el) return;
+      const current = (el.value || '').trim();
+      if (!current) {
+        el.value = text;
+      } else if (!current.includes(text)) {
+        el.value = `${current}、${text}`;
+      }
+      saveDailyData();
+      refreshLineReportPreview();
+      showToast(`指示事項に「${text}」を追加しました`, 'info');
+    }
+
+    function adjPkg(id, delta) {
+      const el = document.getElementById(id);
+      let v = (parseInt(el.value, 10) || 0) + delta;
+      if (v < 0) v = 0;
+      el.value = v;
+      calcPkgStats();
+      saveDailyData();
+      refreshLineReportPreview();
+    }
+
+    function calcPkgStats() {
+      const loaded = Number(document.getElementById('pkgLoaded').value) || 0;
+      const del = Number(document.getElementById('pkgDelivered').value) || 0;
+      let rate = 0;
+      if (loaded > 0) rate = Math.round((del / loaded) * 100);
+      const b = document.getElementById('completionBadge');
+      b.textContent = `完了率 ${rate}%`;
+      if (rate >= 90) b.className = "text-[11px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full";
+      else if (rate >= 70) b.className = "text-[11px] font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full";
+      else b.className = "text-[11px] font-bold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full";
+    }
+
+    function calculateAll() {
+      const sOdo = Number(document.getElementById('startOdo').value);
+      const eOdo = Number(document.getElementById('endOdo').value);
+      const distEl = document.getElementById('distanceDisplay');
+      if (sOdo && eOdo && eOdo >= sOdo) {
+        distEl.textContent = `${eOdo - sOdo} km`;
+      } else {
+        distEl.textContent = `0 km`;
+      }
+
+      const sT = document.getElementById('startTime').value;
+      const eT = document.getElementById('endTime').value;
+      const totalBreak = getTotalBreakMinutes();
+      const totDisp = document.getElementById('totalBreakDisplay');
+      if (totDisp) totDisp.textContent = `${totalBreak}分`;
+
+      const actualEl = document.getElementById('actualWorkHours');
+
+      if (!sT || !eT) {
+        actualEl.textContent = '未完了';
+        return;
+      }
+      const [sh, sm] = sT.split(':').map(Number);
+      const [eh, em] = eT.split(':').map(Number);
+      let stMin = sh * 60 + sm;
+      let enMin = eh * 60 + em;
+      if (enMin < stMin) enMin += 24 * 60;
+
+      const actualNet = (enMin - stMin) - totalBreak;
+      if (actualNet > 0) {
+        const h = Math.floor(actualNet / 60);
+        const m = actualNet % 60;
+        actualEl.textContent = `${h}時間${m}分`;
+      } else {
+        actualEl.textContent = `0時間0分`;
+      }
+    }
+
+    function checkWaitDuration() {
+      const arr = document.getElementById('waitingArrivalTime').value;
+      const start = document.getElementById('cargoStartTime').value;
+      const box = document.getElementById('waitWarningBox');
+      const disp = document.getElementById('waitDurationDisplay');
+
+      if (!arr || !start) {
+        disp.textContent = '未判定';
+        box.className = "p-2.5 rounded-lg text-xs bg-slate-50 border border-slate-200 flex items-center justify-between";
+        return;
+      }
+      const [ah, am] = arr.split(':').map(Number);
+      const [sh, sm] = start.split(':').map(Number);
+      let diff = (sh * 60 + sm) - (ah * 60 + am);
+      if (diff < 0) diff += 24 * 60;
+
+      if (diff >= 30) {
+        disp.textContent = `⚠️ ${diff}分 (30分以上の法定記録対象)`;
+        box.className = "p-2.5 rounded-lg text-xs bg-rose-50 border border-rose-300 text-rose-900 font-bold flex items-center justify-between";
+      } else {
+        disp.textContent = `${diff}分 (30分未満)`;
+        box.className = "p-2.5 rounded-lg text-xs bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between";
+      }
+    }
+
+    function selectTemplate(tplId, refresh = true) {
+      currentTemplate = tplId;
+      localStorage.setItem(TPL_SETTING_KEY, tplId);
+
+      const tpls = ['standard', 'amazon', 'yamato', 'sagawa', 'spot'];
+      tpls.forEach(t => {
+        const btn = document.getElementById(`btn-tpl-${t}`);
+        if (btn) {
+          if (t === tplId) {
+            btn.className = "py-1.5 px-2 rounded-lg border border-brand-700 bg-brand-800 text-white text-center shadow-sm font-bold";
+          } else {
+            btn.className = "py-1.5 px-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 text-center font-normal";
+          }
+        }
+      });
+
+      if (refresh) {
+        refreshLineReportPreview();
+      }
+    }
+
+    function buildTemplateText(tplId) {
+      const s = getSettings();
+      const all = getAllRecords();
+      const d = all[selectedDate] || getDefaultRecord();
+      
+      const sOdo = Number(d.startOdo) || 0;
+      const eOdo = Number(d.endOdo) || 0;
+      const dist = (eOdo >= sOdo && sOdo > 0) ? (eOdo - sOdo) : 0;
+      const actualHours = document.getElementById('actualWorkHours')?.textContent || '未計算';
+
+      const breakList = (Array.isArray(d.breaks) && d.breaks.length > 0) ? d.breaks : [];
+      const validBreaks = breakList.filter(b => b.startTime || b.endTime || b.minutes);
+      const totalBreakMin = validBreaks.reduce((sum, b) => sum + (Number(b.minutes) || 0), 0);
+      
+      const viaList = (Array.isArray(d.viaPoints) && d.viaPoints.length > 0) ? d.viaPoints : [];
+      const validVias = viaList.filter(v => v.time || v.location);
+
+      const routeCode = d.routeCode || s.defaultRoute || '';
+      const client = d.clientName || '';
+      const orgStr = [s.affiliation, s.office].filter(Boolean).join(' ');
+
+      if (tplId === 'standard') {
+        let restText = '休憩なし';
+        if (validBreaks.length > 0) {
+          restText = validBreaks.map((b, i) => `・休憩${i + 1}: ${b.startTime || '--:--'}〜${b.endTime || '--:--'} (${b.minutes || 0}分 / ${b.location || '記載なし'})`).join('\n') + `\n  [合計: ${totalBreakMin}分]`;
+        }
+        let viaText = d.routeViaPoints || '特記なし';
+        if (validVias.length > 0) {
+          viaText = validVias.map(v => `・${v.time ? '[' + v.time + '] ' : ''}${v.location || '地点未記入'}`).join('\n');
+        }
+
+        return `【法定業務日報】${selectedDate}
+乗務員: ${s.driver} (${orgStr})
+車両番号: ${s.vehicle} / コース: ${routeCode || '通常便'}
+━━━━━━━━━━━━━━
+■ 運行時刻: ${d.startTime || '--:--'} 〜 ${d.endTime || '--:--'} (実働:${actualHours})
+■ 運行区間: ${d.startLocation || '未記入'} ➜ ${d.endLocation || '未記入'}
+■ 実走行距離: ${dist} km (開始:${sOdo} / 終了:${eOdo})
+■ 経過地点 (通過記録):
+${viaText}
+■ 休憩・睡眠記録:
+${restText}
+━━━━━━━━━━━━━━
+■ 点呼記録 (10項目準拠):
+【乗務前点呼】
+・執行者: ${d.preRollCallExecutor || '未定'} / 方法: ${d.preRollCallMethod || '対面'}
+・Alc数値: ${d.preAlcohol || '0.00'} mg/L / 日常点検: ${d.preDailyInspection || '良好'}
+・健康睡眠: ${d.preHealth || '良好'} / 指示事項: ${d.preInstruction || 'なし'}
+【乗務後点呼】
+・執行者: ${d.postRollCallExecutor || '未定'} / 方法: ${d.postRollCallMethod || '対面'}
+・Alc数値: ${d.postAlcohol || '0.00'} mg/L / 車両状況: ${d.postVehicleStatus || '異常なし'}
+━━━━━━━━━━━━━━
+■ 荷待ち記録: ${d.waitingPlace ? d.waitingPlace + 'にて待機あり' : '30分以上待機なし'}
+■ 事故・遅延: ${d.incidentFlag === 'あり' ? d.incidentDetail : 'なし（全行程正常）'}
+━━━━━━━━━━━━━━`;
+      }
+
+      if (tplId === 'amazon') {
+        const rate = (d.pkgLoaded > 0) ? Math.round((d.pkgDelivered / d.pkgLoaded) * 100) : 0;
+        return `【Amazon配達 稼働完了報告】
+日付: ${selectedDate}
+ドライバー: ${s.driver} (${orgStr})
+車両番号: ${s.vehicle}
+ブロック/コース: ${routeCode || '通常便'}
+━━━━━━━━━━━━━━
+■ 稼働時間: ${d.startTime || '--:--'} 〜 ${d.endTime || '--:--'}
+■ 休憩合計: ${totalBreakMin}分
+■ 実走行距離: ${dist} km
+
+【個数実績】
+・持出個数: ${d.pkgLoaded} 個
+・配達完了: ${d.pkgDelivered} 個 (完了率 ${rate}%)
+・不在持戻: ${d.pkgReturned} 個
+・集荷・返品: ${d.pkgPicked} 個
+
+■ アルコール検知: 前 ${d.preAlcohol} / 後 ${d.postAlcohol} mg/L
+■ 未配・トラブル: ${d.incidentFlag === 'あり' ? d.incidentDetail : 'なし・無事故帰着'}
+━━━━━━━━━━━━━━
+本日もお疲れ様でした。`;
+      }
+
+      if (tplId === 'yamato') {
+        return `お疲れ様です。${orgStr ? orgStr + 'の' : ''}${s.driver}です。
+本日の配達業務を完了しましたのでご報告いたします。
+
+■ 報告日: ${selectedDate}
+■ 担当コース: ${routeCode || '委託コース'}
+■ 車両番号: ${s.vehicle}
+━━━━━━━━━━━━━━
+【運行・個数実績】
+・運行時間: ${d.startTime || '--:--'} 〜 ${d.endTime || '--:--'} (休憩:${totalBreakMin}分)
+・走行キロ: ${dist} km (終了:${eOdo})
+・持出: ${d.pkgLoaded} 個
+・完了: ${d.pkgDelivered} 個
+・持戻: ${d.pkgReturned} 個
+・集荷: ${d.pkgPicked} 個
+
+【安全・点呼】
+・アルコールチェック: 異常なし (出社:${d.preAlcohol} / 帰社:${d.postAlcohol})
+・日常点検・車両状態: 異常なし
+・事故・物損・誤配: ${d.incidentFlag === 'あり' ? d.incidentDetail : 'なし'}
+━━━━━━━━━━━━━━
+残荷・端末返却完了しております。`;
+      }
+
+      if (tplId === 'sagawa') {
+        return `【業務終了報告】
+お疲れ様です。${s.driver}です。
+
+・日付: ${selectedDate}
+・所属/営業所: ${orgStr}
+・車両番号: ${s.vehicle}
+・便 / 担当: ${routeCode || '宅配便'}
+━━━━━━━━━━━━━━
+・稼働時間: ${d.startTime || '--:--'} 〜 ${d.endTime || '--:--'}
+・休憩時間: ${totalBreakMin}分
+・走行距離: ${dist} km
+
+[実績個数]
+・持出数: ${d.pkgLoaded} 個
+・配達数: ${d.pkgDelivered} 個
+・持戻数: ${d.pkgReturned} 個
+・集荷数: ${d.pkgPicked} 個
+
+[点呼・安全]
+・アルコール値: 乗務前 ${d.preAlcohol} / 乗務後 ${d.postAlcohol} mg/L
+・事故・トラブル等: ${d.incidentFlag === 'あり' ? d.incidentDetail : '無事故・異常なし'}
+━━━━━━━━━━━━━━
+本日もありがとうございました。`;
+      }
+
+      if (tplId === 'spot') {
+        const waitInfo = d.waitingPlace ? `\n・待機場所: ${d.waitingPlace}\n・到着: ${d.waitingArrivalTime} ➜ 荷役開始: ${d.cargoStartTime}` : 'なし (スムーズに荷役完了)';
+        return `【チャーター・スポット運行完了報告】
+荷主/案件: ${client || 'スポットチャーター便'}
+運行日: ${selectedDate}
+乗務員: ${s.driver} (${orgStr} / ${s.vehicle})
+━━━━━━━━━━━━━━
+■ 運行区間: ${d.startLocation || '未記入'} ➜ ${d.endLocation || '未記入'}
+■ 運行時刻: ${d.startTime || '--:--'} 〜 ${d.endTime || '--:--'}
+■ 実走行距離: ${dist} km
+■ 休憩時間: ${totalBreakMin}分
+
+■ 荷役作業区分: ${d.cargoWorkType || 'なし'} (${d.cargoConfirmation || '確認済'})
+■ 荷主都合の待機(荷待ち): ${waitInfo}
+■ アルコール検知: 前 ${d.preAlcohol} / 後 ${d.postAlcohol} mg/L
+■ 異常・遅延等: ${d.incidentFlag === 'あり' ? d.incidentDetail : '全行程正常完了'}
+━━━━━━━━━━━━━━
+受領印受領済み。これより帰庫いたします。`;
+      }
+
+      return '';
+    }
+
+    function refreshLineReportPreview() {
+      const txt = buildTemplateText(currentTemplate);
+      const area = document.getElementById('lineReportTextArea');
+      if (area) {
+        area.value = txt;
+      }
+    }
+
+    function copyLineReportText() {
+      const area = document.getElementById('lineReportTextArea');
+      if (!area || !area.value) return;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(area.value).then(() => {
+          showToast('LINE日報文面をクリップボードにコピーしました！', 'success');
+        }).catch(() => {
+          area.select();
+          document.execCommand('copy');
+          showToast('LINE日報文面をコピーしました！', 'success');
+        });
+      } else {
+        area.select();
+        document.execCommand('copy');
+        showToast('LINE日報文面をコピーしました！', 'success');
+      }
+    }
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toastNotification');
+      const msg = document.getElementById('toastMsg');
+      const icon = document.getElementById('toastIcon');
+      const content = document.getElementById('toastContent');
+      if (!toast) return;
+
+      msg.textContent = message;
+      if (type === 'success') {
+        icon.textContent = '✅';
+        content.className = 'p-3 rounded-xl shadow-lg border text-xs font-bold flex items-center gap-2.5 bg-emerald-800 text-white border-emerald-700';
+      } else if (type === 'error') {
+        icon.textContent = '⚠️';
+        content.className = 'p-3 rounded-xl shadow-lg border text-xs font-bold flex items-center gap-2.5 bg-rose-800 text-white border-rose-700';
+      } else {
+        icon.textContent = 'ℹ️';
+        content.className = 'p-3 rounded-xl shadow-lg border text-xs font-bold flex items-center gap-2.5 bg-slate-800 text-white border-slate-700';
+      }
+
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    async function sendToGoogleSpreadsheet() {
+      const s = getSettings();
+      const gasUrl = (s.gasUrl || '').trim();
+
+      if (!gasUrl) {
+        const acc = document.getElementById('driverProfileAccordion');
+        if (acc) acc.open = true;
+        showToast('Googleスプレッドシート連携URLが未設定です。「ドライバー情報」欄に入力してください。', 'error');
+        return;
+      }
+
+      const all = getAllRecords();
+      const d = all[selectedDate] || getDefaultRecord();
+      const btn = document.getElementById('btnSendGas');
+
+      const sOdo = Number(d.startOdo) || 0;
+      const eOdo = Number(d.endOdo) || 0;
+      const dist = (eOdo >= sOdo && sOdo > 0) ? (eOdo - sOdo) : 0;
+
+      const breakList = (Array.isArray(d.breaks) && d.breaks.length > 0) ? d.breaks : [];
+      const totalBreakMin = breakList.reduce((sum, b) => sum + (Number(b.minutes) || 0), 0);
+      const breakDetailsStr = breakList.map((b, i) => `#${i + 1}:${b.startTime || ''}-${b.endTime || ''}(${b.minutes || 0}分)[${b.location || ''}]`).join(' / ');
+
+      const viaList = (Array.isArray(d.viaPoints) && d.viaPoints.length > 0) ? d.viaPoints : [];
+      const viaDetailsStr = viaList.length > 0 
+        ? viaList.map(v => `${v.time ? '[' + v.time + ']' : ''}${v.location || ''}`).join(' ➜ ')
+        : (d.routeViaPoints || '');
+
+      const fin = getComputedFinance();
+
+      const payload = {
+        date: selectedDate,
+        company: s.affiliation || s.company || '',
+        office: s.office || '',
+        driver: s.driver || '',
+        vehicle: s.vehicle || '',
+        routeCode: d.routeCode || s.defaultRoute || '',
+        clientName: d.clientName || '',
+        startTime: d.startTime || '',
+        startLocation: d.startLocation || '',
+        endTime: d.endTime || '',
+        endLocation: d.endLocation || '',
+        startOdo: sOdo,
+        endOdo: eOdo,
+        distanceKm: dist,
+        pkgLoaded: d.pkgLoaded || 0,
+        pkgDelivered: d.pkgDelivered || 0,
+        pkgReturned: d.pkgReturned || 0,
+        pkgPicked: d.pkgPicked || 0,
+        breakCount: breakList.length,
+        totalBreakMin: totalBreakMin,
+        breakDetails: breakDetailsStr,
+        viaPoints: viaDetailsStr,
+        waitingPlace: d.waitingPlace || '',
+        waitingDesignatedTime: d.waitingDesignatedTime || '',
+        waitingArrivalTime: d.waitingArrivalTime || '',
+        cargoStartTime: d.cargoStartTime || '',
+        waitingDepartureTime: d.waitingDepartureTime || '',
+        cargoWorkStart: d.cargoWorkStart || '',
+        cargoWorkEnd: d.cargoWorkEnd || '',
+        cargoWorkType: d.cargoWorkType || '',
+        cargoConfirmation: d.cargoConfirmation || '',
+        incidentFlag: d.incidentFlag || 'なし',
+        incidentDetail: d.incidentDetail || '',
+        preRollCallExecutor: d.preRollCallExecutor || '',
+        preRollCallMethod: d.preRollCallMethod || '',
+        preAlcohol: d.preAlcohol || '0.00',
+        preDailyInspection: d.preDailyInspection || '良好',
+        preHealth: d.preHealth || '良好',
+        preInstruction: d.preInstruction || '',
+        postRollCallExecutor: d.postRollCallExecutor || '',
+        postRollCallMethod: d.postRollCallMethod || '',
+        postAlcohol: d.postAlcohol || '0.00',
+        postVehicleStatus: d.postVehicleStatus || '異常なし',
+        revenueType: d.revenueType || 'fixed',
+        totalRevenue: fin.revenue,
+        expenseGas: Number(d.expenseGas) || 0,
+        gasLiter: d.gasLiter || '',
+        expenseToll: Number(d.expenseToll) || 0,
+        expenseOther: Number(d.expenseOther) || 0,
+        totalExpense: fin.expense,
+        netProfit: fin.profit
+      };
+
+      try {
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = `<span>⏳</span> 送信中...`;
+          btn.classList.add('opacity-75');
+        }
+
+        await fetch(gasUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        showToast('スプレッドシートへ送信完了！クラウドに記録されました。', 'success');
+      } catch (err) {
+        showToast('送信時にエラーが発生しました。URLや通信環境をご確認ください。', 'error');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<span>📊</span> スプレッドシート送信`;
+          btn.classList.remove('opacity-75');
+        }
+      }
+    }
+
+    function shareViaLineDirect() {
+      const area = document.getElementById('lineReportTextArea');
+      const text = area ? area.value : buildTemplateText(currentTemplate);
+      const url = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    // A4帳票プレビュー描画
+    function renderPrintPreview() {
+      const s = getSettings();
+      const all = getAllRecords();
+      const d = all[selectedDate] || getDefaultRecord();
+
+      const affText = [s.office, s.affiliation].filter(Boolean).join(' (');
+      const affDisplay = affText ? (s.affiliation ? `${affText})` : affText) : '未設定';
+
+      document.getElementById('prDate').textContent = `${selectedDate}`;
+      document.getElementById('prCompany').textContent = s.affiliation || s.company || 'River130 Logistics';
+      document.getElementById('prDriver').textContent = s.driver || '山田 太郎';
+      document.getElementById('prAffiliation').textContent = affDisplay;
+      document.getElementById('prVehicle').textContent = s.vehicle || '相模 480 あ 12-34';
+      document.getElementById('prRouteCode').textContent = d.routeCode || s.defaultRoute || '---';
+      document.getElementById('prClientName').textContent = d.clientName || '---';
+
+      document.getElementById('prStartTime').textContent = d.startTime || '--:--';
+      document.getElementById('prEndTime').textContent = d.endTime || '--:--';
+      document.getElementById('prStartLoc').textContent = d.startLocation || '未記入';
+      document.getElementById('prEndLoc').textContent = d.endLocation || '未記入';
+
+      const sOdo = Number(d.startOdo) || 0;
+      const eOdo = Number(d.endOdo) || 0;
+      const dist = (eOdo >= sOdo && sOdo > 0) ? (eOdo - sOdo) : 0;
+
+      document.getElementById('prStartOdo').textContent = sOdo ? `${sOdo.toLocaleString()} km` : '--- km';
+      document.getElementById('prEndOdo').textContent = eOdo ? `${eOdo.toLocaleString()} km` : '--- km';
+
+      const actualHours = document.getElementById('actualWorkHours')?.textContent || '0h0m';
+      document.getElementById('prSummaryStats').textContent = `実働: ${actualHours} | 実走: ${dist} km`;
+
+      // 荷物個数実績
+      const loaded = Number(d.pkgLoaded) || 0;
+      const del = Number(d.pkgDelivered) || 0;
+      const ret = Number(d.pkgReturned) || 0;
+      const pick = Number(d.pkgPicked) || 0;
+      const pkgRate = loaded > 0 ? Math.round((del / loaded) * 100) : 0;
+      document.getElementById('prPkgLoaded').textContent = `${loaded}個`;
+      document.getElementById('prPkgDelivered').textContent = `${del}個`;
+      document.getElementById('prPkgReturned').textContent = `${ret}個`;
+      document.getElementById('prPkgPicked').textContent = `${pick}個`;
+      document.getElementById('prPkgRate').textContent = `完了率: ${pkgRate}%`;
+
+      // 休憩一覧
+      const breakList = (Array.isArray(d.breaks) && d.breaks.length > 0) ? d.breaks : [];
+      const validBreaks = breakList.filter(b => b.startTime || b.endTime || b.minutes || b.location);
+      const restContainer = document.getElementById('prRestContainer');
+      if (validBreaks.length === 0) {
+        restContainer.textContent = '休憩なし（連続運行時間基準内）';
+      } else {
+        const totalMin = validBreaks.reduce((sum, b) => sum + (Number(b.minutes) || 0), 0);
+        const listHtml = validBreaks.map((b, i) => `
+          <div class="flex items-center justify-between py-0.5 border-b border-slate-100 last:border-b-0">
+            <span><strong>#${i + 1}:</strong> ${b.startTime || '--:--'}〜${b.endTime || '--:--'} (${b.minutes || 0}分)</span>
+            <span class="text-slate-600 truncate max-w-[150px]">${b.location || '記載なし'}</span>
+          </div>
+        `).join('');
+        restContainer.innerHTML = `
+          <div>${listHtml}</div>
+          <div class="text-right font-bold text-slate-800 pt-0.5">休憩・睡眠合計: ${totalMin}分</div>
+        `;
+      }
+
+      // 経過地点
+      const viaList = (Array.isArray(d.viaPoints) && d.viaPoints.length > 0) ? d.viaPoints : [];
+      const validVias = viaList.filter(v => v.time || v.location);
+      const prVia = document.getElementById('prViaPoints');
+      if (validVias.length === 0) {
+        prVia.textContent = d.routeViaPoints || '特記なし（平常ルート運行）';
+      } else {
+        const viaListHtml = validVias.map((v, i) => `
+          <span class="inline-block mr-1 my-0.5 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+            <span class="font-mono font-bold text-brand-800">${v.time || '--:--'}</span>
+            <strong>${v.location || '地点未記入'}</strong>
+          </span>${i < validVias.length - 1 ? '➜ ' : ''}
+        `).join('');
+        prVia.innerHTML = viaListHtml;
+      }
+
+      // 荷待ち
+      if (d.waitingPlace && d.waitingArrivalTime && d.cargoStartTime) {
+        document.getElementById('prWaitingRecord').innerHTML = `
+          <strong>場所:</strong> ${d.waitingPlace}<br>
+          <strong>到着:</strong> ${d.waitingArrivalTime} (指定:${d.waitingDesignatedTime || 'なし'}) ➜ <strong>荷役開始:</strong> ${d.cargoStartTime} (発:${d.waitingDepartureTime || '未定'})
+        `;
+      } else {
+        document.getElementById('prWaitingRecord').textContent = '該当なし (荷主都合による30分以上の待機なし)';
+      }
+
+      // 荷役
+      if (d.cargoWorkType && d.cargoWorkType !== 'なし') {
+        document.getElementById('prCargoRecord').textContent = `${d.cargoWorkType} (${d.cargoWorkStart || '--:--'}〜${d.cargoWorkEnd || '--:--'}) / 荷主確認: ${d.cargoConfirmation}`;
+      } else {
+        document.getElementById('prCargoRecord').textContent = '作業なし (単純荷受・受渡のみ)';
+      }
+
+      // 異常・事故
+      if (d.incidentFlag === 'あり') {
+        document.getElementById('prIncidentRecord').innerHTML = `<span class="text-rose-700 font-bold">【異常発生】</span> ${d.incidentDetail || '詳細未記入'}`;
+      } else {
+        document.getElementById('prIncidentRecord').textContent = '事故・著しい遅延その他の異常なし (全運行正常)';
+      }
+
+      // 点呼
+      document.getElementById('prPreExecutor').textContent = d.preRollCallExecutor || '運行管理者';
+      document.getElementById('prPreMethod').textContent = d.preRollCallMethod || '対面';
+      document.getElementById('prPreAlc').textContent = `Alc: ${d.preAlcohol || '0.00'} mg/L`;
+      document.getElementById('prPreInsp').textContent = d.preDailyInspection || '良好';
+      document.getElementById('prPreHealthAndInstruction').innerHTML = `
+        <div><strong>健康・睡眠状態:</strong> ${d.preHealth || '良好'}</div>
+        <div><strong>安全指示事項:</strong> ${d.preInstruction || '法令遵守・安全運転徹底'}</div>
+      `;
+
+      document.getElementById('prPostExecutor').textContent = d.postRollCallExecutor || '運行管理者';
+      document.getElementById('prPostMethod').textContent = d.postRollCallMethod || '対面';
+      document.getElementById('prPostAlc').textContent = `Alc: ${d.postAlcohol || '0.00'} mg/L`;
+      document.getElementById('prPostStatus').textContent = d.postVehicleStatus || '異常なし';
+
+      const postNotesEl = document.getElementById('prPostNotes');
+      if (postNotesEl) {
+        if (d.reliefDriver || d.reliefPlaceTime) {
+          postNotesEl.textContent = `交代運転者等への通告: ${d.reliefDriver || ''} (${d.reliefPlaceTime || ''})`;
+        } else {
+          postNotesEl.textContent = '道路及び運行状況・交代運転者等への通告: 異常なし';
+        }
+      }
+    }
+
+    function exportLawCompliantCSV() {
+      const all = getAllRecords();
+      const s = getSettings();
+      const keys = Object.keys(all).sort();
+
+      if (keys.length === 0) return;
+
+      let csv = '\uFEFF';
+      csv += '日付,所属(会社/屋号),営業所,乗務員名,車両番号,担当コース,荷主名,業務開始日時,開始地点,業務終了日時,終了地点,開始メーター,終了メーター,実走行距離km,持出個数,完了個数,持戻個数,集荷個数,休憩回数,合計休憩分,休憩詳細一覧,経過地点詳細(時刻付),荷待ち場所,到着指定時刻,実到着時刻,荷役開始時刻,荷役作業区分,事故遅延有無,事故遅延詳細,乗務前_点呼執行者,乗務前_点呼方法,乗務前_アルコール数値,乗務前_日常点検,乗務前_健康睡眠,乗務前_指示事項,乗務後_点呼執行者,乗務後_点呼方法,乗務後_アルコール数値,乗務後_車両状況,売上区分,総売上(円),ガソリン代(円),給油量(L),高速代(円),その他経費(円),総経費(円),本日粗利益(円)\n';
+
+      keys.forEach(k => {
+        const d = all[k];
+        const sO = Number(d.startOdo) || 0;
+        const eO = Number(d.endOdo) || 0;
+        const dist = (eO >= sO && sO > 0) ? (eO - sO) : 0;
+
+        const breakList = (Array.isArray(d.breaks) && d.breaks.length > 0) ? d.breaks : [];
+        const totalBreakMin = breakList.reduce((sum, b) => sum + (Number(b.minutes) || 0), 0);
+        const breakDetailsStr = breakList.map((b, i) => `#${i + 1}:${b.startTime || ''}-${b.endTime || ''}(${b.minutes || 0}分)[${b.location || ''}]`).join(' / ');
+
+        const viaList = (Array.isArray(d.viaPoints) && d.viaPoints.length > 0) ? d.viaPoints : [];
+        const viaDetailsStr = viaList.length > 0 
+          ? viaList.map(v => `${v.time ? '[' + v.time + ']' : ''}${v.location || ''}`).join(' ➜ ')
+          : (d.routeViaPoints || '');
+
+        const rev = Number(d.totalRevenue) || 0;
+        const exp = Number(d.totalExpense) || 0;
+        const prof = Number(d.netProfit) || (rev - exp);
+
+        const row = [
+          k,
+          `"${s.affiliation || s.company || ''}"`,
+          `"${s.office || ''}"`,
+          `"${s.driver}"`,
+          `"${s.vehicle}"`,
+          `"${d.routeCode || s.defaultRoute || ''}"`,
+          `"${d.clientName || ''}"`,
+          d.startTime || '',
+          `"${d.startLocation || ''}"`,
+          d.endTime || '',
+          `"${d.endLocation || ''}"`,
+          sO,
+          eO,
+          dist,
+          d.pkgLoaded || 0,
+          d.pkgDelivered || 0,
+          d.pkgReturned || 0,
+          d.pkgPicked || 0,
+          breakList.length,
+          totalBreakMin,
+          `"${breakDetailsStr.replace(/"/g, '""')}"`,
+          `"${viaDetailsStr.replace(/"/g, '""')}"`,
+          `"${(d.waitingPlace || '').replace(/"/g, '""')}"`,
+          d.waitingDesignatedTime || '',
+          d.waitingArrivalTime || '',
+          d.cargoStartTime || '',
+          `"${d.cargoWorkType || ''}"`,
+          d.incidentFlag || 'なし',
+          `"${(d.incidentDetail || '').replace(/"/g, '""')}"`,
+          `"${(d.preRollCallExecutor || '').replace(/"/g, '""')}"`,
+          d.preRollCallMethod || '',
+          d.preAlcohol || '0.00',
+          `"${d.preDailyInspection || '良好'}"`,
+          `"${d.preHealth || '良好'}"`,
+          `"${(d.preInstruction || '').replace(/"/g, '""')}"`,
+          `"${(d.postRollCallExecutor || '').replace(/"/g, '""')}"`,
+          d.postRollCallMethod || '',
+          d.postAlcohol || '0.00',
+          `"${d.postVehicleStatus || '異常なし'}"`,
+          `"${d.revenueType || 'fixed'}"`,
+          rev,
+          Number(d.expenseGas) || 0,
+          `"${d.gasLiter || ''}"`,
+          Number(d.expenseToll) || 0,
+          Number(d.expenseOther) || 0,
+          exp,
+          prof
+        ];
+        csv += row.join(',') + '\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `軽貨物_法定業務記録簿_収支付_${getTodayStr()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
