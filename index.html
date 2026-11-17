@@ -115,7 +115,6 @@
         padding: 6px 10px !important;
         font-size: 12px !important;
       }
-      /* カラム内の各情報ブロック：余白を減らし文字サイズと行間で堂々と埋める */
       .print-grid > div > div:not(:first-child):not(table) {
         flex: 1 !important;
         display: flex !important;
@@ -1103,7 +1102,7 @@
               </tr>
             </table>
 
-            <!-- 荷物取扱実績（新規追加：左カラムの密度向上） -->
+            <!-- 荷物取扱実績 -->
             <div class="border border-slate-300 rounded bg-white p-2 space-y-1">
               <div class="text-[9px] font-bold text-slate-600 uppercase flex items-center justify-between print-box-label">
                 <span class="flex items-center gap-1"><span>📦</span> 取扱荷物個数・配送実績</span>
@@ -1220,9 +1219,9 @@
 
   </main>
 
-  <!-- ページ先頭へ戻るフローティングアクションボタン -->
-  <button id="btnScrollTop" type="button" onclick="scrollToTop()" aria-label="ページ先頭へ戻る" style="bottom: calc(1.25rem + env(safe-area-inset-bottom));" class="fixed right-4 z-50 py-2.5 px-3.5 bg-brand-900/95 hover:bg-brand-800 active:bg-slate-950 text-white rounded-full shadow-2xl border border-white/25 transition-all duration-200 opacity-0 pointer-events-none active:scale-95 flex items-center justify-center gap-1 text-xs font-bold no-print backdrop-blur-sm">
-    <span class="text-sm leading-none">⬆️</span>
+  <!-- ページ先頭へ戻るフローティングアクションボタン（全スマホ環境100%表示対応） -->
+  <button id="btnScrollTop" type="button" onclick="scrollToTop()" aria-label="ページ先頭へ戻る" style="bottom: calc(1.25rem + env(safe-area-inset-bottom)); z-index: 9999;" class="fixed right-4 py-3 px-4 bg-brand-900/95 hover:bg-brand-800 active:bg-slate-950 text-white rounded-full shadow-2xl border-2 border-white/30 transition-all duration-200 opacity-0 pointer-events-none active:scale-95 flex items-center justify-center gap-1.5 text-sm font-extrabold no-print backdrop-blur-sm">
+    <span class="text-base leading-none">⬆️</span>
     <span>先頭</span>
   </button>
 
@@ -1426,22 +1425,27 @@
       loadDayData(selectedDate);
       selectTemplate(currentTemplate, false);
 
-      window.addEventListener('scroll', handleScrollTopVisibility, { passive: true });
-      document.addEventListener('scroll', handleScrollTopVisibility, { passive: true });
+      // 全スマホ・PWA・コンテナスクロール完全検知
+      window.addEventListener('scroll', handleScrollTopVisibility, { passive: true, capture: true });
+      document.addEventListener('scroll', handleScrollTopVisibility, { passive: true, capture: true });
       window.addEventListener('touchmove', handleScrollTopVisibility, { passive: true });
+      window.addEventListener('touchend', handleScrollTopVisibility, { passive: true });
+      setInterval(handleScrollTopVisibility, 500);
       handleScrollTopVisibility();
     });
 
-    function handleScrollTopVisibility() {
+    function handleScrollTopVisibility(e) {
       const btn = document.getElementById('btnScrollTop');
       if (!btn) return;
+      const targetScroll = (e && e.target && typeof e.target.scrollTop === 'number') ? e.target.scrollTop : 0;
       const scrollPos = Math.max(
         window.scrollY || 0,
         window.pageYOffset || 0,
         document.documentElement.scrollTop || 0,
-        document.body.scrollTop || 0
+        document.body.scrollTop || 0,
+        targetScroll
       );
-      if (scrollPos > 80) {
+      if (scrollPos > 60) {
         btn.classList.remove('opacity-0', 'pointer-events-none');
         btn.classList.add('opacity-100', 'pointer-events-auto');
       } else {
@@ -2753,7 +2757,6 @@ ${restText}
       window.open(url, '_blank');
     }
 
-    // A4帳票プレビュー描画
     function renderPrintPreview() {
       const s = getSettings();
       const all = getAllRecords();
@@ -2785,7 +2788,6 @@ ${restText}
       const actualHours = document.getElementById('actualWorkHours')?.textContent || '0h0m';
       document.getElementById('prSummaryStats').textContent = `実働: ${actualHours} | 実走: ${dist} km`;
 
-      // 荷物個数実績
       const loaded = Number(d.pkgLoaded) || 0;
       const del = Number(d.pkgDelivered) || 0;
       const ret = Number(d.pkgReturned) || 0;
@@ -2797,7 +2799,6 @@ ${restText}
       document.getElementById('prPkgPicked').textContent = `${pick}個`;
       document.getElementById('prPkgRate').textContent = `完了率: ${pkgRate}%`;
 
-      // 休憩一覧
       const breakList = (Array.isArray(d.breaks) && d.breaks.length > 0) ? d.breaks : [];
       const validBreaks = breakList.filter(b => b.startTime || b.endTime || b.minutes || b.location);
       const restContainer = document.getElementById('prRestContainer');
@@ -2817,7 +2818,6 @@ ${restText}
         `;
       }
 
-      // 経過地点
       const viaList = (Array.isArray(d.viaPoints) && d.viaPoints.length > 0) ? d.viaPoints : [];
       const validVias = viaList.filter(v => v.time || v.location);
       const prVia = document.getElementById('prViaPoints');
@@ -2833,7 +2833,6 @@ ${restText}
         prVia.innerHTML = viaListHtml;
       }
 
-      // 荷待ち
       if (d.waitingPlace && d.waitingArrivalTime && d.cargoStartTime) {
         document.getElementById('prWaitingRecord').innerHTML = `
           <strong>場所:</strong> ${d.waitingPlace}<br>
@@ -2843,21 +2842,18 @@ ${restText}
         document.getElementById('prWaitingRecord').textContent = '該当なし (荷主都合による30分以上の待機なし)';
       }
 
-      // 荷役
       if (d.cargoWorkType && d.cargoWorkType !== 'なし') {
         document.getElementById('prCargoRecord').textContent = `${d.cargoWorkType} (${d.cargoWorkStart || '--:--'}〜${d.cargoWorkEnd || '--:--'}) / 荷主確認: ${d.cargoConfirmation}`;
       } else {
         document.getElementById('prCargoRecord').textContent = '作業なし (単純荷受・受渡のみ)';
       }
 
-      // 異常・事故
       if (d.incidentFlag === 'あり') {
         document.getElementById('prIncidentRecord').innerHTML = `<span class="text-rose-700 font-bold">【異常発生】</span> ${d.incidentDetail || '詳細未記入'}`;
       } else {
         document.getElementById('prIncidentRecord').textContent = '事故・著しい遅延その他の異常なし (全運行正常)';
       }
 
-      // 点呼
       document.getElementById('prPreExecutor').textContent = d.preRollCallExecutor || '運行管理者';
       document.getElementById('prPreMethod').textContent = d.preRollCallMethod || '対面';
       document.getElementById('prPreAlc').textContent = `Alc: ${d.preAlcohol || '0.00'} mg/L`;
