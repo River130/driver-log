@@ -106,15 +106,15 @@
           <span class="text-[11px] px-2 py-0.5 bg-emerald-500 text-slate-950 font-black rounded">2025年4月法改正 準拠</span>
           <h1 class="text-base sm:text-lg font-extrabold tracking-tight">軽貨物 業務の記録簿</h1>
           <button type="button" onclick="openChangelogModal()" class="text-[11px] px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-400/50 font-extrabold rounded-full transition-colors">
-            🆕 v2.2 更新履歴
+            🆕 v2.4 更新履歴
           </button>
         </div>
-        <p id="headerProfileSummary" class="text-xs text-slate-300 mt-0.5">乗務員: 未設定 | 車両: 未設定</p>
+        <p id="headerProfileSummary" class="text-xs text-slate-200 mt-0.5 font-semibold">乗務員: 未設定 | 車両: 未設定</p>
       </div>
       <div class="flex items-center gap-1.5 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
-        <button type="button" onclick="changeDate(-1)" class="p-1 hover:bg-slate-700 rounded text-xs">◀</button>
+        <button type="button" onclick="changeDate(-1)" class="p-1 hover:bg-slate-700 rounded text-xs font-bold">◀</button>
         <input type="date" id="recordDateInput" onchange="onDateChange(this.value)" class="bg-slate-900 text-white border-0 rounded px-1.5 py-0.5 text-xs font-bold focus:outline-none">
-        <button type="button" onclick="changeDate(1)" class="p-1 hover:bg-slate-700 rounded text-xs">▶</button>
+        <button type="button" onclick="changeDate(1)" class="p-1 hover:bg-slate-700 rounded text-xs font-bold">▶</button>
       </div>
     </div>
   </header>
@@ -123,25 +123,25 @@
   <main class="max-w-3xl mx-auto px-3.5 pt-3.5 space-y-3.5">
 
     <!-- 法改正案内バナー -->
-    <div class="bg-blue-50 border border-blue-200 rounded-xl p-2.5 text-xs text-blue-950 flex items-center gap-2 shadow-sm no-print">
+    <div class="bg-blue-50 border border-blue-300 rounded-xl p-2.5 text-xs text-blue-950 flex items-center gap-2 shadow-sm no-print">
       <span class="text-base">⚖️</span>
       <div><strong>2025年4月法改正 準拠：</strong>業務の記録（1年間保存）・点呼10項目・30分以上の荷待ち記録に対応。データは端末内に自動保存されます。</div>
     </div>
 
     <!-- 上部クイックジャンプバー（日中の誤打刻防止・最上部特等席配置） -->
     <div class="grid grid-cols-2 gap-2 no-print">
-      <button type="button" onclick="jumpToSection('section-via')" class="py-2.5 px-3 bg-white hover:bg-blue-50 active:scale-[0.98] text-brand-800 font-extrabold rounded-xl border-2 border-blue-200 shadow-sm text-xs flex items-center justify-center gap-1.5">
+      <button type="button" onclick="jumpToSection('section-via')" class="py-2.5 px-3 bg-white hover:bg-blue-50 active:scale-[0.98] text-brand-900 font-extrabold rounded-xl border-2 border-blue-300 shadow-sm text-xs flex items-center justify-center gap-1.5">
         <span>📍</span>
         <span>経過地点へ移動</span>
       </button>
-      <button type="button" onclick="jumpToSection('section-break')" class="py-2.5 px-3 bg-white hover:bg-emerald-50 active:scale-[0.98] text-emerald-800 font-extrabold rounded-xl border-2 border-emerald-200 shadow-sm text-xs flex items-center justify-center gap-1.5">
+      <button type="button" onclick="jumpToSection('section-break')" class="py-2.5 px-3 bg-white hover:bg-emerald-50 active:scale-[0.98] text-emerald-900 font-extrabold rounded-xl border-2 border-emerald-300 shadow-sm text-xs flex items-center justify-center gap-1.5">
         <span>☕</span>
         <span>休憩記録へ移動</span>
       </button>
     </div>
 
-    <!-- 4タブナビゲーション（収支・荷物削除・法定記録特化スリム構成） -->
-    <div class="grid grid-cols-4 gap-1 bg-white rounded-xl p-1 shadow-sm border border-slate-200 text-xs font-extrabold text-slate-600 no-print">
+    <!-- 4タブナビゲーション -->
+    <div class="grid grid-cols-4 gap-1 bg-white rounded-xl p-1 shadow-sm border border-slate-300 text-xs font-extrabold text-slate-800 no-print">
       <button type="button" onclick="switchTab('drive')" id="tab-drive" class="py-2.5 rounded-lg text-center bg-brand-800 text-white shadow-sm transition-colors">① 運行</button>
       <button type="button" onclick="switchTab('wait')" id="tab-wait" class="py-2.5 rounded-lg text-center hover:bg-slate-50 transition-colors">② 待機</button>
       <button type="button" onclick="switchTab('rollcall')" id="tab-rollcall" class="py-2.5 rounded-lg text-center hover:bg-slate-50 transition-colors">③ 点呼</button>
@@ -152,77 +152,77 @@
     <div id="content-drive" class="space-y-3.5">
 
       <!-- ドライバー情報・車両・カスタム候補・GAS設定 -->
-      <details id="settingsAccordion" class="bg-white rounded-xl shadow-sm border border-slate-200 text-xs overflow-hidden group">
-        <summary class="px-3.5 py-2.5 bg-slate-50 font-bold text-slate-700 flex items-center justify-between cursor-pointer select-none">
+      <details id="settingsAccordion" class="bg-white rounded-xl shadow-sm border border-slate-300 text-xs overflow-hidden group">
+        <summary class="px-3.5 py-2.5 bg-slate-50 font-extrabold text-slate-800 flex items-center justify-between cursor-pointer select-none">
           <span class="flex items-center gap-1.5">
             <span>👤</span>
             <span>ドライバー情報・車両・よく使う場所・シート連携設定</span>
           </span>
-          <span class="text-[10px] text-brand-700 font-bold group-open:rotate-180 transition-transform">▼</span>
+          <span class="text-[11px] text-brand-800 font-extrabold group-open:rotate-180 transition-transform">▼</span>
         </summary>
-        <div class="p-3.5 space-y-3 bg-white border-t border-slate-100">
+        <div class="p-3.5 space-y-3 bg-white border-t border-slate-200">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">名前（運転者氏名）</label>
-              <input type="text" id="cfgDriverName" placeholder="例: 配送 太郎" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white font-semibold">
+              <label class="block text-xs font-extrabold text-slate-800 mb-1">名前（運転者氏名）</label>
+              <input type="text" id="cfgDriverName" placeholder="例: 配送 太郎" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50 focus:bg-white font-bold text-slate-900">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">車両番号（事業用黒ナンバー）</label>
-              <input type="text" id="cfgVehicleNo" placeholder="例: 〇〇 480 あ 12-34" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white font-mono">
+              <label class="block text-xs font-extrabold text-slate-800 mb-1">車両番号（事業用黒ナンバー）</label>
+              <input type="text" id="cfgVehicleNo" placeholder="例: 〇〇 480 あ 12-34" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50 focus:bg-white font-mono font-bold text-slate-900">
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
             <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">所属（会社名・屋号等）</label>
-              <input type="text" id="cfgAffiliation" placeholder="例: 〇〇運送 / 個人事業主" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white">
+              <label class="block text-xs font-extrabold text-slate-800 mb-1">所属（会社名・屋号等）</label>
+              <input type="text" id="cfgAffiliation" placeholder="例: 〇〇運送 / 個人事業主" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50 focus:bg-white font-semibold text-slate-900">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">営業所</label>
-              <input type="text" id="cfgBranchOffice" placeholder="例: 本社営業所" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white">
+              <label class="block text-xs font-extrabold text-slate-800 mb-1">営業所</label>
+              <input type="text" id="cfgBranchOffice" placeholder="例: 本社営業所" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50 focus:bg-white font-semibold text-slate-900">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">担当コース (標準)</label>
-              <input type="text" id="cfgDefaultRoute" placeholder="例: 中央01便" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white">
+              <label class="block text-xs font-extrabold text-slate-800 mb-1">担当コース (標準)</label>
+              <input type="text" id="cfgDefaultRoute" placeholder="例: 中央01便" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50 focus:bg-white font-semibold text-slate-900">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">点呼執行者 (標準)</label>
-              <input type="text" id="cfgDefaultManager" placeholder="例: 安全運行管理者 / 自主確認" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white">
+              <label class="block text-xs font-extrabold text-slate-800 mb-1">点呼執行者 (標準)</label>
+              <input type="text" id="cfgDefaultManager" placeholder="例: 安全運行管理者 / 自主確認" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50 focus:bg-white font-semibold text-slate-900">
             </div>
           </div>
 
           <!-- よく使う経過地点 -->
-          <div class="pt-2 border-t border-slate-100">
+          <div class="pt-2 border-t border-slate-200">
             <div class="flex items-center justify-between mb-1.5">
-              <label class="block text-[11px] font-bold text-slate-700">📍 登録中の経過地点（拠点・エリア）</label>
-              <span class="text-[10px] text-slate-400">※不要な候補は［🗑️ 削除］をタップ</span>
+              <label class="block text-xs font-extrabold text-slate-800">📍 登録中の経過地点（拠点・エリア）</label>
+              <span class="text-[11px] font-semibold text-slate-600">※不要な候補は［🗑️ 削除］をタップ</span>
             </div>
             <div id="presetViaTagList" class="flex flex-wrap gap-1.5 mb-2"></div>
             <div class="flex gap-1.5">
-              <input type="text" id="newViaPresetInput" placeholder="例: 配送センター / 第1エリア" class="flex-1 p-1.5 border border-slate-200 rounded text-xs bg-slate-50 focus:bg-white">
-              <button type="button" onclick="addCustomPreset('via')" class="px-3 py-1.5 bg-brand-800 text-white font-bold rounded text-xs hover:bg-brand-900 shadow-sm whitespace-nowrap">＋ 追加</button>
+              <input type="text" id="newViaPresetInput" placeholder="例: 配送センター / 第1エリア" class="flex-1 p-1.5 border border-slate-300 rounded text-xs bg-slate-50 focus:bg-white text-slate-900">
+              <button type="button" onclick="addCustomPreset('via', 'newViaPresetInput')" class="px-3 py-1.5 bg-brand-800 text-white font-bold rounded text-xs hover:bg-brand-900 shadow-sm whitespace-nowrap">＋ 登録</button>
             </div>
           </div>
 
           <!-- よく使う休憩場所 -->
-          <div class="pt-2 border-t border-slate-100">
+          <div class="pt-2 border-t border-slate-200">
             <div class="flex items-center justify-between mb-1.5">
-              <label class="block text-[11px] font-bold text-slate-700">☕ 登録中の休憩場所（道の駅・コンビニ等）</label>
-              <span class="text-[10px] text-slate-400">※不要な候補は［🗑️ 削除］をタップ</span>
+              <label class="block text-xs font-extrabold text-slate-800">☕ 登録中の休憩場所（道の駅・コンビニ等）</label>
+              <span class="text-[11px] font-semibold text-slate-600">※不要な候補は［🗑️ 削除］をタップ</span>
             </div>
             <div id="presetBreakTagList" class="flex flex-wrap gap-1.5 mb-2"></div>
             <div class="flex gap-1.5">
-              <input type="text" id="newBreakPresetInput" placeholder="例: 道の駅 / コンビニ〇〇店" class="flex-1 p-1.5 border border-slate-200 rounded text-xs bg-slate-50 focus:bg-white">
-              <button type="button" onclick="addCustomPreset('break')" class="px-3 py-1.5 bg-emerald-700 text-white font-bold rounded text-xs hover:bg-emerald-800 shadow-sm whitespace-nowrap">＋ 追加</button>
+              <input type="text" id="newBreakPresetInput" placeholder="例: 道の駅 / コンビニ〇〇店" class="flex-1 p-1.5 border border-slate-300 rounded text-xs bg-slate-50 focus:bg-white text-slate-900">
+              <button type="button" onclick="addCustomPreset('break', 'newBreakPresetInput')" class="px-3 py-1.5 bg-emerald-700 text-white font-bold rounded text-xs hover:bg-emerald-800 shadow-sm whitespace-nowrap">＋ 登録</button>
             </div>
           </div>
 
           <!-- GAS連携設定（BYOD空欄初期値） -->
-          <div class="pt-2 border-t border-slate-100 space-y-1.5">
-            <label class="block text-[11px] font-bold text-emerald-800">📊 Googleスプレッドシート連携URL（GAS ウェブアプリURL）</label>
-            <input type="url" id="cfgGasUrl" placeholder="https://script.google.com/macros/s/.../exec" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-50 font-mono">
+          <div class="pt-2 border-t border-slate-200 space-y-1.5">
+            <label class="block text-xs font-extrabold text-emerald-900">📊 Googleスプレッドシート連携URL（GAS ウェブアプリURL）</label>
+            <input type="url" id="cfgGasUrl" placeholder="https://script.google.com/macros/s/.../exec" oninput="saveDriverProfileSettings()" class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-slate-50 font-mono text-slate-900">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <span class="text-[10px] text-slate-500">※初期状態は空欄（端末内保存）</span>
-              <button type="button" onclick="copyDriverGasCode()" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded border border-emerald-200 text-[11px]">
+              <span class="text-[11px] font-semibold text-slate-700">※初期状態は空欄（端末内保存）</span>
+              <button type="button" onclick="copyDriverGasCode()" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-bold rounded border border-emerald-300 text-[11px]">
                 📋 法定記録簿GASコードをコピー
               </button>
             </div>
@@ -231,13 +231,13 @@
       </details>
 
       <!-- 業務開始・終了カード（誤打刻ロック＆上書き確認ガード付き） -->
-      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
           <h2 class="text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
             <span>⏱️</span>
             <span>業務の開始・終了（出庫〜帰庫）</span>
           </h2>
-          <button type="button" id="btnToggleStampLock" onclick="toggleStampLock()" class="px-2.5 py-1 rounded-lg border text-[11px] font-extrabold bg-slate-100 text-slate-700 border-slate-300">
+          <button type="button" id="btnToggleStampLock" onclick="toggleStampLock()" class="px-2.5 py-1 rounded-lg border text-[11px] font-extrabold bg-slate-100 text-slate-800 border-slate-400">
             🔓 誤打刻ロック: OFF
           </button>
         </div>
@@ -247,108 +247,132 @@
           <p id="stampConfirmMsg" class="font-extrabold text-amber-950">⚠️ すでに打刻済みです。現在時刻で上書きしますか？</p>
           <div class="flex gap-2">
             <button type="button" onclick="confirmOverwriteStamp()" class="flex-1 py-2 bg-amber-600 text-white font-extrabold rounded-lg">はい、上書きする</button>
-            <button type="button" onclick="cancelOverwriteStamp()" class="flex-1 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg">キャンセル</button>
+            <button type="button" onclick="cancelOverwriteStamp()" class="flex-1 py-2 bg-white border border-slate-400 text-slate-800 font-bold rounded-lg">キャンセル</button>
           </div>
         </div>
 
         <!-- 左右2カラム横並び打刻 -->
         <div class="grid grid-cols-2 gap-2.5">
           <!-- 左：業務開始 -->
-          <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200 space-y-2">
-            <div class="text-xs font-extrabold text-emerald-900">🟢 業務開始（出庫）</div>
+          <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-300 space-y-2">
+            <div class="text-xs font-extrabold text-emerald-950">🟢 業務開始（出庫）</div>
             <button type="button" onclick="requestStamp('startTime')" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold rounded-xl shadow text-xs sm:text-sm">
               ⏱️ 開始打刻
             </button>
-            <input type="time" id="startTime" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm font-mono font-bold text-center">
-            <input type="text" id="startLocation" placeholder="開始地点（車庫・拠点）" oninput="onFieldUpdate()" class="w-full p-1.5 border border-slate-200 rounded-lg bg-white text-xs">
+            <input type="time" id="startTime" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-400 rounded-lg bg-white text-sm font-mono font-extrabold text-slate-900 text-center">
+            <input type="text" id="startLocation" placeholder="開始地点（車庫・拠点）" oninput="onFieldUpdate()" class="w-full p-1.5 border border-slate-300 rounded-lg bg-white text-xs font-semibold text-slate-900">
           </div>
 
           <!-- 右：業務終了 -->
-          <div class="p-2.5 rounded-xl bg-rose-50/60 border border-rose-200 space-y-2">
-            <div class="text-xs font-extrabold text-rose-900">🔴 業務終了（帰庫）</div>
+          <div class="p-2.5 rounded-xl bg-rose-50/70 border border-rose-300 space-y-2">
+            <div class="text-xs font-extrabold text-rose-950">🔴 業務終了（帰庫）</div>
             <button type="button" onclick="requestStamp('endTime')" class="w-full py-3 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-extrabold rounded-xl shadow text-xs sm:text-sm">
               ⏱️ 終了打刻
             </button>
-            <input type="time" id="endTime" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm font-mono font-bold text-center">
-            <input type="text" id="endLocation" placeholder="終了地点（車庫・自宅）" oninput="onFieldUpdate()" class="w-full p-1.5 border border-slate-200 rounded-lg bg-white text-xs">
+            <input type="time" id="endTime" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-400 rounded-lg bg-white text-sm font-mono font-extrabold text-slate-900 text-center">
+            <input type="text" id="endLocation" placeholder="終了地点（車庫・自宅）" oninput="onFieldUpdate()" class="w-full p-1.5 border border-slate-300 rounded-lg bg-white text-xs font-semibold text-slate-900">
           </div>
         </div>
 
-        <!-- コース・荷主 & メーター距離自動計算 -->
-        <div class="grid grid-cols-2 gap-2 text-xs pt-1">
-          <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">担当コース・便名 (任意)</label>
-            <input type="text" id="routeCode" placeholder="例: 中央01 / 1便" oninput="onFieldUpdate()" class="w-full p-1.5 border border-slate-200 rounded text-xs bg-slate-50">
-          </div>
-          <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">元請け・荷主区分 (任意)</label>
-            <input type="text" id="clientName" placeholder="例: 宅配便 / スポット便" oninput="onFieldUpdate()" class="w-full p-1.5 border border-slate-200 rounded text-xs bg-slate-50">
-          </div>
+        <!-- 担当コース & メーター距離自動計算 -->
+        <div class="pt-1 text-xs">
+          <label class="text-xs font-extrabold text-slate-800 block mb-1">担当コース・便名 (任意)</label>
+          <input type="text" id="routeCode" placeholder="例: 中央01 / 1便" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-900 bg-slate-50 focus:bg-white">
         </div>
 
         <div class="grid grid-cols-3 gap-2 pt-1 text-xs items-end">
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">開始メーター (km)</label>
-            <input type="number" id="startOdo" placeholder="0" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-mono text-right font-bold">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">開始メーター (km)</label>
+            <input type="number" id="startOdo" placeholder="0" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono text-right font-extrabold text-slate-900">
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">終了メーター (km)</label>
-            <input type="number" id="endOdo" placeholder="0" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-mono text-right font-bold">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">終了メーター (km)</label>
+            <input type="number" id="endOdo" placeholder="0" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono text-right font-extrabold text-slate-900">
           </div>
           <div class="bg-slate-900 text-white p-2 rounded-lg text-center">
-            <span class="text-[10px] text-slate-300 block">走行距離</span>
+            <span class="text-[11px] font-bold text-slate-200 block">走行距離</span>
             <span id="distanceDisplay" class="text-sm font-black font-mono text-amber-300">0 km</span>
           </div>
         </div>
       </section>
 
-      <!-- 主な経過地点（動的複数追加・通過打刻） -->
-      <section id="section-via" class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2.5 transition-all">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h2 class="text-sm font-extrabold text-slate-900">📍 主な経過地点・集配エリア</h2>
-          <button type="button" onclick="addViaPoint()" class="px-3 py-1.5 bg-brand-800 text-white font-bold rounded-lg text-xs shadow-sm">＋ 地点追加</button>
+      <!-- 主な経過地点（到着・出発の2時刻記録 ＆ その場登録・ワンタップ到着打刻） -->
+      <section id="section-via" class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-2.5 transition-all">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+          <h2 class="text-sm font-extrabold text-slate-900">📍 主な経過地点・集配エリア（到着・出発）</h2>
+          <button type="button" onclick="addViaPoint()" class="px-3 py-1.5 bg-brand-800 text-white font-bold rounded-lg text-xs shadow-sm">＋ 行を追加</button>
         </div>
-        <div id="viaQuickChips" class="flex flex-wrap gap-1.5"></div>
+
+        <!-- よく使う経過地点の登録・呼び出しエリア -->
+        <div class="bg-blue-50/80 border border-blue-300 rounded-xl p-2.5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-brand-900">⭐ よく使う経過地点（タップで即到着打刻）</span>
+            <button type="button" onclick="togglePresetEdit('via')" id="btnEditViaPresets" class="text-xs font-extrabold text-brand-800 underline">整理する</button>
+          </div>
+          <div id="viaQuickChips" class="flex flex-wrap gap-1.5"></div>
+          <div class="flex gap-1.5 pt-0.5">
+            <input type="text" id="inlineViaPresetInput" placeholder="よく行く拠点・エリア名を登録（例: 〇〇センター）" class="flex-1 p-1.5 border border-blue-300 rounded-lg text-xs font-semibold text-slate-900 bg-white">
+            <button type="button" onclick="addCustomPreset('via', 'inlineViaPresetInput')" class="px-3 py-1.5 bg-brand-800 hover:bg-brand-900 text-white font-extrabold rounded-lg text-xs whitespace-nowrap shadow-sm">
+              ＋ 地点登録
+            </button>
+          </div>
+        </div>
+
         <div id="viaPointsContainer" class="space-y-2"></div>
       </section>
 
-      <!-- 休憩・睡眠記録（複数回対応・自動分数計算） -->
-      <section id="section-break" class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2.5 transition-all">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+      <!-- 休憩・睡眠記録（その場でよく使う休憩場所の登録＆ワンタップ打刻） -->
+      <section id="section-break" class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-2.5 transition-all">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
           <div>
             <h2 class="text-sm font-extrabold text-slate-900">☕ 休憩・睡眠の記録</h2>
-            <span id="totalBreakSummary" class="text-[11px] font-bold text-emerald-700">合計休憩: 0分</span>
+            <span id="totalBreakSummary" class="text-xs font-extrabold text-emerald-800">合計休憩: 0分</span>
           </div>
           <button type="button" onclick="addBreakSlot()" class="px-3 py-1.5 bg-emerald-700 text-white font-bold rounded-lg text-xs shadow-sm">＋ 休憩追加</button>
         </div>
-        <div id="breakQuickChips" class="flex flex-wrap gap-1.5"></div>
+
+        <!-- よく使う休憩場所の登録・呼び出しエリア -->
+        <div class="bg-emerald-50/80 border border-emerald-300 rounded-xl p-2.5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-emerald-950">⭐ よく使う休憩場所（タップで即休憩開始）</span>
+            <button type="button" onclick="togglePresetEdit('break')" id="btnEditBreakPresets" class="text-xs font-extrabold text-emerald-900 underline">整理する</button>
+          </div>
+          <div id="breakQuickChips" class="flex flex-wrap gap-1.5"></div>
+          <div class="flex gap-1.5 pt-0.5">
+            <input type="text" id="inlineBreakPresetInput" placeholder="よく使う休憩場所を登録（例: 道の駅 / 〇〇PA）" class="flex-1 p-1.5 border border-emerald-300 rounded-lg text-xs font-semibold text-slate-900 bg-white">
+            <button type="button" onclick="addCustomPreset('break', 'inlineBreakPresetInput')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-lg text-xs whitespace-nowrap shadow-sm">
+              ＋ 場所登録
+            </button>
+          </div>
+        </div>
+
         <div id="breaksContainer" class="space-y-2"></div>
       </section>
     </div>
 
     <!-- TAB 2: ② 待機（荷待ち30分以上・荷役・事故） -->
     <div id="content-wait" class="hidden space-y-3.5">
-      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
           <h2 class="text-sm font-extrabold text-slate-900">⏳ 荷主都合による待機時間（30分以上義務）</h2>
-          <span id="waitingDurationBadge" class="px-2.5 py-0.5 bg-slate-100 text-slate-700 font-extrabold rounded-full text-xs">待機: 0分</span>
+          <span id="waitingDurationBadge" class="px-2.5 py-0.5 bg-slate-200 text-slate-900 font-extrabold rounded-full text-xs">待機: 0分</span>
         </div>
 
         <div class="space-y-2.5 text-xs">
           <div>
-            <label class="text-[11px] text-slate-600 block mb-0.5 font-medium">集貨・配達等の地点 (荷待ち場所)</label>
-            <input type="text" id="waitingPlace" placeholder="例: 〇〇物流センター第2バース" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">集貨・配達等の地点 (荷待ち場所)</label>
+            <input type="text" id="waitingPlace" placeholder="例: 〇〇物流センター第2バース" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-semibold text-slate-900">
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="text-[10px] text-slate-500 block mb-0.5">荷主指定の到着時刻</label>
-              <input type="time" id="waitingDesignatedTime" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-mono">
+              <label class="text-xs font-extrabold text-slate-800 block mb-1">荷主指定の到着時刻</label>
+              <input type="time" id="waitingDesignatedTime" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-bold text-slate-900">
             </div>
             <div>
-              <label class="text-[10px] text-slate-500 block mb-0.5">実際の到着時刻</label>
+              <label class="text-xs font-extrabold text-slate-800 block mb-1">実際の到着時刻</label>
               <div class="flex gap-1">
-                <input type="time" id="waitingArrivalTime" onchange="onFieldUpdate()" class="flex-1 p-2 border border-slate-200 rounded-lg bg-slate-50 font-mono">
+                <input type="time" id="waitingArrivalTime" onchange="onFieldUpdate()" class="flex-1 p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-bold text-slate-900">
                 <button type="button" onclick="stampSimpleField('waitingArrivalTime')" class="px-2.5 bg-amber-600 text-white font-bold rounded-lg text-[11px]">打刻</button>
               </div>
             </div>
@@ -356,25 +380,25 @@
 
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="text-[10px] text-slate-500 block mb-0.5">荷役開始時刻 (待機終了)</label>
+              <label class="text-xs font-extrabold text-slate-800 block mb-1">荷役開始時刻 (待機終了)</label>
               <div class="flex gap-1">
-                <input type="time" id="cargoStartTime" onchange="onFieldUpdate()" class="flex-1 p-2 border border-slate-200 rounded-lg bg-slate-50 font-mono">
+                <input type="time" id="cargoStartTime" onchange="onFieldUpdate()" class="flex-1 p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-bold text-slate-900">
                 <button type="button" onclick="stampSimpleField('cargoStartTime')" class="px-2.5 bg-amber-600 text-white font-bold rounded-lg text-[11px]">打刻</button>
               </div>
             </div>
             <div>
-              <label class="text-[10px] text-slate-500 block mb-0.5">現場出発時刻</label>
+              <label class="text-xs font-extrabold text-slate-800 block mb-1">現場出発時刻</label>
               <div class="flex gap-1">
-                <input type="time" id="waitingDepartureTime" onchange="onFieldUpdate()" class="flex-1 p-2 border border-slate-200 rounded-lg bg-slate-50 font-mono">
-                <button type="button" onclick="stampSimpleField('waitingDepartureTime')" class="px-2.5 bg-slate-700 text-white font-bold rounded-lg text-[11px]">打刻</button>
+                <input type="time" id="waitingDepartureTime" onchange="onFieldUpdate()" class="flex-1 p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-bold text-slate-900">
+                <button type="button" onclick="stampSimpleField('waitingDepartureTime')" class="px-2.5 bg-slate-800 text-white font-bold rounded-lg text-[11px]">打刻</button>
               </div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-2 pt-1">
             <div>
-              <label class="text-[10px] text-slate-500 block mb-0.5">荷役作業・附帯業務</label>
-              <select id="cargoWorkType" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+              <label class="text-xs font-extrabold text-slate-800 block mb-1">荷役作業・附帯業務</label>
+              <select id="cargoWorkType" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-bold text-slate-900">
                 <option value="なし">なし</option>
                 <option value="手積み・手降ろし（バラ）">手積み・手降ろし（バラ）</option>
                 <option value="カゴ車・パレット荷役">カゴ車・パレット荷役</option>
@@ -382,8 +406,8 @@
               </select>
             </div>
             <div>
-              <label class="text-[10px] text-slate-500 block mb-0.5">荷主確認状況</label>
-              <select id="cargoConfirmation" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+              <label class="text-xs font-extrabold text-slate-800 block mb-1">荷主確認状況</label>
+              <select id="cargoConfirmation" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-bold text-slate-900">
                 <option value="口頭確認あり">口頭確認あり</option>
                 <option value="サイン・受領印あり">サイン・受領印あり</option>
                 <option value="荷主不在（写真・記録保全）">荷主不在（写真・記録保全）</option>
@@ -394,93 +418,93 @@
       </section>
 
       <!-- 事故・著しい遅延・異常記録 -->
-      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2.5 text-xs">
-        <h2 class="text-sm font-extrabold text-slate-900 border-b border-slate-100 pb-2">🚨 事故・著しい遅延・車両異常</h2>
-        <select id="incidentFlag" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-bold">
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-2.5 text-xs">
+        <h2 class="text-sm font-extrabold text-slate-900 border-b border-slate-200 pb-2">🚨 事故・著しい遅延・車両異常</h2>
+        <select id="incidentFlag" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
           <option value="なし">異常なし（順調運行）</option>
           <option value="交通渋滞による遅延">交通渋滞による著しい遅延</option>
           <option value="悪天候・通行止め">悪天候・通行止めによる迂回遅延</option>
           <option value="車両故障・パンク">車両故障・パンク等</option>
           <option value="交通事故・物損">交通事故・接触・荷物破損</option>
         </select>
-        <textarea id="incidentDetail" rows="2" placeholder="異常・遅延があった場合の概要・要因・講じた措置を記入" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50"></textarea>
+        <textarea id="incidentDetail" rows="2" placeholder="異常・遅延があった場合の概要・要因・講じた措置を記入" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-semibold text-slate-900"></textarea>
       </section>
     </div>
 
     <!-- TAB 3: ③ 点呼（法定10項目・日常点検） -->
     <div id="content-rollcall" class="hidden space-y-3.5 text-xs">
       <!-- 乗務前点呼（6項目） -->
-      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2.5">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-2.5">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
           <h2 class="text-sm font-extrabold text-slate-900">📋 乗務前点呼（6項目）</h2>
           <button type="button" onclick="setAllRollCallGood()" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-xs shadow-sm">✅ 全項目「良好」</button>
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">1. 点呼執行者名</label>
-            <input type="text" id="preRollCallExecutor" placeholder="管理者名 / 自主確認" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">1. 点呼執行者名</label>
+            <input type="text" id="preRollCallExecutor" placeholder="管理者名 / 自主確認" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-semibold text-slate-900">
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">2. 点呼方法</label>
-            <select id="preRollCallMethod" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">2. 点呼方法</label>
+            <select id="preRollCallMethod" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-bold text-slate-900">
               <option value="対面">対面</option>
               <option value="電話・IT点呼">電話・IT点呼</option>
               <option value="個人事業主・自主点呼">個人事業主・自主点呼</option>
             </select>
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">3. 酒気帯び有無 (mg/L)</label>
-            <input type="text" id="preAlcohol" value="0.00" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-mono font-bold">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">3. 酒気帯び有無 (mg/L)</label>
+            <input type="text" id="preAlcohol" value="0.00" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-extrabold text-slate-900">
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">4. 日常点検結果</label>
-            <select id="preDailyInspection" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-bold">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">4. 日常点検結果</label>
+            <select id="preDailyInspection" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
               <option value="良好">良好（異常なし）</option>
               <option value="要整備">要整備・補充あり</option>
             </select>
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">5. 疾病・疲労・睡眠状況</label>
-            <select id="preHealth" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-bold">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">5. 疾病・疲労・睡眠状況</label>
+            <select id="preHealth" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
               <option value="良好">良好（睡眠十分）</option>
               <option value="やや疲労（休憩徹底）">やや疲労（休憩徹底）</option>
             </select>
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">6. 指示事項</label>
-            <input type="text" id="preInstruction" value="法令遵守・車間距離確保" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">6. 指示事項</label>
+            <input type="text" id="preInstruction" value="法令遵守・車間距離確保" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-semibold text-slate-900">
           </div>
         </div>
         <div class="flex flex-wrap gap-1.5 pt-1">
-          <button type="button" onclick="setInstruction('法令遵守・車間距離確保')" class="px-2 py-1 bg-blue-50 text-brand-800 border border-blue-200 rounded font-bold text-[11px]">法令遵守</button>
-          <button type="button" onclick="setInstruction('雨天スリップ注意・早め減速')" class="px-2 py-1 bg-slate-100 text-slate-700 border rounded font-bold text-[11px]">雨天注意</button>
-          <button type="button" onclick="setInstruction('バック時降車確認・死角注意')" class="px-2 py-1 bg-slate-100 text-slate-700 border rounded font-bold text-[11px]">バック確認</button>
+          <button type="button" onclick="setInstruction('法令遵守・車間距離確保')" class="px-2.5 py-1 bg-blue-50 text-brand-900 border border-blue-300 rounded font-extrabold text-[11px]">法令遵守</button>
+          <button type="button" onclick="setInstruction('雨天スリップ注意・早め減速')" class="px-2.5 py-1 bg-slate-100 text-slate-800 border border-slate-300 rounded font-extrabold text-[11px]">雨天注意</button>
+          <button type="button" onclick="setInstruction('バック時降車確認・死角注意')" class="px-2.5 py-1 bg-slate-100 text-slate-800 border border-slate-300 rounded font-extrabold text-[11px]">バック確認</button>
         </div>
       </section>
 
       <!-- 乗務後点呼（4項目） -->
-      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2.5">
-        <h2 class="text-sm font-extrabold text-slate-900 border-b border-slate-100 pb-2">📋 乗務後点呼（4項目）</h2>
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-2.5">
+        <h2 class="text-sm font-extrabold text-slate-900 border-b border-slate-200 pb-2">📋 乗務後点呼（4項目）</h2>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">1. 点呼執行者名</label>
-            <input type="text" id="postRollCallExecutor" placeholder="管理者名 / 自主確認" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">1. 点呼執行者名</label>
+            <input type="text" id="postRollCallExecutor" placeholder="管理者名 / 自主確認" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-semibold text-slate-900">
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">2. 点呼方法</label>
-            <select id="postRollCallMethod" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">2. 点呼方法</label>
+            <select id="postRollCallMethod" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-bold text-slate-900">
               <option value="対面">対面</option>
               <option value="電話・IT点呼">電話・IT点呼</option>
               <option value="個人事業主・自主点呼">個人事業主・自主点呼</option>
             </select>
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">3. 酒気帯び有無 (mg/L)</label>
-            <input type="text" id="postAlcohol" value="0.00" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-mono font-bold">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">3. 酒気帯び有無 (mg/L)</label>
+            <input type="text" id="postAlcohol" value="0.00" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-extrabold text-slate-900">
           </div>
           <div>
-            <label class="text-[10px] text-slate-500 block mb-0.5">4. 自動車・道路・運行状況</label>
-            <select id="postVehicleStatus" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-200 rounded-lg bg-slate-50 font-bold">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">4. 自動車・道路・運行状況</label>
+            <select id="postVehicleStatus" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
               <option value="異常なし">異常なし</option>
               <option value="要点検・報告事項あり">要点検・報告事項あり</option>
             </select>
@@ -493,12 +517,12 @@
     <div id="content-print" class="hidden space-y-3.5">
 
       <!-- LINE日報生成（法定標準のみ・シンプル版） -->
-      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 space-y-2.5 no-print">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-2.5 no-print">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
           <h2 class="text-sm font-extrabold text-slate-900">💬 LINE日報生成</h2>
-          <span class="text-[11px] font-bold text-slate-500">法定標準フォーマット</span>
+          <span class="text-xs font-bold text-slate-700">法定標準フォーマット</span>
         </div>
-        <textarea id="lineReportPreview" rows="7" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs font-mono bg-slate-50 leading-relaxed"></textarea>
+        <textarea id="lineReportPreview" rows="7" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs font-mono text-slate-900 bg-slate-50 leading-relaxed"></textarea>
         <div class="grid grid-cols-2 gap-2">
           <button type="button" onclick="copyLineReport()" class="py-2.5 bg-slate-800 text-white font-bold rounded-xl text-xs shadow">📋 文面をコピー</button>
           <button type="button" onclick="sendLineDirect()" class="py-2.5 bg-[#06C755] text-white font-bold rounded-xl text-xs shadow">💬 LINEアプリで送信</button>
@@ -506,7 +530,7 @@
       </section>
 
       <!-- クラウド送信・A4印刷・CSV出力アクションバー -->
-      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-200 grid grid-cols-3 gap-2 no-print">
+      <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 grid grid-cols-3 gap-2 no-print">
         <button type="button" onclick="sendToGoogleSheets()" class="py-3 px-2 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-xl text-xs shadow flex flex-col items-center justify-center gap-0.5">
           <span>📊</span>
           <span>シート送信</span>
@@ -533,18 +557,18 @@
             <div><strong>記録日:</strong> <span id="prDate" class="font-bold">----</span></div>
             <div><strong>事業者:</strong> <span id="prCompany" class="font-bold">未設定</span></div>
             <div class="border border-slate-600 px-2.5 py-1 text-center rounded bg-slate-50">
-              <span class="text-[9px] block text-slate-500 leading-none">管理者確認印</span>
-              <span class="text-xs font-bold text-slate-300">印</span>
+              <span class="text-[9px] block text-slate-700 leading-none font-bold">管理者確認印</span>
+              <span class="text-xs font-bold text-slate-400">印</span>
             </div>
           </div>
         </div>
 
         <!-- 基本情報グリッド -->
         <div class="bg-slate-50 border border-slate-300 rounded p-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-          <div><span class="text-slate-500">運転者氏名:</span><br><strong id="prDriver" class="text-slate-900">未設定</strong></div>
-          <div><span class="text-slate-500">車両番号:</span><br><strong id="prVehicle" class="font-mono text-slate-900">未設定</strong></div>
-          <div><span class="text-slate-500">営業所・所属:</span><br><span id="prAffiliation" class="font-semibold text-slate-800">未設定</span></div>
-          <div><span class="text-slate-500">コース・荷主:</span><br><span id="prRouteCode" class="font-bold text-slate-900">---</span> / <span id="prClientName" class="font-semibold">---</span></div>
+          <div><span class="text-slate-700 font-bold">運転者氏名:</span><br><strong id="prDriver" class="text-slate-900">未設定</strong></div>
+          <div><span class="text-slate-700 font-bold">車両番号:</span><br><strong id="prVehicle" class="font-mono text-slate-900">未設定</strong></div>
+          <div><span class="text-slate-700 font-bold">営業所・所属:</span><br><span id="prAffiliation" class="font-bold text-slate-900">未設定</span></div>
+          <div><span class="text-slate-700 font-bold">担当コース:</span><br><span id="prRouteCode" class="font-bold text-slate-900">---</span></div>
         </div>
 
         <!-- 高密度2カラム本体 -->
@@ -559,7 +583,7 @@
             </div>
 
             <div class="border border-slate-300 rounded p-2.5 print-box space-y-1">
-              <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">2. 主な経過地点</div>
+              <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">2. 主な経過地点（到着・出発）</div>
               <div id="prViaPoints" class="whitespace-pre-line leading-relaxed">記録なし</div>
             </div>
 
@@ -594,21 +618,21 @@
         </div>
 
         <!-- 備考欄 -->
-        <div class="border border-slate-300 rounded p-2.5 bg-slate-50 text-[11px] text-slate-700">
+        <div class="border border-slate-300 rounded p-2.5 bg-slate-50 text-[11px] text-slate-800">
           <strong>備考（法定保存期間：1年間）：</strong> 貨物軽自動車運送事業輸送安全規則に基づき、上記の通り業務の記録および点呼を実施した。
         </div>
       </section>
     </div>
 
     <!-- フッター（更新履歴導線・BYOD免責表記） -->
-    <footer class="pt-2 pb-6 text-center text-xs text-slate-500 space-y-2 no-print">
+    <footer class="pt-2 pb-6 text-center text-xs text-slate-700 space-y-2 no-print">
       <div>
-        <button type="button" onclick="openChangelogModal()" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-300 shadow-sm inline-flex items-center gap-1.5">
+        <button type="button" onclick="openChangelogModal()" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl border border-slate-300 shadow-sm inline-flex items-center gap-1.5">
           <span>📋</span>
           <span>アプリの更新履歴（リリースノート）を見る</span>
         </button>
       </div>
-      <p class="text-[11px] text-slate-400">データは端末内（LocalStorage）に保存され、個人情報は外部送信されません。</p>
+      <p class="text-[11px] text-slate-600 font-medium">データは端末内（LocalStorage）に保存され、個人情報は外部送信されません。</p>
     </footer>
 
   </main>
@@ -616,35 +640,40 @@
   <!-- 更新履歴モーダル -->
   <div id="changelogModal" class="fixed inset-0 bg-slate-950/80 z-50 hidden flex items-center justify-center p-3 backdrop-blur-sm no-print">
     <div class="bg-white rounded-2xl max-w-md w-full max-h-[88dvh] overflow-y-auto shadow-2xl border border-slate-200 p-4 space-y-3.5">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
         <h3 class="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-1.5">
           <span>📋</span>
           <span>軽貨物 業務の記録簿 更新履歴</span>
         </h3>
-        <button type="button" onclick="closeChangelogModal()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold">✕ 閉じる</button>
+        <button type="button" onclick="closeChangelogModal()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-800">✕ 閉じる</button>
       </div>
       <div class="space-y-3 text-xs">
-        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1">
+        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-300 space-y-1">
           <div class="flex items-center justify-between">
-            <span class="font-black text-emerald-950">v2.2（最新）</span>
+            <span class="font-black text-emerald-950">v2.4（最新）</span>
             <span class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded">NEW</span>
           </div>
-          <ul class="list-disc list-inside text-emerald-900 space-y-0.5 leading-relaxed">
-            <li><strong>4タブ法定記録特化スリム化：</strong>不要な荷物カウンター・収支入力を削除し、2025年4月法改正の「業務の記録」と「点呼10項目」に100%集中できる構成へ刷新。</li>
-            <li><strong>LINE日報の法定標準一本化 ＆ 一般公開クリーン初期値化：</strong>初期値を完全空欄化し、誰でも安全に使える無料公開仕様へ統一。</li>
+          <ul class="list-disc list-inside text-emerald-950 space-y-0.5 leading-relaxed">
+            <li><strong>経過地点の「到着・出発」2時刻記録に対応：</strong>各経過地点で到着時刻・出発時刻の両方をワンタップ打刻・記録できるように拡張。</li>
+            <li><strong>画面全体の文字コントラスト強化：</strong>「休憩開始」「休憩終了」など薄かったラベル文字を濃く太い文字へ変更し、車内での視認性を大幅向上。</li>
+          </ul>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+          <div class="font-black text-slate-900">v2.3 — 「元請け・荷主区分」削除 ＆ 地点/休憩その場登録</div>
+          <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
+            <li>「元請け・荷主区分」を削除し、各カード内からよく使う経過地点・休憩場所を直接登録・整理できるように強化。</li>
+          </ul>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+          <div class="font-black text-slate-900">v2.2 — 4タブ法定記録特化スリム化</div>
+          <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
+            <li>不要な荷物カウンター・収支入力を削除し、2025年4月法改正の「業務の記録」と「点呼10項目」に100%集中できる構成へ刷新。</li>
           </ul>
         </div>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
           <div class="font-black text-slate-900">v2.1 — 誤打刻ゼロ化 ＆ A4縦1ページ高密度帳票</div>
-          <ul class="list-disc list-inside text-slate-700 space-y-0.5 leading-relaxed">
+          <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
             <li>最上部への「経過地点・休憩クイックジャンプ」配置、「誤打刻ロック」および「打刻済み上書き確認ガード」を実装。</li>
-            <li>A4縦1ページにピタリと収まる高密度2カラム帳票印刷CSSを実装。</li>
-          </ul>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-          <div class="font-black text-slate-900">v1.0 — 初版リリース</div>
-          <ul class="list-disc list-inside text-slate-700 space-y-0.5 leading-relaxed">
-            <li>貨物軽自動車運送事業の業務記録・点呼10項目・30分以上荷待ち記録・GASスプレッドシート連携を実装。</li>
           </ul>
         </div>
       </div>
@@ -667,6 +696,7 @@
     let currentBreaks = [];
     let isStampLocked = false;
     let pendingStampField = null;
+    let editPresetMode = { via: false, break: false };
 
     function getTodayStr() {
       const d = new Date();
@@ -746,21 +776,37 @@
       renderPresetsUI();
     }
 
-    function addCustomPreset(type) {
-      const inp = document.getElementById(type === 'via' ? 'newViaPresetInput' : 'newBreakPresetInput');
-      const val = (inp.value || '').trim();
-      if (!val) return;
+    function addCustomPreset(type, inputId) {
+      const inp = document.getElementById(inputId);
+      const val = (inp && inp.value ? inp.value : '').trim();
+      if (!val) {
+        showToast('登録する名称を入力してください', 'error');
+        return;
+      }
       const p = getPresets();
-      p[type].push(val);
+      if (!p[type].includes(val)) {
+        p[type].push(val);
+      }
       inp.value = '';
       savePresets(p);
-      showToast('よく使う場所に追加しました', 'success');
+      showToast(`「${val}」を登録しました！`, 'success');
     }
 
     function removeCustomPreset(type, idx) {
       const p = getPresets();
+      const removed = p[type][idx];
       p[type].splice(idx, 1);
       savePresets(p);
+      showToast(`「${removed}」を削除しました`, 'info');
+    }
+
+    function togglePresetEdit(type) {
+      editPresetMode[type] = !editPresetMode[type];
+      const btn = document.getElementById(type === 'via' ? 'btnEditViaPresets' : 'btnEditBreakPresets');
+      if (btn) {
+        btn.textContent = editPresetMode[type] ? '完了' : '整理する';
+      }
+      renderPresetsUI();
     }
 
     function renderPresetsUI() {
@@ -771,30 +817,36 @@
       const breakChips = document.getElementById('breakQuickChips');
 
       viaTagList.innerHTML = p.via.length > 0 ? p.via.map((item, idx) => `
-        <span class="inline-flex items-center gap-1 bg-slate-100 border border-slate-200 rounded-lg px-2 py-1 text-xs">
+        <span class="inline-flex items-center gap-1 bg-slate-100 border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold text-slate-900">
           <span>${item}</span>
-          <button type="button" onclick="removeCustomPreset('via', ${idx})" class="text-rose-600 font-bold px-1">🗑️ 削除</button>
+          <button type="button" onclick="removeCustomPreset('via', ${idx})" class="text-rose-700 font-extrabold px-1">🗑️ 削除</button>
         </span>
-      `).join('') : '<span class="text-[11px] text-slate-400">未登録（下の入力欄から追加できます）</span>';
+      `).join('') : '<span class="text-xs font-medium text-slate-600">未登録（下の入力欄から登録できます）</span>';
 
       breakTagList.innerHTML = p.break.length > 0 ? p.break.map((item, idx) => `
-        <span class="inline-flex items-center gap-1 bg-slate-100 border border-slate-200 rounded-lg px-2 py-1 text-xs">
+        <span class="inline-flex items-center gap-1 bg-slate-100 border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold text-slate-900">
           <span>${item}</span>
-          <button type="button" onclick="removeCustomPreset('break', ${idx})" class="text-rose-600 font-bold px-1">🗑️ 削除</button>
+          <button type="button" onclick="removeCustomPreset('break', ${idx})" class="text-rose-700 font-extrabold px-1">🗑️ 削除</button>
         </span>
-      `).join('') : '<span class="text-[11px] text-slate-400">未登録（下の入力欄から追加できます）</span>';
+      `).join('') : '<span class="text-xs font-medium text-slate-600">未登録（下の入力欄から登録できます）</span>';
 
-      viaChips.innerHTML = p.via.map(item => `
-        <button type="button" onclick="quickAddVia('${item.replace(/'/g, "\\'")}')" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-brand-800 border border-blue-200 rounded-lg font-bold text-xs">
-          ＋ ${item}
-        </button>
-      `).join('');
+      viaChips.innerHTML = p.via.length > 0 ? p.via.map((item, idx) => `
+        <div class="inline-flex items-center rounded-lg overflow-hidden border border-blue-400 bg-white shadow-xs">
+          <button type="button" onclick="quickAddVia('${item.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 hover:bg-blue-100 text-brand-900 font-extrabold text-xs">
+            ＋ ${item}
+          </button>
+          ${editPresetMode.via ? `<button type="button" onclick="removeCustomPreset('via', ${idx})" class="px-2 py-1.5 bg-rose-50 text-rose-700 border-l border-blue-300 font-bold text-[11px]">🗑️</button>` : ''}
+        </div>
+      `).join('') : '<span class="text-xs font-medium text-slate-700">まだ登録がありません。下の入力欄からよく行く拠点やエリアを登録してください。</span>';
 
-      breakChips.innerHTML = p.break.map(item => `
-        <button type="button" onclick="quickAddBreak('${item.replace(/'/g, "\\'")}')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg font-bold text-xs">
-          ＋ ${item}
-        </button>
-      `).join('');
+      breakChips.innerHTML = p.break.length > 0 ? p.break.map((item, idx) => `
+        <div class="inline-flex items-center rounded-lg overflow-hidden border border-emerald-400 bg-white shadow-xs">
+          <button type="button" onclick="quickAddBreak('${item.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 hover:bg-emerald-100 text-emerald-950 font-extrabold text-xs">
+            ＋ ${item}
+          </button>
+          ${editPresetMode.break ? `<button type="button" onclick="removeCustomPreset('break', ${idx})" class="px-2 py-1.5 bg-rose-50 text-rose-700 border-l border-emerald-300 font-bold text-[11px]">🗑️</button>` : ''}
+        </div>
+      `).join('') : '<span class="text-xs font-medium text-slate-700">まだ登録がありません。下の入力欄からよく使う休憩場所を登録してください。</span>';
     }
 
     function getAllRecords() {
@@ -815,8 +867,7 @@
         startOdo: '',
         endOdo: '',
         routeCode: s.defaultRoute || '',
-        clientName: '',
-        viaPoints: [{ time: '', location: '' }],
+        viaPoints: [{ arrivalTime: '', departureTime: '', location: '' }],
         breaks: [{ startTime: '', endTime: '', minutes: 0, location: '' }],
         waitingPlace: '',
         waitingDesignatedTime: '',
@@ -930,7 +981,7 @@
         showToast('誤打刻ロックをONにしました', 'info');
       } else {
         btn.textContent = '🔓 誤打刻ロック: OFF';
-        btn.className = 'px-2.5 py-1 rounded-lg border text-[11px] font-extrabold bg-slate-100 text-slate-700 border-slate-300';
+        btn.className = 'px-2.5 py-1 rounded-lg border text-[11px] font-extrabold bg-slate-100 text-slate-800 border-slate-400';
         showToast('誤打刻ロックを解除しました', 'info');
       }
     }
@@ -979,45 +1030,66 @@
       showToast(`${now} を打刻しました`, 'success');
     }
 
-    // 経過地点リスト操作
+    // 経過地点リスト操作（到着・出発の2時刻記録対応）
     function renderViaPoints() {
       const box = document.getElementById('viaPointsContainer');
-      box.innerHTML = currentViaPoints.map((v, idx) => `
-        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 grid grid-cols-12 gap-1.5 items-end">
-          <div class="col-span-4 sm:col-span-3">
-            <label class="text-[10px] text-slate-500 block mb-0.5">通過時刻</label>
-            <div class="flex gap-1">
-              <input type="time" value="${v.time || ''}" onchange="updateVia(${idx}, 'time', this.value)" class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs font-mono">
-              <button type="button" onclick="stampVia(${idx})" class="px-2 bg-brand-800 text-white font-bold rounded text-[10px]">打刻</button>
+      box.innerHTML = currentViaPoints.map((v, idx) => {
+        const arrT = v.arrivalTime !== undefined ? v.arrivalTime : (v.time || '');
+        const depT = v.departureTime || '';
+        return `
+        <div class="p-2.5 rounded-xl bg-blue-50/40 border border-blue-200 space-y-2 text-xs">
+          <div class="grid grid-cols-2 gap-1.5">
+            <div>
+              <label class="text-xs font-extrabold text-slate-900 block mb-1">到着時刻</label>
+              <div class="flex gap-1">
+                <input type="time" value="${arrT}" onchange="updateVia(${idx}, 'arrivalTime', this.value)" class="flex-1 p-1.5 border border-slate-400 rounded bg-white font-mono font-bold text-slate-900">
+                <button type="button" onclick="stampVia(${idx}, 'arrivalTime')" class="px-2.5 bg-brand-800 text-white font-extrabold rounded text-[11px]">到着</button>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-extrabold text-slate-900 block mb-1">出発時刻</label>
+              <div class="flex gap-1">
+                <input type="time" value="${depT}" onchange="updateVia(${idx}, 'departureTime', this.value)" class="flex-1 p-1.5 border border-slate-400 rounded bg-white font-mono font-bold text-slate-900">
+                <button type="button" onclick="stampVia(${idx}, 'departureTime')" class="px-2.5 bg-slate-800 text-white font-extrabold rounded text-[11px]">出発</button>
+              </div>
             </div>
           </div>
-          <div class="col-span-6 sm:col-span-7">
-            <label class="text-[10px] text-slate-500 block mb-0.5">経過地点・エリア</label>
-            <input type="text" value="${(v.location || '').replace(/"/g, '&quot;')}" placeholder="例: 集荷拠点 / 配送エリア" oninput="updateVia(${idx}, 'location', this.value)" class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
-          </div>
-          <div class="col-span-2 text-right">
-            <button type="button" onclick="removeVia(${idx})" class="w-full py-1.5 bg-rose-50 text-rose-700 border border-rose-200 rounded font-bold text-[11px]">🗑️ 削除</button>
+          <div class="flex gap-1.5 items-center">
+            <input type="text" value="${(v.location || '').replace(/"/g, '&quot;')}" placeholder="経過地点・集配エリア（例: 集荷拠点 / 配送エリア）" oninput="updateVia(${idx}, 'location', this.value)" class="flex-1 p-1.5 border border-slate-300 rounded bg-white text-xs font-semibold text-slate-900">
+            <button type="button" onclick="removeVia(${idx})" class="px-2.5 py-1.5 bg-rose-50 text-rose-700 border border-rose-300 rounded font-extrabold text-[11px] whitespace-nowrap">🗑️ 削除</button>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
-    function addViaPoint(loc = '', time = '') {
-      currentViaPoints.push({ time, location: loc });
+    function addViaPoint(loc = '', arrivalTime = '') {
+      if (
+        currentViaPoints.length === 1 &&
+        !currentViaPoints[0].location &&
+        !currentViaPoints[0].arrivalTime &&
+        !currentViaPoints[0].departureTime &&
+        !currentViaPoints[0].time &&
+        loc
+      ) {
+        currentViaPoints[0] = { arrivalTime, departureTime: '', location: loc };
+      } else {
+        currentViaPoints.push({ arrivalTime, departureTime: '', location: loc });
+      }
       renderViaPoints();
       onFieldUpdate();
     }
 
     function quickAddVia(loc) {
       addViaPoint(loc, getNowTimeStr());
-      showToast(`経過地点「${loc}」を通過打刻しました`, 'success');
+      showToast(`経過地点「${loc}」を到着打刻しました`, 'success');
     }
 
-    function stampVia(idx) {
-      currentViaPoints[idx].time = getNowTimeStr();
+    function stampVia(idx, field) {
+      currentViaPoints[idx][field] = getNowTimeStr();
       renderViaPoints();
       onFieldUpdate();
-      showToast('通過時刻を打刻しました', 'success');
+      showToast(field === 'arrivalTime' ? '到着時刻を打刻しました' : '出発時刻を打刻しました', 'success');
     }
 
     function updateVia(idx, field, val) {
@@ -1027,7 +1099,7 @@
 
     function removeVia(idx) {
       currentViaPoints.splice(idx, 1);
-      if (currentViaPoints.length === 0) currentViaPoints.push({ time: '', location: '' });
+      if (currentViaPoints.length === 0) currentViaPoints.push({ arrivalTime: '', departureTime: '', location: '' });
       renderViaPoints();
       onFieldUpdate();
     }
@@ -1045,33 +1117,38 @@
     function renderBreaks() {
       const box = document.getElementById('breaksContainer');
       box.innerHTML = currentBreaks.map((b, idx) => `
-        <div class="p-2.5 rounded-xl bg-emerald-50/40 border border-emerald-200 space-y-1.5 text-xs">
+        <div class="p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-200 space-y-2 text-xs">
           <div class="grid grid-cols-2 gap-1.5">
             <div>
-              <label class="text-[10px] text-slate-500 block mb-0.5">休憩開始</label>
+              <label class="text-xs font-extrabold text-slate-900 block mb-1">休憩開始</label>
               <div class="flex gap-1">
-                <input type="time" value="${b.startTime || ''}" onchange="updateBreak(${idx}, 'startTime', this.value)" class="flex-1 p-1.5 border border-slate-300 rounded bg-white font-mono">
-                <button type="button" onclick="stampBreak(${idx}, 'startTime')" class="px-2 bg-emerald-700 text-white font-bold rounded text-[10px]">開始</button>
+                <input type="time" value="${b.startTime || ''}" onchange="updateBreak(${idx}, 'startTime', this.value)" class="flex-1 p-1.5 border border-slate-400 rounded bg-white font-mono font-bold text-slate-900">
+                <button type="button" onclick="stampBreak(${idx}, 'startTime')" class="px-2.5 bg-emerald-700 text-white font-extrabold rounded text-[11px]">開始</button>
               </div>
             </div>
             <div>
-              <label class="text-[10px] text-slate-500 block mb-0.5">休憩終了 (${b.minutes || 0}分)</label>
+              <label class="text-xs font-extrabold text-slate-900 block mb-1">休憩終了 (${b.minutes || 0}分)</label>
               <div class="flex gap-1">
-                <input type="time" value="${b.endTime || ''}" onchange="updateBreak(${idx}, 'endTime', this.value)" class="flex-1 p-1.5 border border-slate-300 rounded bg-white font-mono">
-                <button type="button" onclick="stampBreak(${idx}, 'endTime')" class="px-2 bg-slate-800 text-white font-bold rounded text-[10px]">終了</button>
+                <input type="time" value="${b.endTime || ''}" onchange="updateBreak(${idx}, 'endTime', this.value)" class="flex-1 p-1.5 border border-slate-400 rounded bg-white font-mono font-bold text-slate-900">
+                <button type="button" onclick="stampBreak(${idx}, 'endTime')" class="px-2.5 bg-slate-800 text-white font-extrabold rounded text-[11px]">終了</button>
               </div>
             </div>
           </div>
-          <div class="flex gap-1.5">
-            <input type="text" value="${(b.location || '').replace(/"/g, '&quot;')}" placeholder="休憩場所（コンビニ駐車場・道の駅等）" oninput="updateBreak(${idx}, 'location', this.value)" class="flex-1 p-1.5 border border-slate-300 rounded bg-white text-xs">
-            <button type="button" onclick="removeBreak(${idx})" class="px-2.5 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 rounded font-bold text-[11px]">🗑️ 削除</button>
+          <div class="flex gap-1.5 items-center">
+            <input type="text" value="${(b.location || '').replace(/"/g, '&quot;')}" placeholder="休憩場所（コンビニ駐車場・道の駅等）" oninput="updateBreak(${idx}, 'location', this.value)" class="flex-1 p-1.5 border border-slate-300 rounded bg-white text-xs font-semibold text-slate-900">
+            <button type="button" onclick="removeBreak(${idx})" class="px-2.5 py-1.5 bg-rose-50 text-rose-700 border border-rose-300 rounded font-extrabold text-[11px] whitespace-nowrap">🗑️ 削除</button>
           </div>
         </div>
       `).join('');
     }
 
     function addBreakSlot(loc = '') {
-      currentBreaks.push({ startTime: loc ? getNowTimeStr() : '', endTime: '', minutes: 0, location: loc });
+      const startTime = loc ? getNowTimeStr() : '';
+      if (currentBreaks.length === 1 && !currentBreaks[0].location && !currentBreaks[0].startTime && loc) {
+        currentBreaks[0] = { startTime, endTime: '', minutes: 0, location: loc };
+      } else {
+        currentBreaks.push({ startTime, endTime: '', minutes: 0, location: loc });
+      }
       renderBreaks();
       onFieldUpdate();
     }
@@ -1132,9 +1209,14 @@
       document.getElementById('startOdo').value = d.startOdo || '';
       document.getElementById('endOdo').value = d.endOdo || '';
       document.getElementById('routeCode').value = d.routeCode || '';
-      document.getElementById('clientName').value = d.clientName || '';
 
-      currentViaPoints = Array.isArray(d.viaPoints) && d.viaPoints.length > 0 ? d.viaPoints : [{ time: '', location: '' }];
+      currentViaPoints = Array.isArray(d.viaPoints) && d.viaPoints.length > 0
+        ? d.viaPoints.map(v => ({
+            arrivalTime: v.arrivalTime !== undefined ? v.arrivalTime : (v.time || ''),
+            departureTime: v.departureTime || '',
+            location: v.location || ''
+          }))
+        : [{ arrivalTime: '', departureTime: '', location: '' }];
       currentBreaks = Array.isArray(d.breaks) && d.breaks.length > 0 ? d.breaks : [{ startTime: '', endTime: '', minutes: 0, location: '' }];
       renderViaPoints();
       renderBreaks();
@@ -1182,7 +1264,6 @@
         endOdo: eOdo,
         distanceKm: dist,
         routeCode: document.getElementById('routeCode').value,
-        clientName: document.getElementById('clientName').value,
         viaPoints: currentViaPoints,
         breaks: currentBreaks,
         totalBreakMin,
@@ -1222,14 +1303,23 @@
       waitBadge.textContent = d.waitingMinutes >= 30 ? `⚠️ 法定記録対象 待機: ${d.waitingMinutes}分` : `待機: ${d.waitingMinutes}分`;
       waitBadge.className = d.waitingMinutes >= 30
         ? 'px-2.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded-full text-xs'
-        : 'px-2.5 py-0.5 bg-slate-100 text-slate-700 font-extrabold rounded-full text-xs';
+        : 'px-2.5 py-0.5 bg-slate-200 text-slate-900 font-extrabold rounded-full text-xs';
 
       refreshAllPreviews(d);
     }
 
+    function formatViaPointLine(v) {
+      const arr = v.arrivalTime || v.time || '';
+      const dep = v.departureTime || '';
+      const timePart = (arr || dep) ? `${arr || '--:--'}着〜${dep || '--:--'}発` : '';
+      return [timePart, v.location].filter(Boolean).join(' ');
+    }
+
     function refreshAllPreviews(d = collectCurrentData()) {
       const s = getSettings();
-      const viaStr = d.viaPoints.filter(v => v.location || v.time).map(v => `${v.time || '--:--'} ${v.location}`).join(' ➜ ') || '記録なし';
+      const validVias = d.viaPoints.filter(v => v.location || v.arrivalTime || v.departureTime || v.time);
+      const viaLineStr = validVias.map(formatViaPointLine).join(' ➜ ') || '記録なし';
+      const viaPrintStr = validVias.map(formatViaPointLine).join('\n') || '記録なし';
       const breakStr = d.breaks.filter(b => b.startTime || b.location).map(b => `${b.startTime || '--:--'}〜${b.endTime || '--:--'} (${b.minutes}分) ${b.location}`).join('\n') || '記録なし';
 
       // LINE日報生成（法定標準のみ）
@@ -1240,7 +1330,7 @@
 ■ 業務時間: ${d.startTime || '--:--'} 〜 ${d.endTime || '--:--'}
 ■ 走行距離: ${d.distanceKm} km (${d.startOdo} → ${d.endOdo})
 ■ 休憩合計: ${d.totalBreakMin}分
-■ 経過地点: ${viaStr}
+■ 経過地点: ${viaLineStr}
 ■ 乗務前点呼: ${d.preRollCallMethod} / Alc:${d.preAlcohol} / 点検:${d.preDailyInspection}
 ■ 乗務後点呼: ${d.postRollCallMethod} / Alc:${d.postAlcohol} / 車両:${d.postVehicleStatus}`;
 
@@ -1254,14 +1344,13 @@
       document.getElementById('prVehicle').textContent = s.vehicle || '未設定';
       document.getElementById('prAffiliation').textContent = [s.office, s.affiliation].filter(Boolean).join(' / ') || '未設定';
       document.getElementById('prRouteCode').textContent = d.routeCode || '---';
-      document.getElementById('prClientName').textContent = d.clientName || '---';
 
       document.getElementById('prStart').textContent = d.startTime || '--:--';
       document.getElementById('prStartLoc').textContent = d.startLocation || '---';
       document.getElementById('prEnd').textContent = d.endTime || '--:--';
       document.getElementById('prEndLoc').textContent = d.endLocation || '---';
       document.getElementById('prOdo').textContent = `${d.startOdo} km → ${d.endOdo} km（実走 ${d.distanceKm} km）`;
-      document.getElementById('prViaPoints').textContent = viaStr;
+      document.getElementById('prViaPoints').textContent = viaPrintStr;
       document.getElementById('prBreaks').textContent = `${breakStr}\n（合計休憩: ${d.totalBreakMin}分）`;
 
       document.getElementById('prPreRollCall').innerHTML = `執行者: ${d.preRollCallExecutor || '---'}（${d.preRollCallMethod}）<br>Alc: ${d.preAlcohol} mg/L / 点検: ${d.preDailyInspection} / 健康: ${d.preHealth}<br>指示: ${d.preInstruction}`;
@@ -1285,8 +1374,10 @@
     function exportCsv() {
       const d = collectCurrentData();
       const s = getSettings();
-      const header = '\uFEFF記録日,運転者,車両番号,業務開始,業務終了,走行距離km,休憩分,荷待ち分,乗務前Alc,乗務後Alc\n';
-      const row = `${d.date},"${s.driver}","${s.vehicle}",${d.startTime},${d.endTime},${d.distanceKm},${d.totalBreakMin},${d.waitingMinutes},${d.preAlcohol},${d.postAlcohol}\n`;
+      const validVias = d.viaPoints.filter(v => v.location || v.arrivalTime || v.departureTime || v.time);
+      const viaCsv = validVias.map(formatViaPointLine).join(' / ');
+      const header = '\uFEFF記録日,運転者,車両番号,業務開始,業務終了,走行距離km,経過地点(到着・出発),休憩分,荷待ち分,乗務前Alc,乗務後Alc\n';
+      const row = `${d.date},"${s.driver}","${s.vehicle}",${d.startTime},${d.endTime},${d.distanceKm},"${viaCsv}",${d.totalBreakMin},${d.waitingMinutes},${d.preAlcohol},${d.postAlcohol}\n`;
       const blob = new Blob([header + row], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1302,6 +1393,7 @@
         return;
       }
       const d = collectCurrentData();
+      const validVias = d.viaPoints.filter(v => v.location || v.arrivalTime || v.departureTime || v.time);
       const payload = {
         ...d,
         company: s.affiliation || '未設定',
@@ -1310,7 +1402,7 @@
         vehicle: s.vehicle || '未設定',
         breakCount: d.breaks.filter(b => b.startTime).length,
         breakDetails: d.breaks.filter(b => b.startTime).map(b => `${b.startTime}-${b.endTime}(${b.location})`).join(' / '),
-        viaPoints: d.viaPoints.filter(v => v.location).map(v => `${v.time} ${v.location}`).join(' -> ')
+        viaPoints: validVias.map(formatViaPointLine).join(' -> ')
       };
       try {
         await fetch(s.gasUrl, {
@@ -1334,10 +1426,10 @@
         '    logSheet.setName("運行記録簿");',
         '    var data = JSON.parse(e.postData.contents);',
         '    if (logSheet.getLastRow() === 0) {',
-        '      logSheet.appendRow(["記録日","所属","営業所","乗務員名","車両番号","コース","荷主","開始時刻","開始地点","終了時刻","終了地点","開始メーター","終了メーター","走行距離km","休憩回数","合計休憩分","休憩内訳","経過地点","荷待ち場所","指定時刻","到着時刻","荷役開始","出発時刻","荷役区分","事故有無","事故詳細","前_執行者","前_方法","前_Alc","前_点検","前_健康","前_指示","後_執行者","後_方法","後_Alc","後_車両"]);',
-        '      logSheet.getRange(1, 1, 1, 36).setBackground("#0f172a").setFontColor("#ffffff").setFontWeight("bold");',
+        '      logSheet.appendRow(["記録日","所属","営業所","乗務員名","車両番号","コース","開始時刻","開始地点","終了時刻","終了地点","開始メーター","終了メーター","走行距離km","休憩回数","合計休憩分","休憩内訳","経過地点(到着・出発)","荷待ち場所","指定時刻","到着時刻","荷役開始","出発時刻","荷役区分","事故有無","事故詳細","前_執行者","前_方法","前_Alc","前_点検","前_健康","前_指示","後_執行者","後_方法","後_Alc","後_車両"]);',
+        '      logSheet.getRange(1, 1, 1, 35).setBackground("#0f172a").setFontColor("#ffffff").setFontWeight("bold");',
         '    }',
-        '    logSheet.appendRow([data.date,data.company,data.office,data.driver,data.vehicle,data.routeCode,data.clientName,data.startTime,data.startLocation,data.endTime,data.endLocation,data.startOdo,data.endOdo,data.distanceKm,data.breakCount,data.totalBreakMin,data.breakDetails,data.viaPoints,data.waitingPlace,data.waitingDesignatedTime,data.waitingArrivalTime,data.cargoStartTime,data.waitingDepartureTime,data.cargoWorkType,data.incidentFlag,data.incidentDetail,data.preRollCallExecutor,data.preRollCallMethod,data.preAlcohol,data.preDailyInspection,data.preHealth,data.preInstruction,data.postRollCallExecutor,data.postRollCallMethod,data.postAlcohol,data.postVehicleStatus]);',
+        '    logSheet.appendRow([data.date,data.company,data.office,data.driver,data.vehicle,data.routeCode,data.startTime,data.startLocation,data.endTime,data.endLocation,data.startOdo,data.endOdo,data.distanceKm,data.breakCount,data.totalBreakMin,data.breakDetails,data.viaPoints,data.waitingPlace,data.waitingDesignatedTime,data.waitingArrivalTime,data.cargoStartTime,data.waitingDepartureTime,data.cargoWorkType,data.incidentFlag,data.incidentDetail,data.preRollCallExecutor,data.preRollCallMethod,data.preAlcohol,data.preDailyInspection,data.preHealth,data.preInstruction,data.postRollCallExecutor,data.postRollCallMethod,data.postAlcohol,data.postVehicleStatus]);',
         '    return ContentService.createTextOutput(JSON.stringify({status:"success"})).setMimeType(ContentService.MimeType.JSON);',
         '  } catch (err) {',
         '    return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()})).setMimeType(ContentService.MimeType.JSON);',
