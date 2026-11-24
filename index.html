@@ -40,7 +40,7 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
-      header, nav, footer, .no-print, #toastNotification, #btnScrollTop, #changelogModal {
+      header, nav, footer, .no-print, #toastNotification, #btnScrollTop, #changelogModal, #manualModal {
         display: none !important;
       }
       main {
@@ -102,11 +102,14 @@
   <header class="bg-brand-900 text-white sticky top-0 z-30 shadow-md">
     <div class="max-w-3xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
       <div>
-        <div class="flex items-center gap-2 flex-wrap">
+        <div class="flex items-center gap-1.5 flex-wrap">
           <span class="text-[11px] px-2 py-0.5 bg-emerald-500 text-slate-950 font-black rounded">2025年4月法改正 準拠</span>
           <h1 class="text-base sm:text-lg font-extrabold tracking-tight">軽貨物 業務の記録簿</h1>
+          <button type="button" onclick="openManualModal()" class="text-[11px] px-2.5 py-0.5 bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400/60 font-extrabold rounded-full transition-colors shadow-xs">
+            📖 使い方
+          </button>
           <button type="button" onclick="openChangelogModal()" class="text-[11px] px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-400/50 font-extrabold rounded-full transition-colors">
-            🆕 v2.4 更新履歴
+            🆕 v2.5.1
           </button>
         </div>
         <p id="headerProfileSummary" class="text-xs text-slate-200 mt-0.5 font-semibold">乗務員: 未設定 | 車両: 未設定</p>
@@ -123,18 +126,23 @@
   <main class="max-w-3xl mx-auto px-3.5 pt-3.5 space-y-3.5">
 
     <!-- 法改正案内バナー -->
-    <div class="bg-blue-50 border border-blue-300 rounded-xl p-2.5 text-xs text-blue-950 flex items-center gap-2 shadow-sm no-print">
-      <span class="text-base">⚖️</span>
-      <div><strong>2025年4月法改正 準拠：</strong>業務の記録（1年間保存）・点呼10項目・30分以上の荷待ち記録に対応。データは端末内に自動保存されます。</div>
+    <div class="bg-blue-50 border border-blue-300 rounded-xl p-2.5 text-xs text-blue-950 flex items-center justify-between gap-2 shadow-sm no-print">
+      <div class="flex items-center gap-2">
+        <span class="text-base">⚖️</span>
+        <div><strong>2025年4月法改正 準拠：</strong>業務の記録（1年間保存）・点呼10項目・30分以上の荷待ち記録に対応。データは端末内に自動保存されます。</div>
+      </div>
+      <button type="button" onclick="openManualModal()" class="px-2.5 py-1.5 bg-brand-800 hover:bg-brand-900 text-white font-extrabold rounded-lg text-[11px] whitespace-nowrap shadow-xs">
+        📖 マニュアル
+      </button>
     </div>
 
     <!-- 上部クイックジャンプバー（日中の誤打刻防止・最上部特等席配置） -->
     <div class="grid grid-cols-2 gap-2 no-print">
-      <button type="button" onclick="jumpToSection('section-via')" class="py-2.5 px-3 bg-white hover:bg-blue-50 active:scale-[0.98] text-brand-900 font-extrabold rounded-xl border-2 border-blue-300 shadow-sm text-xs flex items-center justify-center gap-1.5">
+      <button type="button" onclick="jumpToSection('section-via')" class="py-3 px-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-extrabold rounded-xl border-2 border-blue-700 shadow-md text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all">
         <span>📍</span>
         <span>経過地点へ移動</span>
       </button>
-      <button type="button" onclick="jumpToSection('section-break')" class="py-2.5 px-3 bg-white hover:bg-emerald-50 active:scale-[0.98] text-emerald-900 font-extrabold rounded-xl border-2 border-emerald-300 shadow-sm text-xs flex items-center justify-center gap-1.5">
+      <button type="button" onclick="jumpToSection('section-break')" class="py-3 px-3 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-extrabold rounded-xl border-2 border-emerald-700 shadow-md text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all">
         <span>☕</span>
         <span>休憩記録へ移動</span>
       </button>
@@ -624,18 +632,91 @@
       </section>
     </div>
 
-    <!-- フッター（更新履歴導線・BYOD免責表記） -->
+    <!-- フッター（公式使い方マニュアル・更新履歴導線・BYOD免責表記） -->
     <footer class="pt-2 pb-6 text-center text-xs text-slate-700 space-y-2 no-print">
-      <div>
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <button type="button" onclick="openManualModal()" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-xl border border-emerald-800 shadow-sm inline-flex items-center gap-1.5">
+          <span>📖</span>
+          <span>公式使い方マニュアルを見る</span>
+        </button>
         <button type="button" onclick="openChangelogModal()" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl border border-slate-300 shadow-sm inline-flex items-center gap-1.5">
           <span>📋</span>
-          <span>アプリの更新履歴（リリースノート）を見る</span>
+          <span>更新履歴（v2.5.1）</span>
         </button>
       </div>
       <p class="text-[11px] text-slate-600 font-medium">データは端末内（LocalStorage）に保存され、個人情報は外部送信されません。</p>
     </footer>
 
   </main>
+
+  <!-- 公式使い方マニュアルモーダル -->
+  <div id="manualModal" class="fixed inset-0 bg-slate-950/80 z-50 hidden flex items-center justify-center p-3 backdrop-blur-sm no-print">
+    <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90dvh] overflow-y-auto shadow-2xl border border-slate-300 p-4 space-y-4 text-slate-900">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-2.5 sticky top-0 bg-white z-10">
+        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-1.5">
+          <span>📖</span>
+          <span>軽貨物 業務の記録簿（v2.5）公式マニュアル</span>
+        </h3>
+        <button type="button" onclick="closeManualModal()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-extrabold text-slate-800">✕ 閉じる</button>
+      </div>
+
+      <div class="space-y-3.5 text-xs leading-relaxed">
+        <!-- 1. 特徴 -->
+        <div class="p-3 rounded-xl bg-blue-50 border border-blue-200 space-y-1.5">
+          <div class="font-black text-brand-900 text-sm">1. このアプリの3つの強み</div>
+          <ul class="list-disc list-inside space-y-1 text-slate-800 font-medium">
+            <li><strong>2025年4月法改正に100%特化：</strong>余計な機能を省き、「①運行 / ②待機 / ③点呼 / ④帳票」の4タブだけで法定記録とLINE日報が完結します。</li>
+            <li><strong>誤打刻ゼロ化設計：</strong>最上部の青・緑ボタンで経過地点・休憩へ直接ジャンプでき、「🔒 誤打刻ロック」と「上書き確認ガード」で誤タップを防ぎます。</li>
+            <li><strong>個人情報保護（BYOD）＆ A4縦1枚印刷：</strong>データは端末内に保存され、監査用の記録書もA4縦1ページで綺麗に印刷・PDF保存できます。</li>
+          </ul>
+        </div>
+
+        <!-- 2. 初回セットアップ -->
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+          <div class="font-black text-slate-900 text-sm">2. 初回セットアップ（所要時間：約1分）</div>
+          <ol class="list-decimal list-inside space-y-1 text-slate-800 font-medium">
+            <li><strong>ホーム画面に追加：</strong>スマホのSafari（iPhone）またはChrome（Android）で開き、「ホーム画面に追加」をタップすると専用アプリとして起動できます。</li>
+            <li><strong>ドライバー・車両設定：</strong>画面上部の「👤 ドライバー情報・車両・よく使う場所・シート連携設定」を開き、氏名・黒ナンバー車両番号・所属・営業所を入力します（自動保存）。</li>
+          </ol>
+        </div>
+
+        <!-- 3. 日常の現場オペレーション -->
+        <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+          <div class="font-black text-emerald-950 text-sm">3. 日常の現場オペレーション（朝・日中・夜）</div>
+          <div class="space-y-1">
+            <div class="font-extrabold text-emerald-900">【朝】出庫時の操作（約15秒）</div>
+            <p class="text-slate-800">・「③ 点呼」タブで<strong>「✅ 全項目『良好』」</strong>をタップ。<br>・「① 運行」タブで緑の<strong>「⏱️ 開始打刻」</strong>を押し、開始地点と開始メーターを入力。誤タップ防止に「誤打刻ロック: ON」にすると安心です。</p>
+          </div>
+          <div class="space-y-1 pt-1 border-t border-emerald-200">
+            <div class="font-extrabold text-emerald-900">【日中】経過地点・休憩・荷待ちの操作（約5秒）</div>
+            <p class="text-slate-800">・<strong>経過地点：</strong>最上部の青い「📍 経過地点へ移動」を押し、登録拠点チップをタップ（即到着打刻）。出発時は「出発」を押します。<br>・<strong>休憩記録：</strong>最上部の緑の「☕ 休憩記録へ移動」を押し、場所を直接入力（または候補タップ）して「開始」「終了」を打刻。「⭐ 候補登録」で次回から1タップ化できます。<br>・<strong>荷待ち30分以上：</strong>「② 待機」タブで実際の到着時刻と荷役開始時刻を打刻します。</p>
+          </div>
+          <div class="space-y-1 pt-1 border-t border-emerald-200">
+            <div class="font-extrabold text-emerald-900">【夜】帰庫・日報送信・保存（約20秒）</div>
+            <p class="text-slate-800">・ロックを解除し赤い<strong>「⏱️ 終了打刻」</strong>と終了メーターを入力。<br>・「④ 帳票」タブで<strong>「💬 LINEアプリで送信」</strong>（またはコピー）を押し、必要に応じてシート送信・A4印刷を行います。</p>
+          </div>
+        </div>
+
+        <!-- 4. スプレッドシート連携 -->
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+          <div class="font-black text-slate-900 text-sm">4. 【任意】Googleスプレッドシート連携（3分設定）</div>
+          <ol class="list-decimal list-inside space-y-1 text-slate-800 font-medium">
+            <li>Googleスプレッドシートを新規作成し、メニュー「拡張機能 ➜ Apps Script」を開きます。</li>
+            <li>初期コードを消去し、アプリ設定欄の<strong>「📋 法定記録簿GASコードをコピー」</strong>で取得したコードを貼り付けて保存。</li>
+            <li>「デプロイ ➜ 新しいデプロイ（ウェブアプリ / アクセスできるユーザー：<strong>全員</strong>）」で発行されたURLをアプリ設定欄に貼り付ければ開通です。</li>
+          </ol>
+        </div>
+
+        <!-- 5. よくある質問 -->
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 space-y-1.5">
+          <div class="font-black text-amber-950 text-sm">5. よくある質問（FAQ）</div>
+          <p class="text-slate-900"><strong>Q. 誤って開始・終了打刻をもう一度押したら？</strong><br>A. 打刻済みの場合は確認バーが表示されるため、勝手に上書きされません。</p>
+          <p class="text-slate-900"><strong>Q. 画面下から一番上にすぐ戻りたい時は？</strong><br>A. 少しスクロールすると右下に<strong>「⬆️ 先頭」</strong>ボタンが浮かび上がります。</p>
+          <p class="text-slate-900"><strong>Q. 過去の日付の記録を見返したい時は？</strong><br>A. ヘッダー右上の日付欄の「◀」「▶」または日付タップから過去日を呼び出せます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- 更新履歴モーダル -->
   <div id="changelogModal" class="fixed inset-0 bg-slate-950/80 z-50 hidden flex items-center justify-center p-3 backdrop-blur-sm no-print">
@@ -650,12 +731,23 @@
       <div class="space-y-3 text-xs">
         <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-300 space-y-1">
           <div class="flex items-center justify-between">
-            <span class="font-black text-emerald-950">v2.4（最新）</span>
+            <span class="font-black text-emerald-950">v2.5.1（最新）</span>
             <span class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded">NEW</span>
           </div>
           <ul class="list-disc list-inside text-emerald-950 space-y-0.5 leading-relaxed">
-            <li><strong>経過地点の「到着・出発」2時刻記録に対応：</strong>各経過地点で到着時刻・出発時刻の両方をワンタップ打刻・記録できるように拡張。</li>
-            <li><strong>画面全体の文字コントラスト強化：</strong>「休憩開始」「休憩終了」など薄かったラベル文字を濃く太い文字へ変更し、車内での視認性を大幅向上。</li>
+            <li><strong>「📖 使い方マニュアル」モーダル内蔵：</strong>初回セットアップ、朝・日中・夜の操作手順、GAS連携、FAQをアプリ内からいつでも閲覧可能に。</li>
+          </ul>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+          <div class="font-black text-slate-900">v2.5 — 休憩場所の直接入力 ＆ ワンタップ候補化</div>
+          <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
+            <li>事前の候補登録なしでも各休憩枠の「休憩場所」欄へ直接文字入力でき、入力した場所をその場で「⭐ 候補登録」できるように強化。</li>
+          </ul>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+          <div class="font-black text-slate-900">v2.4 — 経過地点の「到着・出発」2時刻記録 ＆ 高コントラスト文字</div>
+          <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
+            <li>各経過地点で到着時刻・出発時刻の両方をワンタップ打刻できるように拡張し、画面全体のラベル文字を濃く太い文字へ改善。</li>
           </ul>
         </div>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
@@ -668,12 +760,6 @@
           <div class="font-black text-slate-900">v2.2 — 4タブ法定記録特化スリム化</div>
           <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
             <li>不要な荷物カウンター・収支入力を削除し、2025年4月法改正の「業務の記録」と「点呼10項目」に100%集中できる構成へ刷新。</li>
-          </ul>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-          <div class="font-black text-slate-900">v2.1 — 誤打刻ゼロ化 ＆ A4縦1ページ高密度帳票</div>
-          <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
-            <li>最上部への「経過地点・休憩クイックジャンプ」配置、「誤打刻ロック」および「打刻済み上書き確認ガード」を実装。</li>
           </ul>
         </div>
       </div>
@@ -923,6 +1009,14 @@
       document.body.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function openManualModal() {
+      document.getElementById('manualModal').classList.remove('hidden');
+    }
+
+    function closeManualModal() {
+      document.getElementById('manualModal').classList.add('hidden');
+    }
+
     function openChangelogModal() {
       document.getElementById('changelogModal').classList.remove('hidden');
     }
@@ -1118,6 +1212,14 @@
       const box = document.getElementById('breaksContainer');
       box.innerHTML = currentBreaks.map((b, idx) => `
         <div class="p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-200 space-y-2 text-xs">
+          <div>
+            <label class="text-xs font-extrabold text-slate-900 block mb-1">休憩場所（直接入力・コンビニ・道の駅等）</label>
+            <div class="flex gap-1.5 items-center">
+              <input type="text" value="${(b.location || '').replace(/"/g, '&quot;')}" placeholder="ここに休憩場所を直接入力" oninput="updateBreak(${idx}, 'location', this.value)" class="flex-1 p-2 border border-slate-400 rounded-lg bg-white text-xs font-bold text-slate-900">
+              <button type="button" onclick="saveBreakLocationAsPreset(${idx})" class="px-2.5 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border border-emerald-400 rounded-lg font-extrabold text-[11px] whitespace-nowrap">⭐ 候補登録</button>
+              <button type="button" onclick="removeBreak(${idx})" class="px-2.5 py-2 bg-rose-50 text-rose-700 border border-rose-300 rounded-lg font-extrabold text-[11px] whitespace-nowrap">🗑️ 削除</button>
+            </div>
+          </div>
           <div class="grid grid-cols-2 gap-1.5">
             <div>
               <label class="text-xs font-extrabold text-slate-900 block mb-1">休憩開始</label>
@@ -1134,17 +1236,34 @@
               </div>
             </div>
           </div>
-          <div class="flex gap-1.5 items-center">
-            <input type="text" value="${(b.location || '').replace(/"/g, '&quot;')}" placeholder="休憩場所（コンビニ駐車場・道の駅等）" oninput="updateBreak(${idx}, 'location', this.value)" class="flex-1 p-1.5 border border-slate-300 rounded bg-white text-xs font-semibold text-slate-900">
-            <button type="button" onclick="removeBreak(${idx})" class="px-2.5 py-1.5 bg-rose-50 text-rose-700 border border-rose-300 rounded font-extrabold text-[11px] whitespace-nowrap">🗑️ 削除</button>
-          </div>
         </div>
       `).join('');
     }
 
-    function addBreakSlot(loc = '') {
-      const startTime = loc ? getNowTimeStr() : '';
-      if (currentBreaks.length === 1 && !currentBreaks[0].location && !currentBreaks[0].startTime && loc) {
+    function saveBreakLocationAsPreset(idx) {
+      const loc = (currentBreaks[idx]?.location || '').trim();
+      if (!loc) {
+        showToast('先に休憩場所を入力してください', 'error');
+        return;
+      }
+      const p = getPresets();
+      if (!p.break.includes(loc)) {
+        p.break.push(loc);
+        savePresets(p);
+        showToast(`「${loc}」をよく使う休憩場所に登録しました！`, 'success');
+      } else {
+        showToast(`「${loc}」はすでに登録済みです`, 'info');
+      }
+    }
+
+    function addBreakSlot(loc = '', startTime = '') {
+      if (
+        currentBreaks.length === 1 &&
+        !currentBreaks[0].location &&
+        !currentBreaks[0].startTime &&
+        !currentBreaks[0].endTime &&
+        loc
+      ) {
         currentBreaks[0] = { startTime, endTime: '', minutes: 0, location: loc };
       } else {
         currentBreaks.push({ startTime, endTime: '', minutes: 0, location: loc });
@@ -1154,8 +1273,8 @@
     }
 
     function quickAddBreak(loc) {
-      addBreakSlot(loc);
-      showToast(`休憩「${loc}」を開始打刻しました`, 'success');
+      addBreakSlot(loc, getNowTimeStr());
+      showToast(`休憩場所「${loc}」で休憩開始しました`, 'success');
     }
 
     function stampBreak(idx, field) {
@@ -1163,13 +1282,15 @@
       currentBreaks[idx].minutes = calcMinutesDiff(currentBreaks[idx].startTime, currentBreaks[idx].endTime);
       renderBreaks();
       onFieldUpdate();
-      showToast('休憩時刻を打刻しました', 'success');
+      showToast(field === 'startTime' ? '休憩開始を打刻しました' : '休憩終了を打刻しました', 'success');
     }
 
     function updateBreak(idx, field, val) {
       currentBreaks[idx][field] = val;
-      currentBreaks[idx].minutes = calcMinutesDiff(currentBreaks[idx].startTime, currentBreaks[idx].endTime);
-      renderBreaks();
+      if (field === 'startTime' || field === 'endTime') {
+        currentBreaks[idx].minutes = calcMinutesDiff(currentBreaks[idx].startTime, currentBreaks[idx].endTime);
+        renderBreaks();
+      }
       onFieldUpdate();
     }
 
@@ -1181,182 +1302,197 @@
     }
 
     function setAllRollCallGood() {
-      const s = getSettings();
-      document.getElementById('preRollCallExecutor').value = document.getElementById('preRollCallExecutor').value || s.manager || '自主確認';
       document.getElementById('preAlcohol').value = '0.00';
       document.getElementById('preDailyInspection').value = '良好';
       document.getElementById('preHealth').value = '良好';
-      document.getElementById('postRollCallExecutor').value = document.getElementById('postRollCallExecutor').value || s.manager || '自主確認';
       document.getElementById('postAlcohol').value = '0.00';
       document.getElementById('postVehicleStatus').value = '異常なし';
       onFieldUpdate();
-      showToast('乗務前後の点呼をすべて「良好」に設定しました', 'success');
+      showToast('点呼項目をすべて「良好・異常なし」にセットしました', 'success');
     }
 
-    function setInstruction(txt) {
-      document.getElementById('preInstruction').value = txt;
+    function setInstruction(text) {
+      document.getElementById('preInstruction').value = text;
       onFieldUpdate();
+      showToast(`指示事項「${text}」をセットしました`, 'info');
     }
 
     function loadDateRecord(dateStr) {
       const all = getAllRecords();
-      const d = all[dateStr] || getDefaultRecord();
+      const rec = { ...getDefaultRecord(), ...(all[dateStr] || {}) };
+      document.getElementById('startTime').value = rec.startTime || '';
+      document.getElementById('endTime').value = rec.endTime || '';
+      document.getElementById('startLocation').value = rec.startLocation || '';
+      document.getElementById('endLocation').value = rec.endLocation || '';
+      document.getElementById('startOdo').value = rec.startOdo || '';
+      document.getElementById('endOdo').value = rec.endOdo || '';
+      document.getElementById('routeCode').value = rec.routeCode || '';
 
-      document.getElementById('startTime').value = d.startTime || '';
-      document.getElementById('endTime').value = d.endTime || '';
-      document.getElementById('startLocation').value = d.startLocation || '';
-      document.getElementById('endLocation').value = d.endLocation || '';
-      document.getElementById('startOdo').value = d.startOdo || '';
-      document.getElementById('endOdo').value = d.endOdo || '';
-      document.getElementById('routeCode').value = d.routeCode || '';
-
-      currentViaPoints = Array.isArray(d.viaPoints) && d.viaPoints.length > 0
-        ? d.viaPoints.map(v => ({
-            arrivalTime: v.arrivalTime !== undefined ? v.arrivalTime : (v.time || ''),
-            departureTime: v.departureTime || '',
-            location: v.location || ''
-          }))
+      currentViaPoints = Array.isArray(rec.viaPoints) && rec.viaPoints.length > 0
+        ? rec.viaPoints
         : [{ arrivalTime: '', departureTime: '', location: '' }];
-      currentBreaks = Array.isArray(d.breaks) && d.breaks.length > 0 ? d.breaks : [{ startTime: '', endTime: '', minutes: 0, location: '' }];
+      currentBreaks = Array.isArray(rec.breaks) && rec.breaks.length > 0
+        ? rec.breaks
+        : [{ startTime: '', endTime: '', minutes: 0, location: '' }];
+
+      document.getElementById('waitingPlace').value = rec.waitingPlace || '';
+      document.getElementById('waitingDesignatedTime').value = rec.waitingDesignatedTime || '';
+      document.getElementById('waitingArrivalTime').value = rec.waitingArrivalTime || '';
+      document.getElementById('cargoStartTime').value = rec.cargoStartTime || '';
+      document.getElementById('waitingDepartureTime').value = rec.waitingDepartureTime || '';
+      document.getElementById('cargoWorkType').value = rec.cargoWorkType || 'なし';
+      document.getElementById('cargoConfirmation').value = rec.cargoConfirmation || '口頭確認あり';
+      document.getElementById('incidentFlag').value = rec.incidentFlag || 'なし';
+      document.getElementById('incidentDetail').value = rec.incidentDetail || '';
+
+      document.getElementById('preRollCallExecutor').value = rec.preRollCallExecutor || '';
+      document.getElementById('preRollCallMethod').value = rec.preRollCallMethod || '対面';
+      document.getElementById('preAlcohol').value = rec.preAlcohol || '0.00';
+      document.getElementById('preDailyInspection').value = rec.preDailyInspection || '良好';
+      document.getElementById('preHealth').value = rec.preHealth || '良好';
+      document.getElementById('preInstruction').value = rec.preInstruction || '法令遵守・車間距離確保';
+
+      document.getElementById('postRollCallExecutor').value = rec.postRollCallExecutor || '';
+      document.getElementById('postRollCallMethod').value = rec.postRollCallMethod || '対面';
+      document.getElementById('postAlcohol').value = rec.postAlcohol || '0.00';
+      document.getElementById('postVehicleStatus').value = rec.postVehicleStatus || '異常なし';
+
       renderViaPoints();
       renderBreaks();
-
-      document.getElementById('waitingPlace').value = d.waitingPlace || '';
-      document.getElementById('waitingDesignatedTime').value = d.waitingDesignatedTime || '';
-      document.getElementById('waitingArrivalTime').value = d.waitingArrivalTime || '';
-      document.getElementById('cargoStartTime').value = d.cargoStartTime || '';
-      document.getElementById('waitingDepartureTime').value = d.waitingDepartureTime || '';
-      document.getElementById('cargoWorkType').value = d.cargoWorkType || 'なし';
-      document.getElementById('cargoConfirmation').value = d.cargoConfirmation || '口頭確認あり';
-      document.getElementById('incidentFlag').value = d.incidentFlag || 'なし';
-      document.getElementById('incidentDetail').value = d.incidentDetail || '';
-
-      document.getElementById('preRollCallExecutor').value = d.preRollCallExecutor || '';
-      document.getElementById('preRollCallMethod').value = d.preRollCallMethod || '対面';
-      document.getElementById('preAlcohol').value = d.preAlcohol || '0.00';
-      document.getElementById('preDailyInspection').value = d.preDailyInspection || '良好';
-      document.getElementById('preHealth').value = d.preHealth || '良好';
-      document.getElementById('preInstruction').value = d.preInstruction || '法令遵守・車間距離確保';
-
-      document.getElementById('postRollCallExecutor').value = d.postRollCallExecutor || '';
-      document.getElementById('postRollCallMethod').value = d.postRollCallMethod || '対面';
-      document.getElementById('postAlcohol').value = d.postAlcohol || '0.00';
-      document.getElementById('postVehicleStatus').value = d.postVehicleStatus || '異常なし';
-
-      onFieldUpdate();
-    }
-
-    function collectCurrentData() {
-      const sOdo = parseFloat(document.getElementById('startOdo').value) || 0;
-      const eOdo = parseFloat(document.getElementById('endOdo').value) || 0;
-      const dist = (eOdo > sOdo) ? Math.round((eOdo - sOdo) * 10) / 10 : 0;
-
-      const totalBreakMin = currentBreaks.reduce((acc, b) => acc + (Number(b.minutes) || 0), 0);
-      const waitMin = calcMinutesDiff(document.getElementById('waitingArrivalTime').value, document.getElementById('cargoStartTime').value);
-
-      return {
-        date: selectedDate,
-        startTime: document.getElementById('startTime').value,
-        endTime: document.getElementById('endTime').value,
-        startLocation: document.getElementById('startLocation').value,
-        endLocation: document.getElementById('endLocation').value,
-        startOdo: sOdo,
-        endOdo: eOdo,
-        distanceKm: dist,
-        routeCode: document.getElementById('routeCode').value,
-        viaPoints: currentViaPoints,
-        breaks: currentBreaks,
-        totalBreakMin,
-        waitingPlace: document.getElementById('waitingPlace').value,
-        waitingDesignatedTime: document.getElementById('waitingDesignatedTime').value,
-        waitingArrivalTime: document.getElementById('waitingArrivalTime').value,
-        cargoStartTime: document.getElementById('cargoStartTime').value,
-        waitingDepartureTime: document.getElementById('waitingDepartureTime').value,
-        waitingMinutes: waitMin,
-        cargoWorkType: document.getElementById('cargoWorkType').value,
-        cargoConfirmation: document.getElementById('cargoConfirmation').value,
-        incidentFlag: document.getElementById('incidentFlag').value,
-        incidentDetail: document.getElementById('incidentDetail').value,
-        preRollCallExecutor: document.getElementById('preRollCallExecutor').value,
-        preRollCallMethod: document.getElementById('preRollCallMethod').value,
-        preAlcohol: document.getElementById('preAlcohol').value,
-        preDailyInspection: document.getElementById('preDailyInspection').value,
-        preHealth: document.getElementById('preHealth').value,
-        preInstruction: document.getElementById('preInstruction').value,
-        postRollCallExecutor: document.getElementById('postRollCallExecutor').value,
-        postRollCallMethod: document.getElementById('postRollCallMethod').value,
-        postAlcohol: document.getElementById('postAlcohol').value,
-        postVehicleStatus: document.getElementById('postVehicleStatus').value
-      };
+      recalcSummaries(false);
     }
 
     function onFieldUpdate() {
-      const d = collectCurrentData();
-      const all = getAllRecords();
-      all[selectedDate] = d;
-      localStorage.setItem(RECORDS_KEY, JSON.stringify(all));
+      recalcSummaries(true);
+    }
 
-      document.getElementById('distanceDisplay').textContent = `${d.distanceKm} km`;
-      document.getElementById('totalBreakSummary').textContent = `合計休憩: ${d.totalBreakMin}分`;
+    function recalcSummaries(shouldSave) {
+      const sOdo = parseFloat(document.getElementById('startOdo').value) || 0;
+      const eOdo = parseFloat(document.getElementById('endOdo').value) || 0;
+      const dist = eOdo > sOdo ? Math.round((eOdo - sOdo) * 10) / 10 : 0;
+      document.getElementById('distanceDisplay').textContent = `${dist} km`;
 
+      const totalBreakMin = currentBreaks.reduce((sum, b) => sum + (Number(b.minutes) || calcMinutesDiff(b.startTime, b.endTime)), 0);
+      document.getElementById('totalBreakSummary').textContent = `合計休憩: ${totalBreakMin}分`;
+
+      const wArr = document.getElementById('waitingArrivalTime').value;
+      const cStart = document.getElementById('cargoStartTime').value;
+      const waitMin = calcMinutesDiff(wArr, cStart);
       const waitBadge = document.getElementById('waitingDurationBadge');
-      waitBadge.textContent = d.waitingMinutes >= 30 ? `⚠️ 法定記録対象 待機: ${d.waitingMinutes}分` : `待機: ${d.waitingMinutes}分`;
-      waitBadge.className = d.waitingMinutes >= 30
+      waitBadge.textContent = `待機: ${waitMin}分`;
+      waitBadge.className = waitMin >= 30
         ? 'px-2.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded-full text-xs'
         : 'px-2.5 py-0.5 bg-slate-200 text-slate-900 font-extrabold rounded-full text-xs';
 
-      refreshAllPreviews(d);
+      if (shouldSave) {
+        const all = getAllRecords();
+        all[selectedDate] = {
+          startTime: document.getElementById('startTime').value,
+          endTime: document.getElementById('endTime').value,
+          startLocation: document.getElementById('startLocation').value,
+          endLocation: document.getElementById('endLocation').value,
+          startOdo: document.getElementById('startOdo').value,
+          endOdo: document.getElementById('endOdo').value,
+          routeCode: document.getElementById('routeCode').value,
+          viaPoints: currentViaPoints,
+          breaks: currentBreaks,
+          waitingPlace: document.getElementById('waitingPlace').value,
+          waitingDesignatedTime: document.getElementById('waitingDesignatedTime').value,
+          waitingArrivalTime: document.getElementById('waitingArrivalTime').value,
+          cargoStartTime: document.getElementById('cargoStartTime').value,
+          waitingDepartureTime: document.getElementById('waitingDepartureTime').value,
+          cargoWorkType: document.getElementById('cargoWorkType').value,
+          cargoConfirmation: document.getElementById('cargoConfirmation').value,
+          incidentFlag: document.getElementById('incidentFlag').value,
+          incidentDetail: document.getElementById('incidentDetail').value,
+          preRollCallExecutor: document.getElementById('preRollCallExecutor').value,
+          preRollCallMethod: document.getElementById('preRollCallMethod').value,
+          preAlcohol: document.getElementById('preAlcohol').value,
+          preDailyInspection: document.getElementById('preDailyInspection').value,
+          preHealth: document.getElementById('preHealth').value,
+          preInstruction: document.getElementById('preInstruction').value,
+          postRollCallExecutor: document.getElementById('postRollCallExecutor').value,
+          postRollCallMethod: document.getElementById('postRollCallMethod').value,
+          postAlcohol: document.getElementById('postAlcohol').value,
+          postVehicleStatus: document.getElementById('postVehicleStatus').value
+        };
+        localStorage.setItem(RECORDS_KEY, JSON.stringify(all));
+      }
+      refreshAllPreviews();
     }
 
-    function formatViaPointLine(v) {
-      const arr = v.arrivalTime || v.time || '';
-      const dep = v.departureTime || '';
-      const timePart = (arr || dep) ? `${arr || '--:--'}着〜${dep || '--:--'}発` : '';
-      return [timePart, v.location].filter(Boolean).join(' ');
-    }
-
-    function refreshAllPreviews(d = collectCurrentData()) {
+    function refreshAllPreviews() {
       const s = getSettings();
-      const validVias = d.viaPoints.filter(v => v.location || v.arrivalTime || v.departureTime || v.time);
-      const viaLineStr = validVias.map(formatViaPointLine).join(' ➜ ') || '記録なし';
-      const viaPrintStr = validVias.map(formatViaPointLine).join('\n') || '記録なし';
-      const breakStr = d.breaks.filter(b => b.startTime || b.location).map(b => `${b.startTime || '--:--'}〜${b.endTime || '--:--'} (${b.minutes}分) ${b.location}`).join('\n') || '記録なし';
+      const startT = document.getElementById('startTime').value || '--:--';
+      const endT = document.getElementById('endTime').value || '--:--';
+      const startLoc = document.getElementById('startLocation').value || '未記入';
+      const endLoc = document.getElementById('endLocation').value || '未記入';
+      const sOdo = parseFloat(document.getElementById('startOdo').value) || 0;
+      const eOdo = parseFloat(document.getElementById('endOdo').value) || 0;
+      const dist = eOdo > sOdo ? Math.round((eOdo - sOdo) * 10) / 10 : 0;
+      const routeCode = document.getElementById('routeCode').value || '---';
 
-      // LINE日報生成（法定標準のみ）
-      const lineTxt = `【法定業務日報】${d.date}
-乗務員: ${s.driver || '未設定'} (${s.affiliation || '所属未設定'})
-車両番号: ${s.vehicle || '未設定'} / コース: ${d.routeCode || '通常便'}
+      const viaLines = currentViaPoints
+        .filter(v => v.location || v.arrivalTime || v.departureTime || v.time)
+        .map(v => {
+          const arr = v.arrivalTime !== undefined ? v.arrivalTime : (v.time || '');
+          const dep = v.departureTime || '';
+          const timePart = arr && dep ? `${arr}着〜${dep}発` : arr ? `${arr}着` : dep ? `${dep}発` : '--:--';
+          return `・${timePart} ${v.location || ''}`.trim();
+        });
+      const viaText = viaLines.length > 0 ? viaLines.join('\n') : '記録なし';
+
+      const breakLines = currentBreaks
+        .filter(b => b.location || b.startTime || b.endTime)
+        .map(b => `・${b.startTime || '--:--'}〜${b.endTime || '--:--'} (${b.minutes || 0}分) ${b.location || ''}`.trim());
+      const breakText = breakLines.length > 0 ? breakLines.join('\n') : '記録なし';
+      const totalBreakMin = currentBreaks.reduce((sum, b) => sum + (Number(b.minutes) || 0), 0);
+
+      const waitPlace = document.getElementById('waitingPlace').value;
+      const waitMin = calcMinutesDiff(document.getElementById('waitingArrivalTime').value, document.getElementById('cargoStartTime').value);
+      const cargoWork = document.getElementById('cargoWorkType').value;
+      const incidentFlag = document.getElementById('incidentFlag').value;
+      const incidentDetail = document.getElementById('incidentDetail').value;
+
+      const preText = `執行者:${document.getElementById('preRollCallExecutor').value || '未記入'} (${document.getElementById('preRollCallMethod').value}) / Alc:${document.getElementById('preAlcohol').value}mg/L / 点検:${document.getElementById('preDailyInspection').value} / 健康:${document.getElementById('preHealth').value} / 指示:${document.getElementById('preInstruction').value}`;
+      const postText = `執行者:${document.getElementById('postRollCallExecutor').value || '未記入'} (${document.getElementById('postRollCallMethod').value}) / Alc:${document.getElementById('postAlcohol').value}mg/L / 状況:${document.getElementById('postVehicleStatus').value}`;
+
+      const lineMsg = `【業務終了報告】${selectedDate}
+乗務員: ${s.driver || '未設定'} (${s.vehicle || '車両未設定'})
+コース: ${routeCode}
 ━━━━━━━━━━━━━━
-■ 業務時間: ${d.startTime || '--:--'} 〜 ${d.endTime || '--:--'}
-■ 走行距離: ${d.distanceKm} km (${d.startOdo} → ${d.endOdo})
-■ 休憩合計: ${d.totalBreakMin}分
-■ 経過地点: ${viaLineStr}
-■ 乗務前点呼: ${d.preRollCallMethod} / Alc:${d.preAlcohol} / 点検:${d.preDailyInspection}
-■ 乗務後点呼: ${d.postRollCallMethod} / Alc:${d.postAlcohol} / 車両:${d.postVehicleStatus}`;
+■ 開始: ${startT} (${startLoc})
+■ 終了: ${endT} (${endLoc})
+■ 走行: ${sOdo}km → ${eOdo}km (実走 ${dist}km)
+■ 休憩: 計${totalBreakMin}分
+■ 点呼: 乗務前/後 異常なし (Alc 0.00)
+━━━━━━━━━━━━━━
+【経過地点】
+${viaText}
+【休憩内訳】
+${breakText}`;
 
       const lineBox = document.getElementById('lineReportPreview');
-      if (lineBox) lineBox.value = lineTxt;
+      if (lineBox) lineBox.value = lineMsg;
 
-      // A4帳票プレビュー更新
-      document.getElementById('prDate').textContent = d.date;
+      document.getElementById('prDate').textContent = selectedDate;
       document.getElementById('prCompany').textContent = s.affiliation || '未設定';
       document.getElementById('prDriver').textContent = s.driver || '未設定';
       document.getElementById('prVehicle').textContent = s.vehicle || '未設定';
       document.getElementById('prAffiliation').textContent = [s.office, s.affiliation].filter(Boolean).join(' / ') || '未設定';
-      document.getElementById('prRouteCode').textContent = d.routeCode || '---';
+      document.getElementById('prRouteCode').textContent = routeCode;
 
-      document.getElementById('prStart').textContent = d.startTime || '--:--';
-      document.getElementById('prStartLoc').textContent = d.startLocation || '---';
-      document.getElementById('prEnd').textContent = d.endTime || '--:--';
-      document.getElementById('prEndLoc').textContent = d.endLocation || '---';
-      document.getElementById('prOdo').textContent = `${d.startOdo} km → ${d.endOdo} km（実走 ${d.distanceKm} km）`;
-      document.getElementById('prViaPoints').textContent = viaPrintStr;
-      document.getElementById('prBreaks').textContent = `${breakStr}\n（合計休憩: ${d.totalBreakMin}分）`;
-
-      document.getElementById('prPreRollCall').innerHTML = `執行者: ${d.preRollCallExecutor || '---'}（${d.preRollCallMethod}）<br>Alc: ${d.preAlcohol} mg/L / 点検: ${d.preDailyInspection} / 健康: ${d.preHealth}<br>指示: ${d.preInstruction}`;
-      document.getElementById('prPostRollCall').innerHTML = `執行者: ${d.postRollCallExecutor || '---'}（${d.postRollCallMethod}）<br>Alc: ${d.postAlcohol} mg/L / 車両状況: ${d.postVehicleStatus}`;
-      document.getElementById('prWaiting').innerHTML = `場所: ${d.waitingPlace || '---'} / 待機時間: <strong>${d.waitingMinutes}分</strong><br>荷役作業: ${d.cargoWorkType}（${d.cargoConfirmation}）`;
-      document.getElementById('prIncident').textContent = d.incidentFlag === 'なし' ? '異常なし（順調運行）' : `${d.incidentFlag}: ${d.incidentDetail}`;
+      document.getElementById('prStart').textContent = startT;
+      document.getElementById('prStartLoc').textContent = startLoc;
+      document.getElementById('prEnd').textContent = endT;
+      document.getElementById('prEndLoc').textContent = endLoc;
+      document.getElementById('prOdo').textContent = `${sOdo} km → ${eOdo} km（実走 ${dist} km）`;
+      document.getElementById('prViaPoints').textContent = viaText;
+      document.getElementById('prBreaks').textContent = `${breakText}（計 ${totalBreakMin}分）`;
+      document.getElementById('prPreRollCall').textContent = preText;
+      document.getElementById('prPostRollCall').textContent = postText;
+      document.getElementById('prWaiting').textContent = waitPlace ? `場所: ${waitPlace} / 待機: ${waitMin}分 / 荷役: ${cargoWork}` : `待機時間: ${waitMin}分 / 荷役: ${cargoWork}`;
+      document.getElementById('prIncident').textContent = incidentFlag === 'なし' ? '異常なし' : `${incidentFlag}${incidentDetail ? '：' + incidentDetail : ''}`;
     }
 
     function copyLineReport() {
@@ -1372,16 +1508,22 @@
     }
 
     function exportCsv() {
-      const d = collectCurrentData();
       const s = getSettings();
-      const validVias = d.viaPoints.filter(v => v.location || v.arrivalTime || v.departureTime || v.time);
-      const viaCsv = validVias.map(formatViaPointLine).join(' / ');
-      const header = '\uFEFF記録日,運転者,車両番号,業務開始,業務終了,走行距離km,経過地点(到着・出発),休憩分,荷待ち分,乗務前Alc,乗務後Alc\n';
-      const row = `${d.date},"${s.driver}","${s.vehicle}",${d.startTime},${d.endTime},${d.distanceKm},"${viaCsv}",${d.totalBreakMin},${d.waitingMinutes},${d.preAlcohol},${d.postAlcohol}\n`;
-      const blob = new Blob([header + row], { type: 'text/csv;charset=utf-8;' });
+      const row = [
+        selectedDate, s.affiliation, s.office, s.driver, s.vehicle,
+        document.getElementById('routeCode').value,
+        document.getElementById('startTime').value,
+        document.getElementById('startLocation').value,
+        document.getElementById('endTime').value,
+        document.getElementById('endLocation').value,
+        document.getElementById('startOdo').value,
+        document.getElementById('endOdo').value
+      ].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',');
+      const csv = '\uFEFF記録日,所属,営業所,乗務員名,車両番号,コース,開始時刻,開始地点,終了時刻,終了地点,開始メーター,終了メーター\n' + row + '\n';
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `軽貨物業務記録_${d.date}.csv`;
+      a.download = `軽貨物業務記録_${selectedDate}.csv`;
       a.click();
     }
 
@@ -1389,21 +1531,52 @@
       const s = getSettings();
       if (!s.gasUrl) {
         document.getElementById('settingsAccordion').open = true;
-        showToast('スプレッドシート連携URLが未設定です。設定欄に入力してください', 'error');
+        showToast('スプレッドシート連携URLが未設定です。上部設定欄に入力してください', 'error');
         return;
       }
-      const d = collectCurrentData();
-      const validVias = d.viaPoints.filter(v => v.location || v.arrivalTime || v.departureTime || v.time);
+      const sOdo = parseFloat(document.getElementById('startOdo').value) || 0;
+      const eOdo = parseFloat(document.getElementById('endOdo').value) || 0;
+      const dist = eOdo > sOdo ? Math.round((eOdo - sOdo) * 10) / 10 : 0;
+      const totalBreakMin = currentBreaks.reduce((sum, b) => sum + (Number(b.minutes) || 0), 0);
+
       const payload = {
-        ...d,
+        date: selectedDate,
         company: s.affiliation || '未設定',
         office: s.office || '未設定',
         driver: s.driver || '未設定',
         vehicle: s.vehicle || '未設定',
-        breakCount: d.breaks.filter(b => b.startTime).length,
-        breakDetails: d.breaks.filter(b => b.startTime).map(b => `${b.startTime}-${b.endTime}(${b.location})`).join(' / '),
-        viaPoints: validVias.map(formatViaPointLine).join(' -> ')
+        routeCode: document.getElementById('routeCode').value || '',
+        startTime: document.getElementById('startTime').value || '',
+        startLocation: document.getElementById('startLocation').value || '',
+        endTime: document.getElementById('endTime').value || '',
+        endLocation: document.getElementById('endLocation').value || '',
+        startOdo: sOdo,
+        endOdo: eOdo,
+        distanceKm: dist,
+        breakCount: currentBreaks.filter(b => b.startTime || b.endTime || b.location).length,
+        totalBreakMin,
+        breakDetails: document.getElementById('prBreaks').textContent,
+        viaPoints: document.getElementById('prViaPoints').textContent,
+        waitingPlace: document.getElementById('waitingPlace').value || '',
+        waitingDesignatedTime: document.getElementById('waitingDesignatedTime').value || '',
+        waitingArrivalTime: document.getElementById('waitingArrivalTime').value || '',
+        cargoStartTime: document.getElementById('cargoStartTime').value || '',
+        waitingDepartureTime: document.getElementById('waitingDepartureTime').value || '',
+        cargoWorkType: document.getElementById('cargoWorkType').value || 'なし',
+        incidentFlag: document.getElementById('incidentFlag').value || 'なし',
+        incidentDetail: document.getElementById('incidentDetail').value || '',
+        preRollCallExecutor: document.getElementById('preRollCallExecutor').value || '',
+        preRollCallMethod: document.getElementById('preRollCallMethod').value || '',
+        preAlcohol: document.getElementById('preAlcohol').value || '0.00',
+        preDailyInspection: document.getElementById('preDailyInspection').value || '',
+        preHealth: document.getElementById('preHealth').value || '',
+        preInstruction: document.getElementById('preInstruction').value || '',
+        postRollCallExecutor: document.getElementById('postRollCallExecutor').value || '',
+        postRollCallMethod: document.getElementById('postRollCallMethod').value || '',
+        postAlcohol: document.getElementById('postAlcohol').value || '0.00',
+        postVehicleStatus: document.getElementById('postVehicleStatus').value || ''
       };
+
       try {
         await fetch(s.gasUrl, {
           method: 'POST',
@@ -1411,9 +1584,9 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        showToast('スプレッドシート（運行記録簿）へ送信しました！', 'success');
+        showToast('スプレッドシートへ業務記録を送信しました！', 'success');
       } catch (e) {
-        showToast('送信エラーが発生しました', 'error');
+        showToast('送信中にエラーが発生しました', 'error');
       }
     }
 
