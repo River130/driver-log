@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>軽貨物 業務の記録簿（2025年4月法改正準拠）</title>
+  <title>軽貨物 業務の記録簿（2025年4月法改正・国交省様式例準拠）</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -35,8 +35,8 @@
         margin: 0 !important;
         padding: 0 !important;
         width: 100% !important;
-        font-size: 11.5px !important;
-        line-height: 1.5 !important;
+        font-size: 11px !important;
+        line-height: 1.45 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
@@ -62,7 +62,7 @@
         height: 278mm !important;
         max-height: 278mm !important;
         margin: 0 !important;
-        padding: 14px 16px !important;
+        padding: 13px 15px !important;
         border: 2px solid #0f172a !important;
         border-radius: 4px !important;
         box-shadow: none !important;
@@ -73,13 +73,13 @@
       .print-grid {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 12px !important;
+        gap: 10px !important;
         flex: 1 !important;
       }
       .print-col {
         display: flex !important;
         flex-direction: column !important;
-        gap: 10px !important;
+        gap: 8px !important;
       }
       .print-box {
         justify-content: flex-start !important;
@@ -109,7 +109,7 @@
             📖 使い方
           </button>
           <button type="button" onclick="openChangelogModal()" class="text-[11px] px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-400/50 font-extrabold rounded-full transition-colors">
-            🆕 v2.5.1
+            🆕 v2.6
           </button>
         </div>
         <p id="headerProfileSummary" class="text-xs text-slate-200 mt-0.5 font-semibold">乗務員: 未設定 | 車両: 未設定</p>
@@ -129,7 +129,7 @@
     <div class="bg-blue-50 border border-blue-300 rounded-xl p-2.5 text-xs text-blue-950 flex items-center justify-between gap-2 shadow-sm no-print">
       <div class="flex items-center gap-2">
         <span class="text-base">⚖️</span>
-        <div><strong>2025年4月法改正 準拠：</strong>業務の記録（1年間保存）・点呼10項目・30分以上の荷待ち記録に対応。データは端末内に自動保存されます。</div>
+        <div><strong>2025年4月法改正・国交省様式例 準拠：</strong>業務の記録（1年間保存）・点呼全項目（アルコール検知器使用有無・交替運転者通告含む）・30分以上の荷待ち記録に対応。</div>
       </div>
       <button type="button" onclick="openManualModal()" class="px-2.5 py-1.5 bg-brand-800 hover:bg-brand-900 text-white font-extrabold rounded-lg text-[11px] whitespace-nowrap shadow-xs">
         📖 マニュアル
@@ -439,13 +439,19 @@
       </section>
     </div>
 
-    <!-- TAB 3: ③ 点呼（法定10項目・日常点検） -->
+    <!-- TAB 3: ③ 点呼（国交省公式様式例 完全準拠版） -->
     <div id="content-rollcall" class="hidden space-y-3.5 text-xs">
-      <!-- 乗務前点呼（6項目） -->
+      <!-- 国交省様式例 注釈案内 -->
+      <div class="bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-[11px] text-slate-800 leading-relaxed">
+        <strong>📌 国交省 点呼記録様式例 準拠ルール：</strong>
+        1人で事業を行っている場合で運転者自ら点呼を行ったときは、点呼方法の「対面」を選択します（保存期間：1年間）。
+      </div>
+
+      <!-- 業務前点呼（国交省様式例 7項目） -->
       <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-2.5">
         <div class="flex items-center justify-between border-b border-slate-200 pb-2">
-          <h2 class="text-sm font-extrabold text-slate-900">📋 乗務前点呼（6項目）</h2>
-          <button type="button" onclick="setAllRollCallGood()" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-xs shadow-sm">✅ 全項目「良好」</button>
+          <h2 class="text-sm font-extrabold text-slate-900">📋 業務前点呼（国交省様式例準拠）</h2>
+          <button type="button" onclick="setAllRollCallGood()" class="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-xs shadow-sm">✅ 全項目「良好・有」</button>
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
@@ -455,44 +461,56 @@
           <div>
             <label class="text-xs font-extrabold text-slate-800 block mb-1">2. 点呼方法</label>
             <select id="preRollCallMethod" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-bold text-slate-900">
-              <option value="対面">対面</option>
-              <option value="電話・IT点呼">電話・IT点呼</option>
-              <option value="個人事業主・自主点呼">個人事業主・自主点呼</option>
+              <option value="対面">対面（1人事業主の自主点呼含む）</option>
+              <option value="電話・IT点呼">その他（電話・IT点呼）</option>
             </select>
           </div>
           <div>
-            <label class="text-xs font-extrabold text-slate-800 block mb-1">3. 酒気帯び有無 (mg/L)</label>
-            <input type="text" id="preAlcohol" value="0.00" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-extrabold text-slate-900">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">3. アルコール検知器の使用有無</label>
+            <select id="preAlcoholDetectorUsed" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
+              <option value="有">有（使用済）</option>
+              <option value="無">無</option>
+            </select>
           </div>
           <div>
-            <label class="text-xs font-extrabold text-slate-800 block mb-1">4. 日常点検結果</label>
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">4. 酒気帯びの有無 (mg/L)</label>
+            <div class="flex gap-1">
+              <select id="preAlcoholStatus" onchange="onFieldUpdate()" class="w-20 p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
+                <option value="無">無</option>
+                <option value="有">有</option>
+              </select>
+              <input type="text" id="preAlcohol" value="0.00" oninput="onFieldUpdate()" class="flex-1 p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-extrabold text-slate-900 text-right">
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">5. 日常点検の状況</label>
             <select id="preDailyInspection" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
               <option value="良好">良好（異常なし）</option>
               <option value="要整備">要整備・補充あり</option>
             </select>
           </div>
           <div>
-            <label class="text-xs font-extrabold text-slate-800 block mb-1">5. 疾病・疲労・睡眠状況</label>
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">6. 疾病・疲労・睡眠不足等の状況</label>
             <select id="preHealth" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
               <option value="良好">良好（睡眠十分）</option>
               <option value="やや疲労（休憩徹底）">やや疲労（休憩徹底）</option>
             </select>
           </div>
-          <div>
-            <label class="text-xs font-extrabold text-slate-800 block mb-1">6. 指示事項</label>
-            <input type="text" id="preInstruction" value="法令遵守・車間距離確保" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-semibold text-slate-900">
-          </div>
         </div>
-        <div class="flex flex-wrap gap-1.5 pt-1">
+        <div>
+          <label class="text-xs font-extrabold text-slate-800 block mb-1">7. その他必要な指示事項（天候等）</label>
+          <input type="text" id="preInstruction" value="法令遵守・車間距離確保" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-semibold text-slate-900">
+        </div>
+        <div class="flex flex-wrap gap-1.5 pt-0.5">
           <button type="button" onclick="setInstruction('法令遵守・車間距離確保')" class="px-2.5 py-1 bg-blue-50 text-brand-900 border border-blue-300 rounded font-extrabold text-[11px]">法令遵守</button>
           <button type="button" onclick="setInstruction('雨天スリップ注意・早め減速')" class="px-2.5 py-1 bg-slate-100 text-slate-800 border border-slate-300 rounded font-extrabold text-[11px]">雨天注意</button>
           <button type="button" onclick="setInstruction('バック時降車確認・死角注意')" class="px-2.5 py-1 bg-slate-100 text-slate-800 border border-slate-300 rounded font-extrabold text-[11px]">バック確認</button>
         </div>
       </section>
 
-      <!-- 乗務後点呼（4項目） -->
+      <!-- 業務後点呼（国交省様式例 7項目） -->
       <section class="bg-white rounded-xl p-3.5 shadow-sm border border-slate-300 space-y-2.5">
-        <h2 class="text-sm font-extrabold text-slate-900 border-b border-slate-200 pb-2">📋 乗務後点呼（4項目）</h2>
+        <h2 class="text-sm font-extrabold text-slate-900 border-b border-slate-200 pb-2">📋 業務後点呼（国交省様式例準拠）</h2>
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="text-xs font-extrabold text-slate-800 block mb-1">1. 点呼執行者名</label>
@@ -501,22 +519,45 @@
           <div>
             <label class="text-xs font-extrabold text-slate-800 block mb-1">2. 点呼方法</label>
             <select id="postRollCallMethod" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-bold text-slate-900">
-              <option value="対面">対面</option>
-              <option value="電話・IT点呼">電話・IT点呼</option>
-              <option value="個人事業主・自主点呼">個人事業主・自主点呼</option>
+              <option value="対面">対面（1人事業主の自主点呼含む）</option>
+              <option value="電話・IT点呼">その他（電話・IT点呼）</option>
             </select>
           </div>
           <div>
-            <label class="text-xs font-extrabold text-slate-800 block mb-1">3. 酒気帯び有無 (mg/L)</label>
-            <input type="text" id="postAlcohol" value="0.00" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-extrabold text-slate-900">
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">3. アルコール検知器の使用有無</label>
+            <select id="postAlcoholDetectorUsed" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
+              <option value="有">有（使用済）</option>
+              <option value="無">無</option>
+            </select>
           </div>
           <div>
-            <label class="text-xs font-extrabold text-slate-800 block mb-1">4. 自動車・道路・運行状況</label>
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">4. 酒気帯びの有無 (mg/L)</label>
+            <div class="flex gap-1">
+              <select id="postAlcoholStatus" onchange="onFieldUpdate()" class="w-20 p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
+                <option value="無">無</option>
+                <option value="有">有</option>
+              </select>
+              <input type="text" id="postAlcohol" value="0.00" oninput="onFieldUpdate()" class="flex-1 p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-mono font-extrabold text-slate-900 text-right">
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">5. 自動車・道路及び運行の状況</label>
             <select id="postVehicleStatus" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
               <option value="異常なし">異常なし</option>
               <option value="要点検・報告事項あり">要点検・報告事項あり</option>
             </select>
           </div>
+          <div>
+            <label class="text-xs font-extrabold text-slate-800 block mb-1">6. 交替運転者に対する通告</label>
+            <select id="postReliefDriverNotice" onchange="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-extrabold text-slate-900">
+              <option value="なし（1人乗務）">なし（1人乗務）</option>
+              <option value="通告実施済">通告実施済</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-extrabold text-slate-800 block mb-1">7. その他必要な指示事項（業務後）</label>
+          <input type="text" id="postInstruction" value="なし（施錠・車両点検完了）" oninput="onFieldUpdate()" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 focus:bg-white font-semibold text-slate-900">
         </div>
       </section>
     </div>
@@ -554,12 +595,12 @@
       </section>
 
       <!-- 国交省基準 業務の記録書（A4縦1ページ高密度2カラム帳票） -->
-      <section id="printable-area" class="bg-white p-4 rounded-xl border-2 border-slate-400 shadow-sm text-slate-900 space-y-3">
+      <section id="printable-area" class="bg-white p-4 rounded-xl border-2 border-slate-400 shadow-sm text-slate-900 space-y-2.5">
         <!-- 帳票タイトル＆確認印 -->
         <div class="border-b-2 border-slate-900 pb-2 flex flex-wrap justify-between items-end gap-2">
           <div>
-            <span class="text-[10px] px-2 py-0.5 bg-slate-900 text-white font-bold rounded">2025年4月法改正 貨物軽自動車運送事業 業務の記録</span>
-            <h2 class="text-base sm:text-lg font-black text-slate-900 mt-1">業務の記録書（乗務・点呼・動態記録簿）</h2>
+            <span class="text-[10px] px-2 py-0.5 bg-slate-900 text-white font-bold rounded">2025年4月法改正・国交省様式例準拠 貨物軽自動車運送事業</span>
+            <h2 class="text-base sm:text-lg font-black text-slate-900 mt-1">業務の記録書 兼 点呼記録簿（乗務・点呼・動態記録）</h2>
           </div>
           <div class="text-right text-[11px] flex items-center gap-3">
             <div><strong>記録日:</strong> <span id="prDate" class="font-bold">----</span></div>
@@ -580,54 +621,54 @@
         </div>
 
         <!-- 高密度2カラム本体 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 print-grid text-xs">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 print-grid text-xs">
           <!-- 左カラム：運行・動態記録 -->
-          <div class="space-y-2.5 print-col">
-            <div class="border border-slate-300 rounded p-2.5 print-box space-y-1">
+          <div class="space-y-2 print-col">
+            <div class="border border-slate-300 rounded p-2 print-box space-y-1">
               <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">1. 業務開始・終了及び走行距離</div>
               <div><strong>開始:</strong> <span id="prStart">--:--</span>（<span id="prStartLoc">---</span>）</div>
               <div><strong>終了:</strong> <span id="prEnd">--:--</span>（<span id="prEndLoc">---</span>）</div>
               <div><strong>メーター:</strong> <span id="prOdo">0 km → 0 km（実走 0 km）</span></div>
             </div>
 
-            <div class="border border-slate-300 rounded p-2.5 print-box space-y-1">
+            <div class="border border-slate-300 rounded p-2 print-box space-y-1">
               <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">2. 主な経過地点（到着・出発）</div>
               <div id="prViaPoints" class="whitespace-pre-line leading-relaxed">記録なし</div>
             </div>
 
-            <div class="border border-slate-300 rounded p-2.5 print-box space-y-1">
+            <div class="border border-slate-300 rounded p-2 print-box space-y-1">
               <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">3. 休憩・睡眠の地点及び日時</div>
               <div id="prBreaks" class="whitespace-pre-line leading-relaxed">記録なし</div>
             </div>
           </div>
 
-          <!-- 右カラム：点呼10項目・荷待ち・事故遅延 -->
-          <div class="space-y-2.5 print-col">
-            <div class="border border-slate-300 rounded p-2.5 print-box space-y-1">
-              <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">4. 乗務前点呼（6項目）</div>
+          <!-- 右カラム：国交省様式例準拠 点呼全項目・荷待ち・事故遅延 -->
+          <div class="space-y-2 print-col">
+            <div class="border border-slate-300 rounded p-2 print-box space-y-1">
+              <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">4. 業務前点呼（国交省様式例 7項目）</div>
               <div id="prPreRollCall" class="leading-relaxed">---</div>
             </div>
 
-            <div class="border border-slate-300 rounded p-2.5 print-box space-y-1">
-              <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">5. 乗務後点呼（4項目）</div>
+            <div class="border border-slate-300 rounded p-2 print-box space-y-1">
+              <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">5. 業務後点呼（国交省様式例 7項目）</div>
               <div id="prPostRollCall" class="leading-relaxed">---</div>
             </div>
 
-            <div class="border border-slate-300 rounded p-2.5 print-box space-y-1">
+            <div class="border border-slate-300 rounded p-2 print-box space-y-1">
               <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">6. 荷主都合の待機・荷役作業</div>
               <div id="prWaiting" class="leading-relaxed">待機時間: 0分 / 荷役: なし</div>
             </div>
 
-            <div class="border border-slate-300 rounded p-2.5 print-box space-y-1">
+            <div class="border border-slate-300 rounded p-2 print-box space-y-1">
               <div class="font-extrabold text-slate-900 border-b border-dashed border-slate-300 pb-1">7. 事故・著しい遅延・異常</div>
               <div id="prIncident" class="leading-relaxed">異常なし</div>
             </div>
           </div>
         </div>
 
-        <!-- 備考欄 -->
-        <div class="border border-slate-300 rounded p-2.5 bg-slate-50 text-[11px] text-slate-800">
-          <strong>備考（法定保存期間：1年間）：</strong> 貨物軽自動車運送事業輸送安全規則に基づき、上記の通り業務の記録および点呼を実施した。
+        <!-- 備考欄（国交省注記反映） -->
+        <div class="border border-slate-300 rounded p-2 bg-slate-50 text-[10.5px] text-slate-800 leading-snug">
+          <strong>備考（法定保存期間：1年間）：</strong> 貨物軽自動車運送事業輸送安全規則に基づき記録・保存する。（※1人で事業を行っている場合で運転者自ら点呼を行った場合は「対面」として記録）
         </div>
       </section>
     </div>
@@ -641,7 +682,7 @@
         </button>
         <button type="button" onclick="openChangelogModal()" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl border border-slate-300 shadow-sm inline-flex items-center gap-1.5">
           <span>📋</span>
-          <span>更新履歴（v2.5.1）</span>
+          <span>更新履歴（v2.6）</span>
         </button>
       </div>
       <p class="text-[11px] text-slate-600 font-medium">データは端末内（LocalStorage）に保存され、個人情報は外部送信されません。</p>
@@ -649,13 +690,13 @@
 
   </main>
 
-  <!-- 公式使い方マニュアルモーダル -->
+  <!-- 公式使い方マニュアルモーダル（v2.6最新対応） -->
   <div id="manualModal" class="fixed inset-0 bg-slate-950/80 z-50 hidden flex items-center justify-center p-3 backdrop-blur-sm no-print">
     <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90dvh] overflow-y-auto shadow-2xl border border-slate-300 p-4 space-y-4 text-slate-900">
       <div class="flex items-center justify-between border-b border-slate-200 pb-2.5 sticky top-0 bg-white z-10">
         <h3 class="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-1.5">
           <span>📖</span>
-          <span>軽貨物 業務の記録簿（v2.5）公式マニュアル</span>
+          <span>軽貨物 業務の記録簿（v2.6）公式マニュアル</span>
         </h3>
         <button type="button" onclick="closeManualModal()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-extrabold text-slate-800">✕ 閉じる</button>
       </div>
@@ -665,7 +706,7 @@
         <div class="p-3 rounded-xl bg-blue-50 border border-blue-200 space-y-1.5">
           <div class="font-black text-brand-900 text-sm">1. このアプリの3つの強み</div>
           <ul class="list-disc list-inside space-y-1 text-slate-800 font-medium">
-            <li><strong>2025年4月法改正に100%特化：</strong>余計な機能を省き、「①運行 / ②待機 / ③点呼 / ④帳票」の4タブだけで法定記録とLINE日報が完結します。</li>
+            <li><strong>2025年4月法改正・国交省公式様式例に100%準拠：</strong>「①運行 / ②待機 / ③点呼 / ④帳票」の4タブだけで法定記録（アルコール検知器の使用有無・交替運転者通告含む）とLINE日報が完結します。</li>
             <li><strong>誤打刻ゼロ化設計：</strong>最上部の青・緑ボタンで経過地点・休憩へ直接ジャンプでき、「🔒 誤打刻ロック」と「上書き確認ガード」で誤タップを防ぎます。</li>
             <li><strong>個人情報保護（BYOD）＆ A4縦1枚印刷：</strong>データは端末内に保存され、監査用の記録書もA4縦1ページで綺麗に印刷・PDF保存できます。</li>
           </ul>
@@ -685,7 +726,7 @@
           <div class="font-black text-emerald-950 text-sm">3. 日常の現場オペレーション（朝・日中・夜）</div>
           <div class="space-y-1">
             <div class="font-extrabold text-emerald-900">【朝】出庫時の操作（約15秒）</div>
-            <p class="text-slate-800">・「③ 点呼」タブで<strong>「✅ 全項目『良好』」</strong>をタップ。<br>・「① 運行」タブで緑の<strong>「⏱️ 開始打刻」</strong>を押し、開始地点と開始メーターを入力。誤タップ防止に「誤打刻ロック: ON」にすると安心です。</p>
+            <p class="text-slate-800">・「③ 点呼」タブで<strong>「✅ 全項目『良好・有』」</strong>をタップ（1人事業主の自主点呼は「対面」を選択）。<br>・「① 運行」タブで緑の<strong>「⏱️ 開始打刻」</strong>を押し、開始地点と開始メーターを入力。誤タップ防止に「誤打刻ロック: ON」にすると安心です。</p>
           </div>
           <div class="space-y-1 pt-1 border-t border-emerald-200">
             <div class="font-extrabold text-emerald-900">【日中】経過地点・休憩・荷待ちの操作（約5秒）</div>
@@ -693,7 +734,7 @@
           </div>
           <div class="space-y-1 pt-1 border-t border-emerald-200">
             <div class="font-extrabold text-emerald-900">【夜】帰庫・日報送信・保存（約20秒）</div>
-            <p class="text-slate-800">・ロックを解除し赤い<strong>「⏱️ 終了打刻」</strong>と終了メーターを入力。<br>・「④ 帳票」タブで<strong>「💬 LINEアプリで送信」</strong>（またはコピー）を押し、必要に応じてシート送信・A4印刷を行います。</p>
+            <p class="text-slate-800">・ロックを解除し赤い<strong>「⏱️ 終了打刻」</strong>と終了メーターを入力。<br>・「③ 点呼」で業務後点呼（検知器使用有無・酒気帯び有無・車両状況・交替運転者通告）を確認。<br>・「④ 帳票」タブで<strong>「💬 LINEアプリで送信」</strong>（またはコピー）を押し、必要に応じてシート送信・A4印刷を行います。</p>
           </div>
         </div>
 
@@ -710,9 +751,9 @@
         <!-- 5. よくある質問 -->
         <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 space-y-1.5">
           <div class="font-black text-amber-950 text-sm">5. よくある質問（FAQ）</div>
+          <p class="text-slate-900"><strong>Q. 1人で事業を行っている場合、点呼方法は何を選べばいいですか？</strong><br>A. 国交省の公式様式例（注1）に基づき、運転者自ら点呼を行った場合は「対面」を選択してください。</p>
           <p class="text-slate-900"><strong>Q. 誤って開始・終了打刻をもう一度押したら？</strong><br>A. 打刻済みの場合は確認バーが表示されるため、勝手に上書きされません。</p>
           <p class="text-slate-900"><strong>Q. 画面下から一番上にすぐ戻りたい時は？</strong><br>A. 少しスクロールすると右下に<strong>「⬆️ 先頭」</strong>ボタンが浮かび上がります。</p>
-          <p class="text-slate-900"><strong>Q. 過去の日付の記録を見返したい時は？</strong><br>A. ヘッダー右上の日付欄の「◀」「▶」または日付タップから過去日を呼び出せます。</p>
         </div>
       </div>
     </div>
@@ -731,11 +772,17 @@
       <div class="space-y-3 text-xs">
         <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-300 space-y-1">
           <div class="flex items-center justify-between">
-            <span class="font-black text-emerald-950">v2.5.1（最新）</span>
+            <span class="font-black text-emerald-950">v2.6（最新）</span>
             <span class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded">NEW</span>
           </div>
           <ul class="list-disc list-inside text-emerald-950 space-y-0.5 leading-relaxed">
-            <li><strong>「📖 使い方マニュアル」モーダル内蔵：</strong>初回セットアップ、朝・日中・夜の操作手順、GAS連携、FAQをアプリ内からいつでも閲覧可能に。</li>
+            <li><strong>国交省「点呼記録様式例」完全準拠：</strong>業務前・業務後の「アルコール検知器の使用の有無（有・無）」「酒気帯びの有無（無・有）」「交替運転者に対する通告」「1人事業主自主点呼ルール」を正式実装。</li>
+          </ul>
+        </div>
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+          <div class="font-black text-slate-900">v2.5.1 — 「📖 使い方マニュアル」モーダル内蔵</div>
+          <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
+            <li>初回セットアップ、朝・日中・夜の操作手順、GAS連携、FAQをアプリ内からいつでも閲覧可能に。</li>
           </ul>
         </div>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
@@ -751,15 +798,9 @@
           </ul>
         </div>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-          <div class="font-black text-slate-900">v2.3 — 「元請け・荷主区分」削除 ＆ 地点/休憩その場登録</div>
+          <div class="font-black text-slate-900">v2.2〜v2.3 — 4タブ法定記録特化スリム化 ＆ 地点/休憩その場登録</div>
           <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
-            <li>「元請け・荷主区分」を削除し、各カード内からよく使う経過地点・休憩場所を直接登録・整理できるように強化。</li>
-          </ul>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-          <div class="font-black text-slate-900">v2.2 — 4タブ法定記録特化スリム化</div>
-          <ul class="list-disc list-inside text-slate-800 space-y-0.5 leading-relaxed">
-            <li>不要な荷物カウンター・収支入力を削除し、2025年4月法改正の「業務の記録」と「点呼10項目」に100%集中できる構成へ刷新。</li>
+            <li>不要な荷物カウンター・収支・荷主区分を削除し、2025年4月法改正の法定記録に100%集中できる構成へ刷新。</li>
           </ul>
         </div>
       </div>
@@ -966,14 +1007,20 @@
         incidentDetail: '',
         preRollCallExecutor: s.manager || '',
         preRollCallMethod: '対面',
+        preAlcoholDetectorUsed: '有',
+        preAlcoholStatus: '無',
         preAlcohol: '0.00',
         preDailyInspection: '良好',
         preHealth: '良好',
         preInstruction: '法令遵守・車間距離確保',
         postRollCallExecutor: s.manager || '',
         postRollCallMethod: '対面',
+        postAlcoholDetectorUsed: '有',
+        postAlcoholStatus: '無',
         postAlcohol: '0.00',
-        postVehicleStatus: '異常なし'
+        postVehicleStatus: '異常なし',
+        postReliefDriverNotice: 'なし（1人乗務）',
+        postInstruction: 'なし（施錠・車両点検完了）'
       };
     }
 
@@ -1302,13 +1349,18 @@
     }
 
     function setAllRollCallGood() {
+      document.getElementById('preAlcoholDetectorUsed').value = '有';
+      document.getElementById('preAlcoholStatus').value = '無';
       document.getElementById('preAlcohol').value = '0.00';
       document.getElementById('preDailyInspection').value = '良好';
       document.getElementById('preHealth').value = '良好';
+      document.getElementById('postAlcoholDetectorUsed').value = '有';
+      document.getElementById('postAlcoholStatus').value = '無';
       document.getElementById('postAlcohol').value = '0.00';
       document.getElementById('postVehicleStatus').value = '異常なし';
+      document.getElementById('postReliefDriverNotice').value = 'なし（1人乗務）';
       onFieldUpdate();
-      showToast('点呼項目をすべて「良好・異常なし」にセットしました', 'success');
+      showToast('点呼項目をすべて「良好・検知器有・酒気帯び無」にセットしました', 'success');
     }
 
     function setInstruction(text) {
@@ -1346,16 +1398,22 @@
       document.getElementById('incidentDetail').value = rec.incidentDetail || '';
 
       document.getElementById('preRollCallExecutor').value = rec.preRollCallExecutor || '';
-      document.getElementById('preRollCallMethod').value = rec.preRollCallMethod || '対面';
+      document.getElementById('preRollCallMethod').value = rec.preRollCallMethod === '電話・IT点呼' ? '電話・IT点呼' : '対面';
+      document.getElementById('preAlcoholDetectorUsed').value = rec.preAlcoholDetectorUsed || '有';
+      document.getElementById('preAlcoholStatus').value = rec.preAlcoholStatus || '無';
       document.getElementById('preAlcohol').value = rec.preAlcohol || '0.00';
       document.getElementById('preDailyInspection').value = rec.preDailyInspection || '良好';
       document.getElementById('preHealth').value = rec.preHealth || '良好';
       document.getElementById('preInstruction').value = rec.preInstruction || '法令遵守・車間距離確保';
 
       document.getElementById('postRollCallExecutor').value = rec.postRollCallExecutor || '';
-      document.getElementById('postRollCallMethod').value = rec.postRollCallMethod || '対面';
+      document.getElementById('postRollCallMethod').value = rec.postRollCallMethod === '電話・IT点呼' ? '電話・IT点呼' : '対面';
+      document.getElementById('postAlcoholDetectorUsed').value = rec.postAlcoholDetectorUsed || '有';
+      document.getElementById('postAlcoholStatus').value = rec.postAlcoholStatus || '無';
       document.getElementById('postAlcohol').value = rec.postAlcohol || '0.00';
       document.getElementById('postVehicleStatus').value = rec.postVehicleStatus || '異常なし';
+      document.getElementById('postReliefDriverNotice').value = rec.postReliefDriverNotice || 'なし（1人乗務）';
+      document.getElementById('postInstruction').value = rec.postInstruction || 'なし（施錠・車両点検完了）';
 
       renderViaPoints();
       renderBreaks();
@@ -1407,14 +1465,20 @@
           incidentDetail: document.getElementById('incidentDetail').value,
           preRollCallExecutor: document.getElementById('preRollCallExecutor').value,
           preRollCallMethod: document.getElementById('preRollCallMethod').value,
+          preAlcoholDetectorUsed: document.getElementById('preAlcoholDetectorUsed').value,
+          preAlcoholStatus: document.getElementById('preAlcoholStatus').value,
           preAlcohol: document.getElementById('preAlcohol').value,
           preDailyInspection: document.getElementById('preDailyInspection').value,
           preHealth: document.getElementById('preHealth').value,
           preInstruction: document.getElementById('preInstruction').value,
           postRollCallExecutor: document.getElementById('postRollCallExecutor').value,
           postRollCallMethod: document.getElementById('postRollCallMethod').value,
+          postAlcoholDetectorUsed: document.getElementById('postAlcoholDetectorUsed').value,
+          postAlcoholStatus: document.getElementById('postAlcoholStatus').value,
           postAlcohol: document.getElementById('postAlcohol').value,
-          postVehicleStatus: document.getElementById('postVehicleStatus').value
+          postVehicleStatus: document.getElementById('postVehicleStatus').value,
+          postReliefDriverNotice: document.getElementById('postReliefDriverNotice').value,
+          postInstruction: document.getElementById('postInstruction').value
         };
         localStorage.setItem(RECORDS_KEY, JSON.stringify(all));
       }
@@ -1454,8 +1518,17 @@
       const incidentFlag = document.getElementById('incidentFlag').value;
       const incidentDetail = document.getElementById('incidentDetail').value;
 
-      const preText = `執行者:${document.getElementById('preRollCallExecutor').value || '未記入'} (${document.getElementById('preRollCallMethod').value}) / Alc:${document.getElementById('preAlcohol').value}mg/L / 点検:${document.getElementById('preDailyInspection').value} / 健康:${document.getElementById('preHealth').value} / 指示:${document.getElementById('preInstruction').value}`;
-      const postText = `執行者:${document.getElementById('postRollCallExecutor').value || '未記入'} (${document.getElementById('postRollCallMethod').value}) / Alc:${document.getElementById('postAlcohol').value}mg/L / 状況:${document.getElementById('postVehicleStatus').value}`;
+      const preDet = document.getElementById('preAlcoholDetectorUsed').value;
+      const preAlcSt = document.getElementById('preAlcoholStatus').value;
+      const preAlcVal = document.getElementById('preAlcohol').value;
+      const postDet = document.getElementById('postAlcoholDetectorUsed').value;
+      const postAlcSt = document.getElementById('postAlcoholStatus').value;
+      const postAlcVal = document.getElementById('postAlcohol').value;
+      const reliefNotice = document.getElementById('postReliefDriverNotice').value;
+      const postInst = document.getElementById('postInstruction').value;
+
+      const preText = `執行者:${document.getElementById('preRollCallExecutor').value || '未記入'} (${document.getElementById('preRollCallMethod').value}) / 検知器:${preDet} / 酒気帯び:${preAlcSt}(${preAlcVal}mg/L) / 点検:${document.getElementById('preDailyInspection').value} / 健康:${document.getElementById('preHealth').value} / 指示:${document.getElementById('preInstruction').value}`;
+      const postText = `執行者:${document.getElementById('postRollCallExecutor').value || '未記入'} (${document.getElementById('postRollCallMethod').value}) / 検知器:${postDet} / 酒気帯び:${postAlcSt}(${postAlcVal}mg/L) / 運行状況:${document.getElementById('postVehicleStatus').value} / 交替通告:${reliefNotice} / 指示:${postInst}`;
 
       const lineMsg = `【業務終了報告】${selectedDate}
 乗務員: ${s.driver || '未設定'} (${s.vehicle || '車両未設定'})
@@ -1465,7 +1538,7 @@
 ■ 終了: ${endT} (${endLoc})
 ■ 走行: ${sOdo}km → ${eOdo}km (実走 ${dist}km)
 ■ 休憩: 計${totalBreakMin}分
-■ 点呼: 乗務前/後 異常なし (Alc 0.00)
+■ 点呼: 乗務前/後 異常なし (検知器:${preDet}/${postDet}・酒気帯び:${preAlcSt}/${postAlcSt})
 ━━━━━━━━━━━━━━
 【経過地点】
 ${viaText}
@@ -1517,9 +1590,14 @@ ${breakText}`;
         document.getElementById('endTime').value,
         document.getElementById('endLocation').value,
         document.getElementById('startOdo').value,
-        document.getElementById('endOdo').value
+        document.getElementById('endOdo').value,
+        document.getElementById('preAlcoholDetectorUsed').value,
+        document.getElementById('preAlcoholStatus').value,
+        document.getElementById('postAlcoholDetectorUsed').value,
+        document.getElementById('postAlcoholStatus').value,
+        document.getElementById('postReliefDriverNotice').value
       ].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',');
-      const csv = '\uFEFF記録日,所属,営業所,乗務員名,車両番号,コース,開始時刻,開始地点,終了時刻,終了地点,開始メーター,終了メーター\n' + row + '\n';
+      const csv = '\uFEFF記録日,所属,営業所,乗務員名,車両番号,コース,開始時刻,開始地点,終了時刻,終了地点,開始メーター,終了メーター,前_検知器使用,前_酒気帯び,後_検知器使用,後_酒気帯び,後_交替通告\n' + row + '\n';
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1567,14 +1645,20 @@ ${breakText}`;
         incidentDetail: document.getElementById('incidentDetail').value || '',
         preRollCallExecutor: document.getElementById('preRollCallExecutor').value || '',
         preRollCallMethod: document.getElementById('preRollCallMethod').value || '',
+        preAlcoholDetectorUsed: document.getElementById('preAlcoholDetectorUsed').value || '有',
+        preAlcoholStatus: document.getElementById('preAlcoholStatus').value || '無',
         preAlcohol: document.getElementById('preAlcohol').value || '0.00',
         preDailyInspection: document.getElementById('preDailyInspection').value || '',
         preHealth: document.getElementById('preHealth').value || '',
         preInstruction: document.getElementById('preInstruction').value || '',
         postRollCallExecutor: document.getElementById('postRollCallExecutor').value || '',
         postRollCallMethod: document.getElementById('postRollCallMethod').value || '',
+        postAlcoholDetectorUsed: document.getElementById('postAlcoholDetectorUsed').value || '有',
+        postAlcoholStatus: document.getElementById('postAlcoholStatus').value || '無',
         postAlcohol: document.getElementById('postAlcohol').value || '0.00',
-        postVehicleStatus: document.getElementById('postVehicleStatus').value || ''
+        postVehicleStatus: document.getElementById('postVehicleStatus').value || '',
+        postReliefDriverNotice: document.getElementById('postReliefDriverNotice').value || 'なし（1人乗務）',
+        postInstruction: document.getElementById('postInstruction').value || ''
       };
 
       try {
@@ -1584,7 +1668,7 @@ ${breakText}`;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        showToast('スプレッドシートへ業務記録を送信しました！', 'success');
+        showToast('スプレッドシートへ業務記録（国交省様式例全項目）を送信しました！', 'success');
       } catch (e) {
         showToast('送信中にエラーが発生しました', 'error');
       }
@@ -1599,10 +1683,10 @@ ${breakText}`;
         '    logSheet.setName("運行記録簿");',
         '    var data = JSON.parse(e.postData.contents);',
         '    if (logSheet.getLastRow() === 0) {',
-        '      logSheet.appendRow(["記録日","所属","営業所","乗務員名","車両番号","コース","開始時刻","開始地点","終了時刻","終了地点","開始メーター","終了メーター","走行距離km","休憩回数","合計休憩分","休憩内訳","経過地点(到着・出発)","荷待ち場所","指定時刻","到着時刻","荷役開始","出発時刻","荷役区分","事故有無","事故詳細","前_執行者","前_方法","前_Alc","前_点検","前_健康","前_指示","後_執行者","後_方法","後_Alc","後_車両"]);',
-        '      logSheet.getRange(1, 1, 1, 35).setBackground("#0f172a").setFontColor("#ffffff").setFontWeight("bold");',
+        '      logSheet.appendRow(["記録日","所属","営業所","乗務員名","車両番号","コース","開始時刻","開始地点","終了時刻","終了地点","開始メーター","終了メーター","走行距離km","休憩回数","合計休憩分","休憩内訳","経過地点(到着・出発)","荷待ち場所","指定時刻","到着時刻","荷役開始","出発時刻","荷役区分","事故有無","事故詳細","前_執行者","前_方法","前_検知器使用","前_酒気帯び","前_Alc値","前_点検","前_健康","前_指示","後_執行者","後_方法","後_検知器使用","後_酒気帯び","後_Alc値","後_車両状況","後_交替運転者通告","後_指示"]);',
+        '      logSheet.getRange(1, 1, 1, 41).setBackground("#0f172a").setFontColor("#ffffff").setFontWeight("bold");',
         '    }',
-        '    logSheet.appendRow([data.date,data.company,data.office,data.driver,data.vehicle,data.routeCode,data.startTime,data.startLocation,data.endTime,data.endLocation,data.startOdo,data.endOdo,data.distanceKm,data.breakCount,data.totalBreakMin,data.breakDetails,data.viaPoints,data.waitingPlace,data.waitingDesignatedTime,data.waitingArrivalTime,data.cargoStartTime,data.waitingDepartureTime,data.cargoWorkType,data.incidentFlag,data.incidentDetail,data.preRollCallExecutor,data.preRollCallMethod,data.preAlcohol,data.preDailyInspection,data.preHealth,data.preInstruction,data.postRollCallExecutor,data.postRollCallMethod,data.postAlcohol,data.postVehicleStatus]);',
+        '    logSheet.appendRow([data.date,data.company,data.office,data.driver,data.vehicle,data.routeCode,data.startTime,data.startLocation,data.endTime,data.endLocation,data.startOdo,data.endOdo,data.distanceKm,data.breakCount,data.totalBreakMin,data.breakDetails,data.viaPoints,data.waitingPlace,data.waitingDesignatedTime,data.waitingArrivalTime,data.cargoStartTime,data.waitingDepartureTime,data.cargoWorkType,data.incidentFlag,data.incidentDetail,data.preRollCallExecutor,data.preRollCallMethod,data.preAlcoholDetectorUsed,data.preAlcoholStatus,data.preAlcohol,data.preDailyInspection,data.preHealth,data.preInstruction,data.postRollCallExecutor,data.postRollCallMethod,data.postAlcoholDetectorUsed,data.postAlcoholStatus,data.postAlcohol,data.postVehicleStatus,data.postReliefDriverNotice,data.postInstruction]);',
         '    return ContentService.createTextOutput(JSON.stringify({status:"success"})).setMimeType(ContentService.MimeType.JSON);',
         '  } catch (err) {',
         '    return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()})).setMimeType(ContentService.MimeType.JSON);',
@@ -1615,7 +1699,7 @@ ${breakText}`;
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      showToast('法定記録簿GASコードをコピーしました！', 'success');
+      showToast('国交省様式例対応GASコード（全41項目）をコピーしました！', 'success');
     }
 
     function showToast(msg, type = 'info') {
